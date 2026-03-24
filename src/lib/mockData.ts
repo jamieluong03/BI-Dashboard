@@ -1,8 +1,18 @@
-// src/lib/mockData.ts
 import { faker } from "@faker-js/faker";
 import { Order, Product, Customer, AdSource, Category } from "@/types/analytics";
 
+faker.seed(123);
+
 const categories: Category[] = ["Rings", "Necklaces", "Earrings", "Bracelets"];
+
+const jewelryNames = {
+  Rings: ['Band', 'Solitaire', 'Stackable Ring', 'Signet Ring', 'Cocktail Ring', 'Eternity Band'],
+  Necklaces: ['Choker', 'Pendant', 'Chain', 'Lariat', 'Collar', 'Lockett'],
+  Earrings: ['Studs', 'Hoops', 'Ear Cuffs', 'Drop Earrings', 'Chandeliers'],
+  Bracelets: ['Bangle', 'Cuff', 'Tennis Bracelet', 'Charm Bracelet', 'Link Bracelet']
+};
+
+const materials = ['Gold', 'Silver', 'Rose Gold', 'Platinum', 'Diamond', 'Pearl', 'Opal'];
 
 const regionShippingMap: Record<string, number> = {
   "California": 15.50,
@@ -16,10 +26,13 @@ export const generateMockProducts = (count: number): Product[] => {
   return Array.from({ length: count }, () => {
     const retailPrice = faker.number.float({ min: 20, max: 300, fractionDigits: 2 });
     const stockLevel = faker.number.int({ min: 5, max: 150 });
+    const category = faker.helpers.arrayElement(Object.keys(jewelryNames)) as Category;
+    const productNames = faker.helpers.arrayElement(jewelryNames[category]);
+    const name = `${faker.commerce.productAdjective()} ${faker.helpers.arrayElement(materials)} ${productNames}`;
     return {
       id: faker.string.uuid(),
-      name: faker.commerce.productName(),
-      category: faker.helpers.arrayElement(categories),
+      name: name,
+      category: category,
       retailPrice,
       costPrice: parseFloat((retailPrice * faker.number.float({ min: 0.3, max: 0.5 })).toFixed(2)),
       stockLevel,
@@ -37,7 +50,7 @@ export const generateMockCustomers = (count: number): Customer[] => {
     email: faker.internet.email(),
     totalOrders: 0, 
     totalSpent: 0,
-    lastOrderDate: "",
+    lastOrderDate: null,
     isLoyaltyMember: false
   }));
 };

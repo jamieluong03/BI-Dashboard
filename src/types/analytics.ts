@@ -36,7 +36,7 @@ export interface Customer {
     email: string;
     totalOrders: number;
     totalSpent: number;
-    lastOrderDate: string;
+    lastOrderDate: string | null;
     isLoyaltyMember: boolean;
 }
 
