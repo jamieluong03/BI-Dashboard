@@ -28,12 +28,41 @@ export default function Orders() {
             )
         },
         {
+            accessorKey: "createdAt",
+            header: "Date",
+            cell: ({ getValue }) => {
+                const value = getValue() as string;
+                if (!value) return "-";
+
+                const date = new Date(value);
+                const dateStr = new Intl.DateTimeFormat("en-US", {
+                    month: "2-digit",
+                    day: "2-digit",
+                    year: "2-digit",
+                }).format(date);
+
+                const timeStr = new Intl.DateTimeFormat("en-US", {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    hour12: true,
+                }).format(date);
+                return (
+                    <div className="flex flex-col">
+                        <span className="text-slate-900 font-medium">{dateStr}</span>
+                        <span className="text-[10px] text-slate-400 uppercase tracking-wider">
+                            {timeStr}
+                        </span>
+                    </div>
+                )
+            }
+        },
+        {
             accessorKey: "customerName",
             header: 'Customer'
         },
         {
             accessorKey: "totalRevenue",
-            header: "Revenue",
+            header: "Order Total",
             cell: ({ getValue }) => (
                 <span>
                     {`$${Number(getValue()).toLocaleString()}`}
@@ -56,10 +85,36 @@ export default function Orders() {
                     </span>
                 );
             }
+        },
+        {
+            accessorKey: "channel",
+            header: "Sales Channel"
+        },
+        {
+            accessorKey: "region",
+            header: "Region"
+        },
+        {
+            accessorKey: "discountAmount",
+            header: "Discount",
+            cell: ({ getValue }) => (
+                <span>
+                    {`$${Number(getValue()).toLocaleString()}`}
+                </span>
+            )
+        },
+        {
+            accessorKey: "shippingCost",
+            header: "Shipping",
+            cell: ({ getValue }) => (
+                <span>
+                    {`$${Number(getValue()).toLocaleString()}`}
+                </span>
+            )
         }
     ], []);
     const [columnVisibility, setcolumnVisibility] = React.useState<VisibilityState>({});
-    const [columnOrder, setColumnOrder] = React.useState<ColumnOrderState>(['id', 'customerName', 'totalRevenue', 'status']);
+    const [columnOrder, setColumnOrder] = React.useState<ColumnOrderState>(['id', 'createdAt', 'customerName', 'totalRevenue', 'status']);
 
     const table = useReactTable({
         data: orders || [],
@@ -73,7 +128,8 @@ export default function Orders() {
         getCoreRowModel: getCoreRowModel(),
     });
 
-
+    const visibleColumnsCount = table.getVisibleLeafColumns().length;
+    
     if (isLoading) return <p>Loading your orders...</p>;
 
     return (
@@ -102,13 +158,20 @@ export default function Orders() {
                     })}
                 </div>
 
-                <div className="overflow-x-auto rounded-lg border border-slate-200">
-                    <table className="min-w-full divide-y divide-slate-200">
+                <div 
+                className={`
+                    overflow-x-auto rounded-xl border border-slate-200 bg-white shadow-sm
+                    ${visibleColumnsCount > 6 ? 'cursor-grab active:cursor-grabbing' : ''}
+                `}>
+                    <table className="min-w-full divide-y divide-slate-200" 
+                    style={{ 
+                        minWidth: visibleColumnsCount > 6 ? `${visibleColumnsCount * 180}px` : '100%' 
+                    }}>
                         <thead className="bg-slate-50">
                             {table.getHeaderGroups().map((hg) => (
                                 <tr key={hg.id}>
                                     {hg.headers.map((header) => (
-                                        <th key={header.id}>
+                                        <th key={header.id} className="px-5 py-3 border-r last:border-r-0">
                                             {flexRender(header.column.columnDef.header, header.getContext())}
                                         </th>
                                     ))}
@@ -119,7 +182,7 @@ export default function Orders() {
                             {table.getRowModel().rows.map((row) => (
                                 <tr key={row.id}>
                                     {row.getVisibleCells().map((cell) => (
-                                        <td key={cell.id}>
+                                        <td key={cell.id} className="text-center px-5 py-3 whitespace-nowrap text-sm text-slate-600 border-r border-slate-200 last:border-r-0">
                                             {flexRender(cell.column.columnDef.cell, cell.getContext())}
                                         </td>
                                     ))}
