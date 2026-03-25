@@ -8,7 +8,8 @@ import {
     getCoreRowModel,
     ColumnOrderState,
     VisibilityState,
-    flexRender
+    flexRender,
+    getPaginationRowModel
 } from '@tanstack/react-table';
 import * as React from 'react';
 import { Order } from '@/types/analytics';
@@ -115,6 +116,10 @@ export default function Orders() {
     ], []);
     const [columnVisibility, setcolumnVisibility] = React.useState<VisibilityState>({});
     const [columnOrder, setColumnOrder] = React.useState<ColumnOrderState>(['id', 'createdAt', 'customerName', 'totalRevenue', 'status']);
+    const [pagination, setPagination] = React.useState({
+        pageIndex: 0,
+        pageSize: 25,
+    });
 
     const table = useReactTable({
         data: orders || [],
@@ -122,14 +127,17 @@ export default function Orders() {
         state: {
             columnVisibility,
             columnOrder,
+            pagination
         },
+        onPaginationChange: setPagination,
+        getPaginationRowModel: getPaginationRowModel(),
         onColumnVisibilityChange: setcolumnVisibility,
         onColumnOrderChange: setColumnOrder,
         getCoreRowModel: getCoreRowModel(),
     });
 
     const visibleColumnsCount = table.getVisibleLeafColumns().length;
-    
+
     if (isLoading) return <p>Loading your orders...</p>;
 
     return (
@@ -158,15 +166,15 @@ export default function Orders() {
                     })}
                 </div>
 
-                <div 
-                className={`
+                <div
+                    className={`
                     overflow-x-auto rounded-xl border border-slate-200 bg-white shadow-sm
                     ${visibleColumnsCount > 6 ? 'cursor-grab active:cursor-grabbing' : ''}
                 `}>
-                    <table className="min-w-full divide-y divide-slate-200" 
-                    style={{ 
-                        minWidth: visibleColumnsCount > 6 ? `${visibleColumnsCount * 180}px` : '100%' 
-                    }}>
+                    <table className="min-w-full divide-y divide-slate-200"
+                        style={{
+                            minWidth: visibleColumnsCount > 6 ? `${visibleColumnsCount * 180}px` : '100%'
+                        }}>
                         <thead className="bg-slate-50">
                             {table.getHeaderGroups().map((hg) => (
                                 <tr key={hg.id}>
@@ -182,7 +190,7 @@ export default function Orders() {
                             {table.getRowModel().rows.map((row) => (
                                 <tr key={row.id}>
                                     {row.getVisibleCells().map((cell) => (
-                                        <td key={cell.id} className="text-center px-5 py-3 whitespace-nowrap text-sm text-slate-600 border-r border-slate-200 last:border-r-0">
+                                        <td key={cell.id} className="text-center px-2 py-1 whitespace-nowrap text-sm text-slate-600 border-r border-slate-200 last:border-r-0">
                                             {flexRender(cell.column.columnDef.cell, cell.getContext())}
                                         </td>
                                     ))}
@@ -190,6 +198,46 @@ export default function Orders() {
                             ))}
                         </tbody>
                     </table>
+                </div>
+
+                {/* Pagination */}
+                <div className="flex items-center justify-between px-4 py-3 bg-white border-t border-slate-200 sm:px-6 rounded-b-xl">
+                    <div className="flex items-center gap-6">
+                        <div className="flex items-center gap-2">
+                            <p className="text-sm font-medium text-slate-700">Displaying rows per page:</p>
+                            <select
+                                value={table.getState().pagination.pageSize}
+                                onChange={e => table.setPageSize(Number(e.target.value))}
+                                className="h-8 w-15 rounded border border-slate-300 text-sm focus:ring-indigo-500"
+                            >
+                                {[25, 50, 100].map(size => (
+                                    <option key={size} value={size}>{size}</option>
+                                ))}
+                            </select>
+                        </div>
+
+                        <span className="text-sm text-slate-700">
+                            Page <span className="font-semibold text-slate-900">{table.getState().pagination.pageIndex + 1}</span> of{' '}
+                            <span className="font-semibold text-slate-900">{table.getPageCount()}</span>
+                        </span>
+                    </div>
+
+                    <div className="flex items-center space-x-2">
+                        <button
+                            onClick={() => table.previousPage()}
+                            disabled={!table.getCanPreviousPage()}
+                            className="px-4 py-2 text-sm font-medium text-slate-700 bg-white border border-slate-300 rounded-md hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                            Previous
+                        </button>
+                        <button
+                            onClick={() => table.nextPage()}
+                            disabled={!table.getCanNextPage()}
+                            className="px-4 py-2 text-sm font-medium text-slate-700 bg-white border border-slate-300 rounded-md hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                            Next
+                        </button>
+                    </div>
                 </div>
             </div>
         </>
