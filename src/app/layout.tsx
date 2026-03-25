@@ -3,8 +3,9 @@ import { Geist, Geist_Mono, Inter } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import Providers from './providers';
+import SideNav from "@/components/ui/sideNav";
 
-const inter = Inter({subsets:['latin'],variable:'--font-sans'});
+const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -33,7 +34,12 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col">
         <Providers>
-          {children}
+          <div className="flex h-screen flex-col md:flex-row md:overflow-hidden">
+            <div className="w-full flex-none md:w-64">
+              <SideNav />
+            </div>
+            <div className="grow p-6 md:overflow-y-auto md:p-12">{children}</div>
+          </div>
         </Providers>
       </body>
     </html>
