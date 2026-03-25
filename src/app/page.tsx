@@ -1,13 +1,25 @@
 'use client';
 
-import { useDashboardStats } from '@/hooks/useDashboardStats';
+import { useSalesPerformance } from '@/hooks/salesPerformance';
 import { StatCard } from '@/components/ui/dashboard/statCard';
 import { DollarSign, ShoppingBag, TrendingUp, CreditCard, Sidebar } from 'lucide-react';
 
 export default function DashboardOverview() {
-  const { stats, isLoading } = useDashboardStats();
+  const { performance, isLoading, isError, error } = useSalesPerformance();
 
   if (isLoading) return <div className="p-8 text-slate-500">Loading stats...</div>;
+
+  if (isError) {
+    return (
+      <div className="border-red-500 bg-red-50 p-4 rounded-lg">
+      <h3 className="text-red-800 font-bold">Failed to load data</h3>
+      
+      <p className="text-red-600 text-sm">
+        Reason: {error instanceof Error ? error.message : "Unknown error"}
+      </p>
+    </div>
+    )
+  }
 
   const formatter = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
 
@@ -21,26 +33,26 @@ export default function DashboardOverview() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 p-8">
           <StatCard
             title="Total Revenue"
-            value={formatter.format(stats?.totalRevenue || 0)}
+            value={formatter.format(performance?.totalRevenue || 0)}
             icon={DollarSign}
             description="Gross income before expenses"
           />
           <StatCard
             title="Net Profit"
-            value={formatter.format(stats?.netProfit || 0)}
+            value={formatter.format(performance?.netProfit || 0)}
             icon={TrendingUp}
             trend="+12.5%"
-            description={`${stats?.profitMargin.toFixed(1)}% overall margin`}
+            description={`${performance?.profitMargin.toFixed(1)}% overall margin`}
           />
-          <StatCard
+          {/* <StatCard
             title="Total Orders"
-            value={stats?.totalOrders || 0}
+            value={performance?.totalOrders || 0}
             icon={ShoppingBag}
             description="Volume for current period"
-          />
+          /> */}
           <StatCard
             title="Avg. Order Value"
-            value={formatter.format(stats?.aov || 0)}
+            value={formatter.format(performance?.aov || 0)}
             icon={CreditCard}
             description="Target: $150.00"
           />
