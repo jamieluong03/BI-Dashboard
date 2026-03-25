@@ -179,7 +179,7 @@ export default function Orders() {
                             {table.getHeaderGroups().map((hg) => (
                                 <tr key={hg.id}>
                                     {hg.headers.map((header) => (
-                                        <th key={header.id} className="px-5 py-3 border-r last:border-r-0">
+                                        <th key={header.id} className="w-100 text-sm px-5 py-3 border-r last:border-r-0">
                                             {flexRender(header.column.columnDef.header, header.getContext())}
                                         </th>
                                     ))}
@@ -190,7 +190,7 @@ export default function Orders() {
                             {table.getRowModel().rows.map((row) => (
                                 <tr key={row.id}>
                                     {row.getVisibleCells().map((cell) => (
-                                        <td key={cell.id} className="text-center px-2 py-1 whitespace-nowrap text-sm text-slate-600 border-r border-slate-200 last:border-r-0">
+                                        <td key={cell.id} className="text-center px-2 py-1 whitespace-nowrap text-xs text-slate-600 border-r border-slate-200 last:border-r-0">
                                             {flexRender(cell.column.columnDef.cell, cell.getContext())}
                                         </td>
                                     ))}
