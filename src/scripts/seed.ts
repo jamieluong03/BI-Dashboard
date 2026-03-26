@@ -1,33 +1,40 @@
 import * as dotenv from 'dotenv';
-dotenv.config({ path: '.env.local' });
+import path from 'path';
 
-import { supabaseAdmin } from '../lib/supabase';
-import { MOCK_PRODUCTS, MOCK_CUSTOMERS, MOCK_ORDERS } from '../lib/mockData';
+dotenv.config({ path: path.resolve(process.cwd(), '.env.local') });
+
+console.log('Checking Env:', {
+  url: process.env.NEXT_PUBLIC_SUPABASE_URL ? '✅ Found' : '❌ MISSING',
+  key: process.env.SUPABASE_SERVICE_ROLE_KEY ? '✅ Found' : '❌ MISSING'
+});
 
 async function seedDatabase() {
+  const { supabaseAdmin } = await import('../lib/supabase');
+  const { MOCK_PRODUCTS, MOCK_CUSTOMERS, MOCK_ORDERS } = await import('../lib/mockData');
+
   if (!supabaseAdmin) return;
 
-  console.log('🚀 Starting sanitized seed process...');
+  console.log('🚀 Starting the cleanup & seed...');
 
-  // 1. Seed Products first
+  // 1. Seed Products (usually works fine)
   await supabaseAdmin.from('products').insert(MOCK_PRODUCTS);
   console.log('✅ Products seeded');
 
-  // 2. Clean and Seed Customers
-  const sanitizedCustomers = MOCK_CUSTOMERS.map(c => ({
-    ...c,
-    // Replace "No orders" string with actual null for the DB
-    lastOrderDate: c.lastOrderDate === "No orders" ? null : c.lastOrderDate
+  // 2. SANITIZE & Seed Customers
+  const sanitizedCustomers = MOCK_CUSTOMERS.map(customer => ({
+    ...customer,
+    lastOrderDate: customer.lastOrderDate === "No orders" ? null : customer.lastOrderDate
   }));
 
   const { error: cError } = await supabaseAdmin.from('customers').insert(sanitizedCustomers);
+  
   if (cError) {
     console.error('❌ Customers Error:', cError.message);
-    return; // Stop if customers fail, or orders will fail too!
+    return; // STOP HERE if customers fail, or orders will always fail FK check
   }
   console.log('✅ Customers seeded');
 
-  // 3. Seed Orders (after customers are definitely there)
+  // 3. Seed Orders
   const batchSize = 100;
   for (let i = 0; i < MOCK_ORDERS.length; i += batchSize) {
     const batch = MOCK_ORDERS.slice(i, i + batchSize);
@@ -39,7 +46,7 @@ async function seedDatabase() {
     console.log(`📦 Progress: ${i + batch.length}/${MOCK_ORDERS.length} orders...`);
   }
 
-  console.log('✨ Database seeding complete!');
+  console.log('✨ Database population complete!');
 }
 
 seedDatabase();

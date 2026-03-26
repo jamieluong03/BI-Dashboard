@@ -74,6 +74,13 @@ export const generateMockOrders = (
     const totalRevenue = items.reduce((sum, item) => sum + (item.priceAtSale * item.quantity), 0);
     const totalCost = selectedProducts.reduce((sum, p) => sum + p.costPrice, 0);
     const adSource = faker.helpers.arrayElement<AdSource>(["Meta", "Google", "TikTok", "Email", "Organic"]);
+
+    const getRandomStatus = (): "shipped" | "processing" | "cancelled" => {
+      const roll = Math.random() * 100;
+      if (roll <= 70) return "shipped";
+      if (roll <= 90) return "processing";
+      return "cancelled";
+    }
     
     const regions = Object.keys(regionShippingMap);
     const region = faker.helpers.arrayElement(regions);
@@ -90,7 +97,7 @@ export const generateMockOrders = (
       shippingCost: regionShippingMap[region],
       discountAmount: faker.helpers.maybe(() => 5, { probability: 0.1 }) ?? 0,
       adSource,
-      status: faker.helpers.arrayElement(["shipped", "shipped", "processing", "cancelled"]),
+      status: getRandomStatus(),
       createdAt: faker.date.past({ years: 2 }).toISOString(),
       channel: faker.helpers.arrayElement([
         "Online Store", 
