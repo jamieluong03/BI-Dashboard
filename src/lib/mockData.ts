@@ -1,5 +1,5 @@
 import { faker } from "@faker-js/faker";
-import { Order, Product, Customer, AdSource, Category, MarketingSpend } from "@/types/analytics";
+import { Order, Product, Customer, AdSource, Category, MarketingSpend, SalesChannel } from "@/types/analytics";
 import { getSeasonalMultiplier } from "./utils";
 
 faker.seed(123);
@@ -69,7 +69,7 @@ export const generateMockOrders = (
 ): Order[] => {
   const allOrders: Order[] = [];
   const regions = Object.keys(regionShippingMap);
-  const channels = Object.keys(channelsMap)
+  const channels = Object.keys(channelsMap) as SalesChannel[];
 
   for (let i=0; i<days; i++) {
     const date = new Date();
