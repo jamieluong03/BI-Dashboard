@@ -38,15 +38,13 @@ export default function DashboardOverview() {
           <StatCard
             title="Net Profit"
             value={formatter.format(performance?.netProfit || 0)}
-            trend="+12.5%"
             description={`${performance?.profitMargin.toFixed(2)}% overall margin`}
           />
-          {/* <StatCard
+          <StatCard
             title="Total Orders"
             value={performance?.totalOrders || 0}
-            icon={ShoppingBag}
             description="Volume for current period"
-          /> */}
+          />
           <StatCard
             title="Avg. Order Value"
             value={formatter.format(performance?.aov || 0)}

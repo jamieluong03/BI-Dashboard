@@ -2,13 +2,14 @@ import { useMemo } from 'react';
 import { useMarketingSpend, useOrders } from '@/hooks/dataTables';
 
 export function useSalesPerformance() {
-    const { orders, isLoading: ordersLoading } = useOrders();
+    const { orders, isLoading: ordersLoading, isError, error } = useOrders();
     const { marketing, isLoading: marketingLoading } = useMarketingSpend();
 
     const performance = useMemo(() => {
         if (!orders || !marketing) return null;
 
         const successfulOrders = orders.filter(o => o.status !== 'cancelled');
+        const totalOrders = successfulOrders.length;  
         const totalRevenue = successfulOrders.reduce((sum, o) => sum + Number(o.totalRevenue || 0), 0);
         const totalCost = successfulOrders.reduce((sum, o) => sum + Number(o.totalCost || 0), 0);
         const totalAdSpend = marketing.reduce((sum, m) => sum + Number(m.adSpend || 0), 0);
@@ -18,16 +19,17 @@ export function useSalesPerformance() {
         const aov = successfulOrders.length > 0 ? totalRevenue / successfulOrders.length : 0;
 
         return {
-        totalRevenue,
-        netProfit,
-        totalAdSpend,
-        profitMargin,
-        totalShipping,
-        aov,
-        averageOrderValue: totalRevenue / orders.length,
-        orderCount: successfulOrders.length
+            totalOrders,
+            totalRevenue,
+            netProfit,
+            totalAdSpend,
+            profitMargin,
+            totalShipping,
+            aov,
+            averageOrderValue: totalRevenue / orders.length,
+            orderCount: successfulOrders.length
         };
     }, [orders, marketing]);
 
-    return { performance, isLoading: ordersLoading || marketingLoading };
+    return { performance, isLoading: ordersLoading || marketingLoading, isError, error };
 }
