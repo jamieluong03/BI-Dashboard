@@ -1,8 +1,7 @@
 'use client';
 
-import { useSalesPerformance } from '@/lib/calculations';
+import { useSalesPerformance } from '@/hooks/calculations';
 import { StatCard } from '@/components/ui/dashboard/statCard';
-import { DollarSign, ShoppingBag, TrendingUp, CreditCard, Sidebar } from 'lucide-react';
 
 export default function DashboardOverview() {
   const { performance, isLoading, isError, error } = useSalesPerformance();
@@ -34,15 +33,13 @@ export default function DashboardOverview() {
           <StatCard
             title="Total Revenue"
             value={formatter.format(performance?.totalRevenue || 0)}
-            icon={DollarSign}
             description="Gross income before expenses"
           />
           <StatCard
             title="Net Profit"
             value={formatter.format(performance?.netProfit || 0)}
-            icon={TrendingUp}
             trend="+12.5%"
-            description={`${performance?.profitMargin.toFixed(1)}% overall margin`}
+            description={`${performance?.profitMargin.toFixed(2)}% overall margin`}
           />
           {/* <StatCard
             title="Total Orders"
@@ -53,7 +50,6 @@ export default function DashboardOverview() {
           <StatCard
             title="Avg. Order Value"
             value={formatter.format(performance?.aov || 0)}
-            icon={CreditCard}
             description="Target: $150.00"
           />
         </div>

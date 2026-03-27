@@ -6,24 +6,22 @@ import {
   CardAction, 
   CardDescription 
 } from "@/components/ui/card";
-import { LucideIcon } from 'lucide-react';
 
 interface StatCardProps {
   title: string;
   value: string | number;
-  icon: LucideIcon;
   trend?: string;
   description: string;
 }
 
-export function StatCard({ title, value, icon: Icon, trend, description }: StatCardProps) {
+export function StatCard({ title, value, trend, description }: StatCardProps) {
   return (
     <Card>
       <CardHeader>
         <CardAction>
-          <div className="p-2 bg-indigo-50 rounded-lg">
+          {/* <div className="p-2 bg-indigo-50 rounded-lg">
             <Icon className="w-5 h-5 text-indigo-600" />
-          </div>
+          </div> */}
         </CardAction>
         <CardTitle className="text-slate-500 font-medium">
           {title}

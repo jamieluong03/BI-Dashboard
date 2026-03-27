@@ -52,7 +52,7 @@ export interface MarketingSpend {
   id: string,
   date: string;
   adSource: AdSource;
-  amount: number;
+  adSpend: number;
   impressions: number;
   clicks: number;
 }

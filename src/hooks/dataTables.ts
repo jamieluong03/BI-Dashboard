@@ -18,29 +18,43 @@ export function useOrders() {
 };
 
 export function useCustomers() {
-    const { data: customers, isLoading, isError, error } = useQuery({
-        queryKey: ['customers'],
-        queryFn: async () => {
-            const { data, error } = await supabase
-                .from('customers')
-                .select('*')
-            if (error) throw new Error(error.message);
-            return data;
-        }
-    });
-    return { customers, isLoading, isError, error };
+  const { data: customers, isLoading, isError, error } = useQuery({
+    queryKey: ['customers'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('customers')
+        .select('*')
+      if (error) throw new Error(error.message);
+      return data;
+    }
+  });
+  return { customers, isLoading, isError, error };
 };
 
 export function useProducts() {
-    const { data: products, isLoading, isError, error } = useQuery({
-        queryKey: ['products'],
-        queryFn: async() => {
-            const { data, error } = await supabase
-                .from('products')
-                .select('*')
-            if (error) throw new Error(error.message);
-            return data;
-        }
-    });
-    return { products, isLoading, isError, error };
+  const { data: products, isLoading, isError, error } = useQuery({
+    queryKey: ['products'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('products')
+        .select('*')
+      if (error) throw new Error(error.message);
+      return data;
+    }
+  });
+  return { products, isLoading, isError, error };
+}
+
+export function useMarketingSpend() {
+  const { data: marketing, isLoading, isError, error } = useQuery({
+    queryKey: ['marketing'],
+    queryFn: async() => {
+      const { data, error } = await supabase
+        .from("marketing_spends")
+        .select("*")
+      if (error) throw new Error(error.message);
+      return data;
+    }
+  });
+  return { marketing, isLoading, isError, error };
 }

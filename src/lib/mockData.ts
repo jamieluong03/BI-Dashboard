@@ -164,7 +164,7 @@ export const generateMockMarketingSpends = (days: number): MarketingSpend[] => {
         id: faker.string.uuid(),
         date: dateString,
         adSource: source,
-        amount,
+        adSpend: amount,
         impressions,
         clicks,
       });
