@@ -1,5 +1,6 @@
 export type AdSource = "Meta" | "Google" | "TikTok" | "Email" | "Organic";
 export type Category = "Rings" | "Necklaces" | "Earrings" | "Bracelets";
+export type SalesChannel = "Online Store" | "Google & Youtube" | "Facebook and Instagram by Meta" | "Shop" | "TikTok Shop";
 
 export interface Product {
   id: string;
@@ -20,14 +21,13 @@ export interface Order {
   items: { productId: string; quantity: number; priceAtSale: number }[];
   totalRevenue: number; // what customer pays
   totalCost: number;  // total COGS
-  adSpend: number;
+  adSource: AdSource;
   shippingCost: number;
   discountAmount: number; // discount reports
-  adSource: AdSource;
   region: string;
-  status: "shipped" | "processing" | "cancelled"; // operations reports
+  status: "shipped" | "cancelled"; // operations reports
   createdAt: string;
-  channel: "Online Store" | "Google & Youtube" | "Facebook and Instagram by Meta" | "Shop" | "TikTok Shop";
+  channel: SalesChannel;
 }
 
 export interface Customer {
@@ -46,4 +46,13 @@ export interface ProfitMetrics {
   netProfit: number; // grossRevenue - (total cost + adSpend + shipping + COGS)
   margin: number; // (netProfit/grossRevenue) x 100
   averageOrderValue: number; // totalRevenue / numberOfOrders
+}
+
+export interface MarketingSpend {
+  id: string,
+  date: string;
+  adSource: AdSource;
+  amount: number;
+  impressions: number;
+  clicks: number;
 }

@@ -1,6 +1,6 @@
 'use client';
 
-import { useSalesPerformance } from '@/hooks/salesPerformance';
+import { useSalesPerformance } from '@/lib/calculations';
 import { StatCard } from '@/components/ui/dashboard/statCard';
 import { DollarSign, ShoppingBag, TrendingUp, CreditCard, Sidebar } from 'lucide-react';
 

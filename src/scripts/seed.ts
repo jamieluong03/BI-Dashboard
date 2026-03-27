@@ -10,7 +10,7 @@ console.log('Checking Env:', {
 
 async function seedDatabase() {
   const { supabaseAdmin } = await import('../lib/supabase');
-  const { MOCK_PRODUCTS, MOCK_CUSTOMERS, MOCK_ORDERS } = await import('../lib/mockData');
+  const { MOCK_PRODUCTS, MOCK_CUSTOMERS, MOCK_ORDERS, MOCK_MARKETING_SPENDS } = await import('../lib/mockData');
 
   if (!supabaseAdmin) return;
 
@@ -27,7 +27,7 @@ async function seedDatabase() {
   }));
 
   const { error: cError } = await supabaseAdmin.from('customers').insert(sanitizedCustomers);
-  
+
   if (cError) {
     console.error('❌ Customers Error:', cError.message);
     return; // STOP HERE if customers fail, or orders will always fail FK check
@@ -45,6 +45,23 @@ async function seedDatabase() {
     }
     console.log(`📦 Progress: ${i + batch.length}/${MOCK_ORDERS.length} orders...`);
   }
+
+  // 4. Seed Marketing Spends
+  console.log('🚀 Seeding marketing spends...');
+  const marketingBatchSize = 100;
+
+  for (let i = 0; i < MOCK_MARKETING_SPENDS.length; i += marketingBatchSize) {
+    const batch = MOCK_MARKETING_SPENDS.slice(i, i + marketingBatchSize);
+    const { error: mError } = await supabaseAdmin.from('marketing_spends').insert(batch);
+
+    if (mError) {
+      console.error(`❌ Marketing Batch Error at ${i}:`, mError.message);
+      break;
+    }
+    console.log(`📊 Marketing Progress: ${i + batch.length}/${MOCK_MARKETING_SPENDS.length} records...`);
+  }
+
+  console.log('✨ All tables synchronized and seeded!');
 
   console.log('✨ Database population complete!');
 }
