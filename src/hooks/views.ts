@@ -9,7 +9,6 @@ export function useBlendedROAS(days = 30) {
                 .from('daily_roas')
                 .select('revenue, spend, orders, clicks, impressions')
                 .gte('date', new Date(Date.now() - days * 24 * 60 * 60 * 1000).toISOString());
-        
             if (error) throw error;
             const totalRevenue = data.reduce((sum, row) => sum + row.revenue, 0);
             const totalSpend = data.reduce((sum, row) => sum + row.spend, 0);
@@ -31,16 +30,15 @@ export function useBlendedROAS(days = 30) {
     });
 
     return { data, isLoading, isError, error };
-}
+};
 
-export function useCLVStats() {
+export function useCLVStats(days = 30) {
     const { data: clv, isLoading, isError, error } = useQuery({
         queryKey: ['avg-clv'],
         queryFn: async() => {
             const { data, error } = await supabase
                 .from('customer_lifetime_value')
-                .select('lifetime_profit');
-
+                .select('lifetime_profit')
             if (error) throw error;
 
             const totalProfit = data.reduce((sum, row) => sum + row.lifetime_profit, 0);
@@ -51,4 +49,39 @@ export function useCLVStats() {
     });
 
     return { clv, isLoading, isError, error };
+};
+
+export function useSalesStats(days = 30) {
+    const { data: orders, isLoading, isError, error } = useQuery({
+        queryKey: ['daily_sales_performance'],
+        queryFn: async() => {
+            const { data, error } = await supabase
+                .from('daily_sales_performance')
+                .select('*')
+                .gte('date', new Date(Date.now() - days * 24 * 60 * 60 * 1000).toISOString());
+            if (error) throw error;
+            
+            const totalRevenue = data.reduce((sum, o) => sum + Number(o.totalRevenue || 0), 0);
+            const totalCost = data.reduce((sum, o) => sum + Number(o.totalCost || 0), 0);
+            const totalAdSpend = data.reduce((sum, m) => sum + Number(m.totalAdSpend || 0), 0);
+            const totalShipping = data.reduce((sum, o) => sum + Number(o.totalShipping || 0), 0);
+            const netProfit = totalRevenue - (totalCost + totalAdSpend + totalShipping);
+            const profitMargin = totalRevenue > 0 ? (netProfit / totalRevenue) * 100 : 0;
+            const aov = data.length > 0 ? totalRevenue / data.length : 0;
+
+            return { 
+                totalRevenue,
+                netProfit,
+                totalCost,
+                totalAdSpend,
+                profitMargin,
+                totalShipping,
+                aov,
+                averageOrderValue: totalRevenue / data.length,
+                totalOrders: data.length
+             }
+        }
+    });
+
+    return { orders, isLoading, isError, error };
 }

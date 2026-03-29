@@ -14,7 +14,7 @@ export function useSalesPerformance() {
         const totalCost = successfulOrders.reduce((sum, o) => sum + Number(o.totalCost || 0), 0);
         const totalAdSpend = marketing.reduce((sum, m) => sum + Number(m.adSpend || 0), 0);
         const totalShipping = successfulOrders.reduce((sum, o) => sum + Number(o.totalShipping || 0), 0);
-        const netProfit = totalRevenue - (totalCost + totalAdSpend);
+        const netProfit = totalRevenue - (totalCost + totalAdSpend + totalShipping);
         const profitMargin = totalRevenue > 0 ? (netProfit / totalRevenue) * 100 : 0;
         const aov = successfulOrders.length > 0 ? totalRevenue / successfulOrders.length : 0;
 
@@ -26,8 +26,7 @@ export function useSalesPerformance() {
             profitMargin,
             totalShipping,
             aov,
-            averageOrderValue: totalRevenue / orders.length,
-            orderCount: successfulOrders.length
+            averageOrderValue: totalRevenue / orders.length
         };
     }, [orders, marketing]);
 
