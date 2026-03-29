@@ -6,7 +6,7 @@ import { useBlendedROAS } from '@/hooks/views';
 
 export default function DashboardOverview() {
   const { performance, isLoading: isPerformanceLoading, isError: isPerformanceError , error: performanceError } = useSalesPerformance();
-  const { roas, isLoading: isRoasLoading, isError: isRoasError, error: roasError } = useBlendedROAS(30);
+  const { data, isLoading: isRoasLoading, isError: isRoasError, error: roasError } = useBlendedROAS(30);
 
   const isAnyDataLoading = isPerformanceLoading || isRoasLoading;
   const hasAnyErrors = isPerformanceError || isRoasError;
@@ -60,7 +60,12 @@ export default function DashboardOverview() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 p-8">
           <StatCard
             title="Blended ROAS"
-            value={(roas?.roas.toFixed(2) || 0)}
+            value={(data?.roas.toFixed(2) || 0)}
+            description=""
+          />
+          <StatCard
+            title="Conversion Rate"
+            value={(data?.conversionRate.toFixed(2) || 0)}
             description=""
           />
         </div>
