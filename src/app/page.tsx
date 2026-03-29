@@ -35,7 +35,7 @@ export default function DashboardOverview() {
           <h1 className="text-3xl font-bold text-slate-900">Analytics Dashboard</h1>
           <p className="text-slate-500 mt-2"></p>
         </header>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 p-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 p-2">
           <StatCard
             title="Total Revenue"
             value={formatter.format(performance?.totalRevenue || 0)}
@@ -57,7 +57,7 @@ export default function DashboardOverview() {
             description="Target: $150.00"
           />
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 p-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 p-2">
           <StatCard
             title="Blended ROAS"
             value={(data?.roas.toFixed(2) || 0)}
@@ -66,6 +66,11 @@ export default function DashboardOverview() {
           <StatCard
             title="Conversion Rate"
             value={(data?.conversionRate.toFixed(2) || 0)}
+            description=""
+          />
+          <StatCard
+            title="Click Through Rate"
+            value={(data?.clickThroughRate.toFixed(2) || 0)}
             description=""
           />
         </div>

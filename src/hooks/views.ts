@@ -7,7 +7,7 @@ export function useBlendedROAS(days = 30) {
         queryFn: async() => {
             const { data, error } = await supabase
                 .from('daily_roas')
-                .select('revenue, spend, orders, clicks')
+                .select('revenue, spend, orders, clicks, impressions')
                 .gte('date', new Date(Date.now() - days * 24 * 60 * 60 * 1000).toISOString());
         
             if (error) throw error;
@@ -15,6 +15,7 @@ export function useBlendedROAS(days = 30) {
             const totalSpend = data.reduce((sum, row) => sum + row.spend, 0);
             const totalOrders = data.reduce((sum, row) => sum + row.orders, 0);
             const totalClicks = data.reduce((sum, row) => sum + row.clicks, 0);
+            const totalImpressions = data.reduce((sum, row) => sum + row.impressions, 0);
 
             return { 
                 roas: totalSpend > 0 ? (totalRevenue / totalSpend) : 0,
@@ -22,7 +23,9 @@ export function useBlendedROAS(days = 30) {
                 totalSpend,
                 conversionRate: (totalOrders / totalClicks) * 100,
                 totalOrders,
-                totalClicks
+                totalClicks,
+                clickThroughRate: (totalClicks / totalImpressions) * 100,
+                totalImpressions
             };
         }
     });
