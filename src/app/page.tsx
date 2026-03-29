@@ -1,16 +1,18 @@
 'use client';
 
-import { StatCard } from '@/components/ui/dashboard/statCard';
-import { useBlendedROAS, useCLVStats, useSalesStats } from '@/hooks/views';
+import { StatCard } from '@/components/ui/statCard';
+import { useBlendedROAS, useCLVStats, useSalesStats, useSalesChannelPerformance } from '@/hooks/views';
+import { ChartBarHorizontal } from '@/components/ui/customBarChart';
 
 export default function DashboardOverview() {
   const { data, isLoading: isRoasLoading, isError: isRoasError, error: roasError } = useBlendedROAS(30);
   const { clv, isLoading: isCLVLoading, isError: isCLVError, error: clvError } = useCLVStats();
   const { orders, isLoading: isOrdersLoading, isError: isOrdersError, error: ordersError } = useSalesStats(30);
+  const { channels, isLoading: isChannelsLoading, isError: isChannelsError, error: channelsError } = useSalesChannelPerformance(30);
 
-  const isAnyDataLoading = isOrdersLoading || isRoasLoading || isCLVLoading;
-  const hasAnyErrors = isOrdersError || isRoasError || isCLVError;
-  const anyErrorMessage = ordersError?.message || roasError?.message || clvError?.message;
+  const isAnyDataLoading = isOrdersLoading || isRoasLoading || isCLVLoading || isChannelsLoading;
+  const hasAnyErrors = isOrdersError || isRoasError || isCLVError || isChannelsError;
+  const anyErrorMessage = ordersError?.message || roasError?.message || clvError?.message || channelsError?.message;
 
   if (isAnyDataLoading) return <div className="p-8 text-slate-500">Loading stats...</div>;
 
@@ -39,7 +41,7 @@ export default function DashboardOverview() {
           <StatCard
             title="Total Revenue"
             value={formatter.format(orders?.totalRevenue || 0)}
-            description="Gross income before expenses"
+            description=""
           />
           <StatCard
             title="Net Profit"
@@ -49,12 +51,12 @@ export default function DashboardOverview() {
           <StatCard
             title="Total Orders"
             value={orders?.totalOrders || 0}
-            description="Volume for current period"
+            description=""
           />
           <StatCard
-            title="Avg. Order Value"
+            title="Average Order Value (AOV)"
             value={formatter.format(orders?.aov || 0)}
-            description="Target: $150.00"
+            description=""
           />
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 p-2">
@@ -69,18 +71,30 @@ export default function DashboardOverview() {
             description=""
           />
           <StatCard
-            title="Click Through Rate"
+            title="Click Through Rate (CTR)"
             value={(data?.clickThroughRate.toFixed(2) || 0)}
             description=""
           />
           <StatCard
-            title="Click Through Rate"
+            title="Customer Lifetime Value (CLV)"
             value={formatter.format(clv?.avgCLV || 0)}
             description=""
           />
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 p-2">
-
+        <div className="grid grid-cols-3 gap-6 p-2">
+          <ChartBarHorizontal 
+            dataKey="channels"
+            title="Sales By Channel"
+            description="last 30 days"
+            chartData={Object.keys(channels).map(source => {
+              const sales_channel = channels[source];
+              return {
+                name: sales_channel.name,
+                value: sales_channel.orders
+              }
+            })
+          }
+          />
         </div>
       </div>
     </main>

@@ -82,6 +82,44 @@ export function useSalesStats(days = 30) {
              }
         }
     });
-
     return { orders, isLoading, isError, error };
-}
+};
+
+export function useSalesChannelPerformance(days = 30) {
+    const { data: channels, isLoading, isError, error } = useQuery({
+        queryKey: ['daily_sales_channel_performance'],
+        queryFn: async() => {
+            const { data, error } = await supabase
+                .from('daily_sales_channel_performance')
+                .select('*')
+                .gte('date', new Date(Date.now() - days * 24 * 60 * 60 * 1000).toISOString());
+            if (error) throw error;
+
+            const channelStats = data.reduce((acc, row) => {
+                const source = row.channel;
+                
+                if (!acc[source]) {
+                    acc[source] = { 
+                    name: source, 
+                    revenue: 0, 
+                    orders: 0, 
+                    cost: 0, 
+                    shipping: 0 
+                    };
+                }
+
+                acc[source].revenue += row.totalRevenue;
+                acc[source].orders += row.ordersLength;
+                acc[source].cost += row.totalCost;
+                acc[source].shipping += row.totalShipping;
+
+                return acc;
+            }, {} as Record<string, any>);
+
+            console.log("CHANNELS", channelStats);
+
+            return channelStats;
+        }
+    });
+    return { channels, isLoading, isError, error };
+};
