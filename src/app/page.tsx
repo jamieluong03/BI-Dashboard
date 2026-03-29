@@ -2,15 +2,16 @@
 
 import { useSalesPerformance } from '@/hooks/calculations';
 import { StatCard } from '@/components/ui/dashboard/statCard';
-import { useBlendedROAS } from '@/hooks/views';
+import { useBlendedROAS, useCLVStats } from '@/hooks/views';
 
 export default function DashboardOverview() {
   const { performance, isLoading: isPerformanceLoading, isError: isPerformanceError , error: performanceError } = useSalesPerformance();
   const { data, isLoading: isRoasLoading, isError: isRoasError, error: roasError } = useBlendedROAS(30);
+  const { clv, isLoading: isCLVLoading, isError: isCLVError, error: clvError } = useCLVStats();
 
-  const isAnyDataLoading = isPerformanceLoading || isRoasLoading;
-  const hasAnyErrors = isPerformanceError || isRoasError;
-  const anyErrorMessage = performanceError?.message || roasError?.message;
+  const isAnyDataLoading = isPerformanceLoading || isRoasLoading || isCLVLoading;
+  const hasAnyErrors = isPerformanceError || isRoasError || isCLVError;
+  const anyErrorMessage = performanceError?.message || roasError?.message || clvError?.message;
 
   if (isAnyDataLoading) return <div className="p-8 text-slate-500">Loading stats...</div>;
 
@@ -71,6 +72,11 @@ export default function DashboardOverview() {
           <StatCard
             title="Click Through Rate"
             value={(data?.clickThroughRate.toFixed(2) || 0)}
+            description=""
+          />
+          <StatCard
+            title="Click Through Rate"
+            value={formatter.format(clv?.avgCLV || 0)}
             description=""
           />
         </div>

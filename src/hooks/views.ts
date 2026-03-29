@@ -32,3 +32,23 @@ export function useBlendedROAS(days = 30) {
 
     return { data, isLoading, isError, error };
 }
+
+export function useCLVStats() {
+    const { data: clv, isLoading, isError, error } = useQuery({
+        queryKey: ['avg-clv'],
+        queryFn: async() => {
+            const { data, error } = await supabase
+                .from('customer_lifetime_value')
+                .select('lifetime_profit');
+
+            if (error) throw error;
+
+            const totalProfit = data.reduce((sum, row) => sum + row.lifetime_profit, 0);
+            const avgCLV = data.length > 0 ? totalProfit / data.length : 0;
+
+            return { totalProfit, avgCLV };
+        }
+    });
+
+    return { clv, isLoading, isError, error };
+}
