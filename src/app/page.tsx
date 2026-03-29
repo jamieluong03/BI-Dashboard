@@ -2,19 +2,25 @@
 
 import { useSalesPerformance } from '@/hooks/calculations';
 import { StatCard } from '@/components/ui/dashboard/statCard';
+import { useBlendedROAS } from '@/hooks/views';
 
 export default function DashboardOverview() {
-  const { performance, isLoading, isError, error } = useSalesPerformance();
+  const { performance, isLoading: isPerformanceLoading, isError: isPerformanceError , error: performanceError } = useSalesPerformance();
+  const { roas, isLoading: isRoasLoading, isError: isRoasError, error: roasError } = useBlendedROAS(30);
 
-  if (isLoading) return <div className="p-8 text-slate-500">Loading stats...</div>;
+  const isAnyDataLoading = isPerformanceLoading || isRoasLoading;
+  const hasAnyErrors = isPerformanceError || isRoasError;
+  const anyErrorMessage = performanceError?.message || roasError?.message;
 
-  if (isError) {
+  if (isAnyDataLoading) return <div className="p-8 text-slate-500">Loading stats...</div>;
+
+  if (hasAnyErrors) {
     return (
       <div className="border-red-500 bg-red-50 p-4 rounded-lg">
       <h3 className="text-red-800 font-bold">Failed to load data</h3>
       
       <p className="text-red-600 text-sm">
-        Reason: {error instanceof Error ? error.message : "Unknown error"}
+        Reason: {anyErrorMessage}
       </p>
     </div>
     )
@@ -49,6 +55,13 @@ export default function DashboardOverview() {
             title="Avg. Order Value"
             value={formatter.format(performance?.aov || 0)}
             description="Target: $150.00"
+          />
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 p-8">
+          <StatCard
+            title="Blended ROAS"
+            value={(roas?.roas.toFixed(2) || 0)}
+            description=""
           />
         </div>
       </div>
