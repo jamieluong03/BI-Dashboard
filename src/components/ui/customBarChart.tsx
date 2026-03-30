@@ -1,9 +1,7 @@
 "use client";
 
-// import { TrendingUp } from "lucide-react";
-import { useState } from "react";
-import { Bar, BarChart, CartesianGrid, LabelList, XAxis, YAxis, BarRectangleItem, BarShapeProps, Rectangle } from "recharts";
-import { RechartsDevtools } from '@recharts/devtools';
+import { useState, useMemo } from "react";
+import { Bar, BarChart, CartesianGrid, LabelList, XAxis, YAxis, Rectangle } from "recharts";
 import {
   Card,
   CardContent,
@@ -14,19 +12,17 @@ import {
 } from "@/components/ui/card";
 import {
   ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
   type ChartConfig,
 } from "@/components/ui/chart";
 
 type ChartData = {
-    name: string;
-    value: number;
+  name: string;
+  [key: string]: string | number;
 };
 
 const chartConfig = {
-  desktop: {
-    label: "Value",
+  value: {
+    label: "Selected Total",
     color: "hsl(var(--chart-1))",
   },
 } satisfies ChartConfig
@@ -38,80 +34,89 @@ interface BarChartProps {
   chartData: ChartData[];
 };
 
-const MyCustomShape = (props: BarShapeProps) => {
-  const [isActive, setIsActive] = useState(false);
-  const handleMouseClick = () => {
-    setIsActive(curr => !curr);
-  };
-  const fill = isActive ? 'var(--color-blue-500)' : 'var(--color-blue-300)';
-  return <Rectangle {...props} onClick={handleMouseClick} fill={fill} />;
-};
-
 export function ChartBarLabelCustom({ dataKey, title, description, chartData }: BarChartProps) {
+  const [selectedNames, setSelectedNames] = useState<string[]>([]);
+
+  const handleBarClick = (data: any) => {
+    if (!data) return;
+    const name = data.name;
+    setSelectedNames((prev) =>
+      prev.includes(name) 
+        ? prev.filter((n) => n !== name) 
+        : [...prev, name]
+    );
+  };
+
+  const totalSelected = useMemo(() => {
+    return chartData
+      .filter((item) => selectedNames.includes(item.name))
+      .reduce((sum, item) => sum + (Number(item[dataKey]) || 0), 0);
+  }, [selectedNames, chartData, dataKey]);
+
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>{title}</CardTitle>
-        <CardDescription>{description}</CardDescription>
+    <Card className="relative overflow-hidden">
+      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+        <div className="space-y-1">
+          <CardTitle className="text-xl font-bold">{title}</CardTitle>
+          <CardDescription>{description}</CardDescription>
+        </div>
+        <div className="text-right">
+          <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-bold">Total Orders</p>
+          <p className="text-2xl font-black text-blue-600">
+            {totalSelected.toLocaleString()}
+          </p>
+        </div>
       </CardHeader>
       <CardContent>
         <ChartContainer config={chartConfig}>
           <BarChart
-            accessibilityLayer
             data={chartData}
             layout="vertical"
-            margin={{
-              right: 16,
-            }}
-            responsive
+            margin={{ left: 0, right: 30 }}
           >
-            <CartesianGrid horizontal={false} />
-            <YAxis
-              dataKey="name"
-              type="category"
-              tickLine={false}
-              tickMargin={10}
-              axisLine={false}
-              tickFormatter={(value) => value}
-              hide
-            />
+            <CartesianGrid horizontal={false} strokeDasharray="3 3" opacity={0.3} />
+            <YAxis dataKey="name" type="category" hide />
             <XAxis dataKey={dataKey} type="number" hide />
+            
             <Bar 
-                dataKey={dataKey} 
-                fill="var(--color-blue-300)" 
-                radius={4}
-                onClick={(bri: BarRectangleItem, index, event) => {
-                    console.log('clicked on', bri, index, event);
-                }}
-                shape={MyCustomShape}
+              dataKey={dataKey} 
+              radius={4}
+              cursor="pointer"
+              onClick={handleBarClick}
+              shape={(props: any) => {
+                const { x, y, width, height, name } = props;
+                const isActive = selectedNames.includes(name);
+                return (
+                  <Rectangle
+                    {...props}
+                    fill={isActive ? 'var(--color-blue-500)' : 'var(--color-blue-300)'}
+                    className="transition-all duration-300 hover:opacity-80"
+                  />
+                );
+              }}
+              isAnimationActive={false}
             >
               <LabelList
                 dataKey="name"
                 position="insideLeft"
                 offset={8}
-                className="fill-(--color-label)"
-                fontSize={12}
+                className="fill-black font-semibold"
+                fontSize={10}
               />
               <LabelList
                 dataKey={dataKey}
                 position="right"
-                offset={8}
-                className="fill-foreground"
-                fontSize={12}
+                offset={10}
+                className="fill-foreground font-bold"
+                fontSize={10}
               />
-              <RechartsDevtools />
             </Bar>
           </BarChart>
         </ChartContainer>
       </CardContent>
-      {/* <CardFooter className="flex-col items-start gap-2 text-sm">
-        <div className="flex gap-2 leading-none font-medium">
-          Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
-        </div>
-        <div className="leading-none text-muted-foreground">
-          Showing total visitors for the last 6 months
-        </div>
-      </CardFooter> */}
+      <CardFooter>
+        
+      </CardFooter>
     </Card>
-  )
+  );
 }

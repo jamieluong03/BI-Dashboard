@@ -92,7 +92,7 @@ export default function DashboardOverview() {
           <ChartBarLabelCustom 
             dataKey="value"
             title="Sales By Channel"
-            description="last 30 days"
+            description="Click the bars to calculate total sales by channels"
             chartData={sales_channel}
           />
         </div>
