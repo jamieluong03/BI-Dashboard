@@ -2,7 +2,7 @@
 
 import { StatCard } from '@/components/ui/statCard';
 import { useBlendedROAS, useCLVStats, useSalesStats, useSalesChannelPerformance } from '@/hooks/views';
-import { ChartBarHorizontal } from '@/components/ui/customBarChart';
+import { ChartBarLabelCustom } from '@/components/ui/customBarChart';
 
 export default function DashboardOverview() {
   const { data, isLoading: isRoasLoading, isError: isRoasError, error: roasError } = useBlendedROAS(30);
@@ -27,6 +27,13 @@ export default function DashboardOverview() {
     </div>
     )
   }
+  
+  const sales_channel = Object.keys(channels).map(source => {
+    return {
+      name: channels[source].name,
+      value: channels[source].orders
+    }
+  })
 
   const formatter = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
 
@@ -81,19 +88,12 @@ export default function DashboardOverview() {
             description=""
           />
         </div>
-        <div className="grid grid-cols-3 gap-6 p-2">
-          <ChartBarHorizontal 
-            dataKey="channels"
+        <div className="grid grid-cols-2 gap-6 p-2">
+          <ChartBarLabelCustom 
+            dataKey="value"
             title="Sales By Channel"
             description="last 30 days"
-            chartData={Object.keys(channels).map(source => {
-              const sales_channel = channels[source];
-              return {
-                name: sales_channel.name,
-                value: sales_channel.orders
-              }
-            })
-          }
+            chartData={sales_channel}
           />
         </div>
       </div>
