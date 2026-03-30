@@ -27,7 +27,7 @@ export default function DashboardOverview() {
     </div>
     )
   }
-  
+
   const sales_channel = Object.keys(channels).map(source => {
     return {
       name: channels[source].name,
@@ -88,12 +88,17 @@ export default function DashboardOverview() {
             description=""
           />
         </div>
-        <div className="grid grid-cols-2 gap-6 p-2">
+        <div className="grid grid-cols-[2fr_1fr_1fr] gap-6 p-2">
           <ChartBarLabelCustom 
             dataKey="value"
             title="Sales By Channel"
             description="Click the bars to calculate total sales by channels"
             chartData={sales_channel}
+          />
+          <StatCard
+            title="Return On Investment (ROI)"
+            value={(orders?.roi.toFixed(2) || 0)}
+            description=""
           />
         </div>
       </div>

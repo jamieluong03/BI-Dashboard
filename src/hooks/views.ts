@@ -68,6 +68,7 @@ export function useSalesStats(days = 30) {
             const netProfit = totalRevenue - (totalCost + totalAdSpend + totalShipping);
             const profitMargin = totalRevenue > 0 ? (netProfit / totalRevenue) * 100 : 0;
             const aov = data.length > 0 ? totalRevenue / data.length : 0;
+            const roi = (netProfit/totalAdSpend) * 100;
 
             return { 
                 totalRevenue,
@@ -78,7 +79,8 @@ export function useSalesStats(days = 30) {
                 totalShipping,
                 aov,
                 averageOrderValue: totalRevenue / data.length,
-                totalOrders: data.length
+                totalOrders: data.length,
+                roi
              }
         }
     });
@@ -100,11 +102,11 @@ export function useSalesChannelPerformance(days = 30) {
                 
                 if (!acc[source]) {
                     acc[source] = { 
-                    name: source, 
-                    revenue: 0, 
-                    orders: 0, 
-                    cost: 0, 
-                    shipping: 0 
+                        name: source, 
+                        revenue: 0, 
+                        orders: 0, 
+                        cost: 0, 
+                        shipping: 0
                     };
                 }
 
@@ -115,8 +117,6 @@ export function useSalesChannelPerformance(days = 30) {
 
                 return acc;
             }, {} as Record<string, any>);
-
-            console.log("CHANNELS", channelStats);
 
             return channelStats;
         }

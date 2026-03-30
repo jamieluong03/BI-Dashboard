@@ -62,7 +62,7 @@ export function ChartBarLabelCustom({ dataKey, title, description, chartData }: 
         </div>
         <div className="text-right">
           <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-bold">Total Sales</p>
-          <p className="text-2xl font-black text-blue-600">
+          <p className="text-2xl font-black">
             {totalSelected.toLocaleString()}
           </p>
         </div>
