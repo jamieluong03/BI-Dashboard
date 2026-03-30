@@ -69,7 +69,7 @@ export default function DashboardOverview() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 p-2">
           <StatCard
             title="Blended ROAS"
-            value={(data?.roas.toFixed(2) || 0)}
+            value={`${(data?.roas.toFixed(2) || 0)}x`}
             description=""
           />
           <StatCard
@@ -97,7 +97,7 @@ export default function DashboardOverview() {
           />
           <StatCard
             title="Return On Investment (ROI)"
-            value={(orders?.roi.toFixed(2) || 0)}
+            value={`${(orders?.roi.toFixed(2) || 0)}%`}
             description=""
           />
         </div>
