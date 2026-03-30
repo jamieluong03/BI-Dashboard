@@ -30,7 +30,7 @@ export default function DashboardOverview() {
 
   const sales_channel = Object.keys(channels).map(source => {
     return {
-      name: channels[source].name,
+      name: channels[source].name === "Facebook and Instagram by Meta" ? "Facebook & Instagram" : channels[source].name,
       value: channels[source].orders
     }
   })
