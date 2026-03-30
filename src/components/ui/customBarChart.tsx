@@ -1,7 +1,9 @@
 "use client";
 
-import { TrendingUp } from "lucide-react";
-import { Bar, BarChart, CartesianGrid, LabelList, XAxis, YAxis } from "recharts";
+// import { TrendingUp } from "lucide-react";
+import { useState } from "react";
+import { Bar, BarChart, CartesianGrid, LabelList, XAxis, YAxis, BarRectangleItem, BarShapeProps, Rectangle } from "recharts";
+import { RechartsDevtools } from '@recharts/devtools';
 import {
   Card,
   CardContent,
@@ -9,13 +11,13 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
+} from "@/components/ui/card";
 import {
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
   type ChartConfig,
-} from "@/components/ui/chart"
+} from "@/components/ui/chart";
 
 type ChartData = {
     name: string;
@@ -36,6 +38,15 @@ interface BarChartProps {
   chartData: ChartData[];
 };
 
+const MyCustomShape = (props: BarShapeProps) => {
+  const [isActive, setIsActive] = useState(false);
+  const handleMouseClick = () => {
+    setIsActive(curr => !curr);
+  };
+  const fill = isActive ? 'var(--color-blue-500)' : 'var(--color-blue-300)';
+  return <Rectangle {...props} onClick={handleMouseClick} fill={fill} />;
+};
+
 export function ChartBarLabelCustom({ dataKey, title, description, chartData }: BarChartProps) {
   return (
     <Card>
@@ -52,6 +63,7 @@ export function ChartBarLabelCustom({ dataKey, title, description, chartData }: 
             margin={{
               right: 16,
             }}
+            responsive
           >
             <CartesianGrid horizontal={false} />
             <YAxis
@@ -64,7 +76,15 @@ export function ChartBarLabelCustom({ dataKey, title, description, chartData }: 
               hide
             />
             <XAxis dataKey={dataKey} type="number" hide />
-            <Bar dataKey={dataKey} fill="var(--color-blue-300)" radius={4}>
+            <Bar 
+                dataKey={dataKey} 
+                fill="var(--color-blue-300)" 
+                radius={4}
+                onClick={(bri: BarRectangleItem, index, event) => {
+                    console.log('clicked on', bri, index, event);
+                }}
+                shape={MyCustomShape}
+            >
               <LabelList
                 dataKey="name"
                 position="insideLeft"
@@ -79,6 +99,7 @@ export function ChartBarLabelCustom({ dataKey, title, description, chartData }: 
                 className="fill-foreground"
                 fontSize={12}
               />
+              <RechartsDevtools />
             </Bar>
           </BarChart>
         </ChartContainer>
