@@ -23,19 +23,19 @@ export function InventoryCard({ title, inventoryValue, sellThroughRate, lowStock
       </CardHeader>
       
       <CardContent>
-        <div className="text-lg text-slate-500 font-medium tracking-tight">
+        <div className="text-md text-slate-500 font-medium tracking-tight">
           Total Inventory Value
         </div>
         <div className="text-lg font-bold text-slate-900 tracking-tight mb-2">
           {currencyFormatter.format(inventoryValue)}
         </div>
-        <div className="text-lg text-slate-500 font-medium tracking-tight">
+        <div className="text-md text-slate-500 font-medium tracking-tight">
           Sell Through Rate
         </div>
         <div className="text-lg font-bold text-slate-900 tracking-tight mb-2">
           {sellThroughRate}%
         </div>
-        <div className={`text-lg text-slate-500 font-medium tracking-tight ${lowStock.includes("low") ? "bg-amber-50 text-amber-700" : "bg-emerald-50 text-emerald-700"}`}>
+        <div className={`text-lg font-medium tracking-tight ${lowStock.includes("low") ? "bg-red-50 text-red-500" : "bg-emerald-50 text-emerald-500"}`}>
           {lowStock}
         </div>
       </CardContent>

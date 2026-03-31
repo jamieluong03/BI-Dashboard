@@ -46,8 +46,8 @@ export function ChartBarLabelCustom({ dataKey, title, description, chartData }: 
     <Card className="relative overflow-hidden">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <div className="space-y-1">
-          <CardTitle className="text-xl font-bold">{title}</CardTitle>
-          <CardDescription>{description}</CardDescription>
+          <CardTitle className="text-slate-500 font-medium">{title}</CardTitle>
+          <CardDescription className="text-slate-900 text-xs">{description}</CardDescription>
         </div>
         <div className="text-right">
           <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-bold">Total Sales</p>
@@ -90,14 +90,14 @@ export function ChartBarLabelCustom({ dataKey, title, description, chartData }: 
                 position="insideLeft"
                 offset={8}
                 className="fill-black font-semibold"
-                fontSize={10}
+                fontSize={11}
               />
               <LabelList
                 dataKey={dataKey}
                 position="right"
                 offset={10}
                 className="fill-foreground font-bold"
-                fontSize={10}
+                fontSize={11}
               />
             </Bar>
           </BarChart>
