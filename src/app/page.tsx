@@ -1,9 +1,10 @@
 'use client';
 
 import { StatCard } from '@/components/ui/statCard';
-import { useBlendedROAS, useCLVStats, useSalesStats, useSalesChannelPerformance, useInventoryPerformance } from '@/hooks/views';
+import { useBlendedROAS, useCLVStats, useSalesStats, useSalesChannelPerformance, useInventoryPerformance, useRegionalData } from '@/hooks/views';
 import { ChartBarLabelCustom } from '@/components/ui/customBarChart';
 import { InventoryCard } from '@/components/ui/inventoryCard';
+import { ChartRadarDots } from '@/components/ui/radarChart';
 
 export default function DashboardOverview() {
   const { data, isLoading: isRoasLoading, isError: isRoasError, error: roasError } = useBlendedROAS(30);
@@ -11,10 +12,11 @@ export default function DashboardOverview() {
   const { orders, isLoading: isOrdersLoading, isError: isOrdersError, error: ordersError } = useSalesStats(30);
   const { channels, isLoading: isChannelsLoading, isError: isChannelsError, error: channelsError } = useSalesChannelPerformance(30);
   const { inventory, isLoading: isInventoryLoading, isError: isInventoryError, error: inventoryError } = useInventoryPerformance();
+  const { regions, isLoading: isRegionLoading, isError: isRegionError, error: regionError } = useRegionalData(30);
 
-  const isAnyDataLoading = isOrdersLoading || isRoasLoading || isCLVLoading || isChannelsLoading || isInventoryLoading;
-  const hasAnyErrors = isOrdersError || isRoasError || isCLVError || isChannelsError || isInventoryError;
-  const anyErrorMessage = ordersError?.message || roasError?.message || clvError?.message || channelsError?.message|| inventoryError?.message;
+  const isAnyDataLoading = isOrdersLoading || isRoasLoading || isCLVLoading || isChannelsLoading || isInventoryLoading || isRegionLoading;
+  const hasAnyErrors = isOrdersError || isRoasError || isCLVError || isChannelsError || isInventoryError || isRegionError;
+  const anyErrorMessage = ordersError?.message || roasError?.message || clvError?.message || channelsError?.message|| inventoryError?.message || regionError?.message;
 
   if (isAnyDataLoading) return <div className="p-8 text-slate-500">Loading stats...</div>;
 
@@ -30,12 +32,19 @@ export default function DashboardOverview() {
     )
   }
 
-  const sales_channel = Object.keys(channels).map(source => {
+  const salesChannel = Object.keys(channels).map(source => {
     return {
       name: channels[source].name === "Facebook and Instagram by Meta" ? "Facebook & Instagram" : channels[source].name,
       value: channels[source].orders
     }
-  })
+  });
+
+  const regionSales = Object.keys(regions).map(name => {
+    return {
+      name: regions[name].name,
+      value: regions[name].value
+    }
+  });
 
   const formatter = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
 
@@ -46,7 +55,7 @@ export default function DashboardOverview() {
           <h1 className="text-3xl font-bold text-slate-900">Analytics Dashboard</h1>
           <p className="text-slate-500 mt-2">Based on last 30 Days</p>
         </header>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 p-2">
+        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-6 p-2">
           <StatCard
             title="Total Revenue"
             value={formatter.format(orders?.totalRevenue || 0)}
@@ -68,7 +77,7 @@ export default function DashboardOverview() {
             description=""
           />
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 p-2">
+        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-6 p-2">
           <StatCard
             title="Return On Ad Spend (ROAS)"
             value={`${(data?.roas.toFixed(2) || 0)}x`}
@@ -95,8 +104,16 @@ export default function DashboardOverview() {
             dataKey="value"
             title="Sales By Channel"
             description="Click the bars to calculate total sales by channels"
-            chartData={sales_channel}
+            chartData={salesChannel}
           />
+          <ChartRadarDots
+            title="Sales By Region"
+            description="last 30 days"
+            dataKey="value"
+            chartData={regionSales}
+          />
+        </div>
+        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-[2fr_1fr_1fr] gap-6 p-2">
           <InventoryCard
             title="Inventory"
             inventoryValue={inventory?.inventoryValue.toFixed(2) || 0}
@@ -105,8 +122,6 @@ export default function DashboardOverview() {
               (inventory?.lowStockCount ?? 0) > 0 ? `${inventory?.lowStockCount} items are low on stock` : "Stock levels are healthy"
             }
           />
-        </div>
-        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-6 p-2">
           <StatCard
             title="Return On Investment (ROI)"
             value={`${(orders?.returnOnInvestment.toFixed(2) || 0)}%`}
@@ -117,7 +132,6 @@ export default function DashboardOverview() {
             value={`${(orders?.marketingEfficiencyRatio.toFixed(2) || 0)}x`}
             description=""
           />
-          
         </div>
       </div>
     </main>

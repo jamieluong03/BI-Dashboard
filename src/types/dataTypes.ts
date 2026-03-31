@@ -5,7 +5,7 @@ export type ChartData = {
 
 export interface ChartProps {
   dataKey: string;
-  title: number;
+  title: string;
   description: string;
   chartData: ChartData[];
 };

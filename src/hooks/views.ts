@@ -132,7 +132,6 @@ export function useInventoryPerformance() {
             const { data, error } = await supabase
                 .from('product_performance_analytics')
                 .select('*')
-
             if (error) throw error;
 
             const inventoryValue = data.reduce((sum, value) => sum + Number(value.current_inventory_value), 0);
@@ -143,4 +142,29 @@ export function useInventoryPerformance() {
         }
     });
     return { inventory, isLoading, isError, error };
-}
+};
+
+export function useRegionalData(days = 30) {
+    const { data: regions, isLoading, isError, error } = useQuery({
+        queryKey: ['regional_sales'],
+        queryFn: async() => {
+            const { data, error } = await supabase
+                .from('regional_sales_performance')
+                .select('*')
+                .gte('date', new Date(Date.now() - days * 24 * 60 * 60 * 1000).toISOString());
+            if (error) throw error;
+
+            const regionalSales = data.reduce((acc, row) => {
+                const region = row.region || "Unknown";
+                if (!acc[region]) {
+                    acc[region] = { name: region, value: 0 };
+                }
+
+                acc[region].value += Number(row.ordersLength || 0);
+                return acc;
+            }, {} as Record<string, { name: string, value: number}>);
+            return regionalSales;
+        }
+    });
+    return { regions, isLoading, isError, error };
+};
