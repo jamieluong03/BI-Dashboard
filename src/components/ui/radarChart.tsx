@@ -8,6 +8,7 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
+  CardAction,
 } from "@/components/ui/card"
 import {
   ChartContainer,
@@ -24,15 +25,22 @@ const chartConfig = {
   },
 } satisfies ChartConfig
 
-export function ChartRadarDots({ title, description, dataKey, chartData }: ChartProps) {
-  console.log("chartData", chartData);
+export function ChartRadarDots({ title, description, dataKey, chartData, Icon, iconColor }: ChartProps) {
+
   return (
     <Card>
       <CardHeader className="items-center pb-2">
-        <CardTitle className="text-slate-500 font-medium">{title}</CardTitle>
+        <CardTitle className="text-slate-700 font-medium">{title}</CardTitle>
         <CardDescription>
           {description}
         </CardDescription>
+        <CardAction>
+          <div className="">
+            {Icon && (
+              <Icon className={`aspect-square w-3 ${iconColor}"}`} />
+            )}
+          </div>
+        </CardAction>
       </CardHeader>
       <CardContent className="p-0">
         <ChartContainer

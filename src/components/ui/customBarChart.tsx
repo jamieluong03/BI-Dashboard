@@ -9,6 +9,7 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
+  CardAction,
 } from "@/components/ui/card";
 import {
   ChartContainer,
@@ -23,7 +24,7 @@ const chartConfig = {
   },
 } satisfies ChartConfig
 
-export function ChartBarLabelCustom({ dataKey, title, description, chartData }: ChartProps) {
+export function ChartBarLabelCustom({ dataKey, title, description, chartData, Icon, iconColor }: ChartProps) {
   const [selectedNames, setSelectedNames] = useState<string[]>([]);
 
   const handleBarClick = (data: any) => {
@@ -46,7 +47,7 @@ export function ChartBarLabelCustom({ dataKey, title, description, chartData }: 
     <Card className="relative overflow-hidden">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <div className="space-y-1">
-          <CardTitle className="text-slate-500 font-medium">{title}</CardTitle>
+          <CardTitle className="text-slate-700 font-medium">{title}</CardTitle>
           <CardDescription className="text-slate-900 text-xs">{description}</CardDescription>
         </div>
         <div className="text-right">
@@ -55,6 +56,13 @@ export function ChartBarLabelCustom({ dataKey, title, description, chartData }: 
             {totalSelected.toLocaleString()}
           </p>
         </div>
+        <CardAction>
+          <div className="">
+            {Icon && (
+              <Icon className={`aspect-square w-3 ${iconColor}"}`} />
+            )}
+          </div>
+        </CardAction>
       </CardHeader>
       <CardContent>
         <ChartContainer config={chartConfig}>

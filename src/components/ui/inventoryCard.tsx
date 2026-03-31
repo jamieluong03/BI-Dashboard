@@ -2,24 +2,26 @@ import {
   Card, 
   CardHeader, 
   CardTitle, 
-  CardContent
+  CardContent,
+  CardAction,
 } from "@/components/ui/card";
+import { InventoryCardProps } from '@/types/dataTypes';
 
-interface InventoryCardProps {
-  title: string;
-  inventoryValue: number;
-  sellThroughRate: number;
-  lowStock: string
-}
-
-export function InventoryCard({ title, inventoryValue, sellThroughRate, lowStock }: InventoryCardProps) {
+export function InventoryCard({ title, inventoryValue, sellThroughRate, lowStock, Icon, iconColor }: InventoryCardProps) {
   const currencyFormatter = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-slate-500 font-medium">
+        <CardTitle className="text-slate-700 font-normal">
           {title}
         </CardTitle>
+        <CardAction>
+          <div className="">
+            {Icon && (
+              <Icon className={`aspect-square w-3 ${iconColor}"}`} />
+            )}
+          </div>
+        </CardAction>
       </CardHeader>
       
       <CardContent>
