@@ -90,13 +90,23 @@ export default function DashboardOverview() {
             description=""
           />
         </div>
-        <div className="grid grid-cols-[2fr_1fr_1fr] gap-6 p-2">
+        <div className="grid grid-cols-2 gap-6 p-2">
           <ChartBarLabelCustom 
             dataKey="value"
             title="Sales By Channel"
             description="Click the bars to calculate total sales by channels"
             chartData={sales_channel}
           />
+          <InventoryCard
+            title="Inventory"
+            inventoryValue={inventory?.inventoryValue.toFixed(2) || 0}
+            sellThroughRate={inventory?.sellThroughRate.toFixed(2) || 0}
+            lowStock={
+              (inventory?.lowStockCount ?? 0) > 0 ? `${inventory?.lowStockCount} items are low on stock` : "Stock levels are healthy"
+            }
+          />
+        </div>
+        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-6 p-2">
           <StatCard
             title="Return On Investment (ROI)"
             value={`${(orders?.returnOnInvestment.toFixed(2) || 0)}%`}
@@ -107,16 +117,7 @@ export default function DashboardOverview() {
             value={`${(orders?.marketingEfficiencyRatio.toFixed(2) || 0)}x`}
             description=""
           />
-        </div>
-        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-2 gap-6 p-2">
-          <InventoryCard
-            title="Inventory"
-            inventoryValue={inventory?.inventoryValue.toFixed(2) || 0}
-            sellThroughRate={inventory?.sellThroughRate.toFixed(2) || 0}
-            lowStock={
-              (inventory?.lowStockCount ?? 0) > 0 ? `${inventory?.lowStockCount} items are low on stock` : "Stock levels are healthy"
-            }
-          />
+          
         </div>
       </div>
     </main>
