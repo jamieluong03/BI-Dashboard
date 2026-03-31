@@ -12,7 +12,7 @@ import {
     getPaginationRowModel
 } from '@tanstack/react-table';
 import * as React from 'react';
-import { Order } from '@/types/analytics';
+import { Order } from '@/types/tableTypes';
 
 export default function Orders() {
 

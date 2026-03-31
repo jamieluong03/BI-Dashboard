@@ -14,11 +14,7 @@ import {
   ChartContainer,
   type ChartConfig,
 } from "@/components/ui/chart";
-
-type ChartData = {
-  name: string;
-  [key: string]: string | number;
-};
+import { ChartProps } from "@/types/dataTypes";
 
 const chartConfig = {
   value: {
@@ -27,14 +23,7 @@ const chartConfig = {
   },
 } satisfies ChartConfig
 
-interface BarChartProps {
-  dataKey: string;
-  title: string | number;
-  description: string;
-  chartData: ChartData[];
-};
-
-export function ChartBarLabelCustom({ dataKey, title, description, chartData }: BarChartProps) {
+export function ChartBarLabelCustom({ dataKey, title, description, chartData }: ChartProps) {
   const [selectedNames, setSelectedNames] = useState<string[]>([]);
 
   const handleBarClick = (data: any) => {

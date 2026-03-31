@@ -1,5 +1,5 @@
 import { faker } from "@faker-js/faker";
-import { Order, Product, Customer, AdSource, Category, MarketingSpend, SalesChannel } from "@/types/analytics";
+import { Order, Product, Customer, AdSource, Category, MarketingSpend, SalesChannel } from "@/types/tableTypes";
 import { getSeasonalMultiplier } from "./utils";
 
 faker.seed(123);
