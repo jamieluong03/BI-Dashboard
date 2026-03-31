@@ -17,19 +17,19 @@ export default function DashboardOverview() {
 
   const isAnyDataLoading = isOrdersLoading || isRoasLoading || isCLVLoading || isChannelsLoading || isInventoryLoading || isRegionLoading;
   const hasAnyErrors = isOrdersError || isRoasError || isCLVError || isChannelsError || isInventoryError || isRegionError;
-  const anyErrorMessage = ordersError?.message || roasError?.message || clvError?.message || channelsError?.message|| inventoryError?.message || regionError?.message;
+  const anyErrorMessage = ordersError?.message || roasError?.message || clvError?.message || channelsError?.message || inventoryError?.message || regionError?.message;
 
   if (isAnyDataLoading) return <div className="p-8 text-slate-500">Loading stats...</div>;
 
   if (hasAnyErrors) {
     return (
       <div className="border-red-500 bg-red-50 p-4 rounded-lg">
-      <h3 className="text-red-800 font-bold">Failed to load data</h3>
-      
-      <p className="text-red-600 text-sm">
-        Reason: {anyErrorMessage}
-      </p>
-    </div>
+        <h3 className="text-red-800 font-bold">Failed to load data</h3>
+
+        <p className="text-red-600 text-sm">
+          Reason: {anyErrorMessage}
+        </p>
+      </div>
     )
   }
 
@@ -85,28 +85,28 @@ export default function DashboardOverview() {
             Icon={Maximize2}
             iconColor=""
           />
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 gap-6 p-2">
-          <ChartBarLabelCustom 
-            dataKey="value"
-            title="Sales By Channel"
-            description="Click the bars to calculate total sales by channels"
-            chartData={salesChannel}
-            Icon={Maximize2}
-            iconColor=""
-            comment="Omnichannel success: Physical shop leads, followed closely by Google Search."
-          />
-          <ChartRadarDots
-            title="Sales By Region"
-            description=""
-            dataKey="value"
-            chartData={regionSales}
-            Icon={Maximize2}
-            iconColor=""
-            comment="Coastal dominance: CA and NY driving nearly 50% of total volume."
-          />
-        </div>
-        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-6 p-2">
+          <div className="col-span-2">
+            <ChartBarLabelCustom
+              dataKey="value"
+              title="Sales By Channel"
+              description="Click the bars to calculate total sales by channels"
+              chartData={salesChannel}
+              Icon={Maximize2}
+              iconColor=""
+              comment="Omnichannel success: Physical shop leads, followed closely by Google Search."
+            />
+          </div>
+          <div className="col-span-2">
+            <ChartRadarDots
+              title="Sales By Region"
+              description=""
+              dataKey="value"
+              chartData={regionSales}
+              Icon={Maximize2}
+              iconColor=""
+              comment="Coastal dominance: CA and NY driving nearly 50% of total volume."
+            />
+          </div>
           <StatCard
             title="ROAS"
             value={`${(data?.roas.toFixed(2) || 0)}x`}
@@ -135,8 +135,6 @@ export default function DashboardOverview() {
             Icon={Maximize2}
             iconColor=""
           />
-        </div>
-        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-[1fr_1fr_2fr] gap-6 p-2">
           <StatCard
             title="CLV"
             value={formatter.format(clv?.avgCLV || 0)}
@@ -144,24 +142,26 @@ export default function DashboardOverview() {
             Icon={Maximize2}
             iconColor=""
           />
-           <StatCard
+          <StatCard
             title="MER"
             value={`${(orders?.marketingEfficiencyRatio.toFixed(2) || 0)}x`}
             description="Total marketing spend is well-balanced against gross revenue."
             Icon={Maximize2}
             iconColor=""
           />
-          <InventoryCard
-            title="Inventory"
-            inventoryValue={inventory?.inventoryValue.toFixed(2) || 0}
-            sellThroughRate={inventory?.sellThroughRate.toFixed(2) || 0}
-            lowStock={
-              (inventory?.lowStockCount ?? 0) > 0 ? `${inventory?.lowStockCount} items are low on stock` : "Stock levels are healthy"
-            }
-            Icon={Maximize2}
-            iconColor=""
-            description="Capital tied in stock; ensure high-value pieces are prioritized for ads. Extremely high turnover velocity; monitor stock-outs on core collections."
-          />
+          <div className="col-span-2">
+            <InventoryCard
+              title="Inventory"
+              inventoryValue={inventory?.inventoryValue.toFixed(2) || 0}
+              sellThroughRate={inventory?.sellThroughRate.toFixed(2) || 0}
+              lowStock={
+                (inventory?.lowStockCount ?? 0) > 0 ? `${inventory?.lowStockCount} items are low on stock` : "Stock levels are healthy"
+              }
+              Icon={Maximize2}
+              iconColor=""
+              description="Capital tied in stock; ensure high-value pieces are prioritized for ads. Extremely high turnover velocity; monitor stock-outs on core collections."
+            />
+          </div>
         </div>
       </div>
     </main>

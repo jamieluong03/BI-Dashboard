@@ -28,7 +28,7 @@ const chartConfig = {
 export function ChartRadarDots({ title, description, dataKey, comment, chartData, Icon, iconColor }: ChartProps) {
 
   return (
-    <Card>
+    <Card className="relative overflow-hidden h-full">
       <CardHeader className="items-center">
         <CardTitle className="text-slate-700 font-medium">{title}</CardTitle>
         <CardAction>
