@@ -1,18 +1,20 @@
 'use client';
 
 import { StatCard } from '@/components/ui/statCard';
-import { useBlendedROAS, useCLVStats, useSalesStats, useSalesChannelPerformance } from '@/hooks/views';
+import { useBlendedROAS, useCLVStats, useSalesStats, useSalesChannelPerformance, useInventoryPerformance } from '@/hooks/views';
 import { ChartBarLabelCustom } from '@/components/ui/customBarChart';
+import { InventoryCard } from '@/components/ui/inventoryCard';
 
 export default function DashboardOverview() {
   const { data, isLoading: isRoasLoading, isError: isRoasError, error: roasError } = useBlendedROAS(30);
   const { clv, isLoading: isCLVLoading, isError: isCLVError, error: clvError } = useCLVStats();
   const { orders, isLoading: isOrdersLoading, isError: isOrdersError, error: ordersError } = useSalesStats(30);
   const { channels, isLoading: isChannelsLoading, isError: isChannelsError, error: channelsError } = useSalesChannelPerformance(30);
+  const { inventory, isLoading: isInventoryLoading, isError: isInventoryError, error: inventoryError } = useInventoryPerformance();
 
-  const isAnyDataLoading = isOrdersLoading || isRoasLoading || isCLVLoading || isChannelsLoading;
-  const hasAnyErrors = isOrdersError || isRoasError || isCLVError || isChannelsError;
-  const anyErrorMessage = ordersError?.message || roasError?.message || clvError?.message || channelsError?.message;
+  const isAnyDataLoading = isOrdersLoading || isRoasLoading || isCLVLoading || isChannelsLoading || isInventoryLoading;
+  const hasAnyErrors = isOrdersError || isRoasError || isCLVError || isChannelsError || isInventoryError;
+  const anyErrorMessage = ordersError?.message || roasError?.message || clvError?.message || channelsError?.message|| inventoryError?.message;
 
   if (isAnyDataLoading) return <div className="p-8 text-slate-500">Loading stats...</div>;
 
@@ -62,13 +64,13 @@ export default function DashboardOverview() {
           />
           <StatCard
             title="Average Order Value (AOV)"
-            value={formatter.format(orders?.aov || 0)}
+            value={formatter.format(orders?.averageOrderValue || 0)}
             description=""
           />
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 p-2">
           <StatCard
-            title="Blended ROAS"
+            title="Return On Ad Spend (ROAS)"
             value={`${(data?.roas.toFixed(2) || 0)}x`}
             description=""
           />
@@ -97,8 +99,23 @@ export default function DashboardOverview() {
           />
           <StatCard
             title="Return On Investment (ROI)"
-            value={`${(orders?.roi.toFixed(2) || 0)}%`}
+            value={`${(orders?.returnOnInvestment.toFixed(2) || 0)}%`}
             description=""
+          />
+           <StatCard
+            title="Marketing Efficiency Ratio (MER)"
+            value={`${(orders?.marketingEfficiencyRatio.toFixed(2) || 0)}x`}
+            description=""
+          />
+        </div>
+        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-2 gap-6 p-2">
+          <InventoryCard
+            title="Inventory"
+            inventoryValue={inventory?.inventoryValue.toFixed(2) || 0}
+            sellThroughRate={inventory?.sellThroughRate.toFixed(2) || 0}
+            lowStock={
+              (inventory?.lowStockCount ?? 0) > 0 ? `${inventory?.lowStockCount} items are low on stock` : "Stock levels are healthy"
+            }
           />
         </div>
       </div>

@@ -67,8 +67,9 @@ export function useSalesStats(days = 30) {
             const totalShipping = data.reduce((sum, o) => sum + Number(o.totalShipping || 0), 0);
             const netProfit = totalRevenue - (totalCost + totalAdSpend + totalShipping);
             const profitMargin = totalRevenue > 0 ? (netProfit / totalRevenue) * 100 : 0;
-            const aov = data.length > 0 ? totalRevenue / data.length : 0;
-            const roi = (netProfit/totalAdSpend) * 100;
+            const averageOrderValue = data.length > 0 ? totalRevenue / data.length : 0;
+            const returnOnInvestment = (netProfit / totalAdSpend) * 100;
+            const marketingEfficiencyRatio = totalRevenue / totalAdSpend;
 
             return { 
                 totalRevenue,
@@ -77,10 +78,10 @@ export function useSalesStats(days = 30) {
                 totalAdSpend,
                 profitMargin,
                 totalShipping,
-                aov,
-                averageOrderValue: totalRevenue / data.length,
+                averageOrderValue,
                 totalOrders: data.length,
-                roi
+                returnOnInvestment,
+                marketingEfficiencyRatio
              }
         }
     });
@@ -123,3 +124,23 @@ export function useSalesChannelPerformance(days = 30) {
     });
     return { channels, isLoading, isError, error };
 };
+
+export function useInventoryPerformance() {
+    const { data: inventory, isLoading, isError, error } = useQuery({
+        queryKey: ['inventory_performance'],
+        queryFn: async() => {
+            const { data, error } = await supabase
+                .from('product_performance_analytics')
+                .select('*')
+
+            if (error) throw error;
+
+            const inventoryValue = data.reduce((sum, value) => sum + Number(value.current_inventory_value), 0);
+            const sellThroughRate = data.reduce((sum, value) => sum + Number(value.sell_through_rate), 0);
+            const lowStockCount = data.filter(product => product.stock_status === "Low Stock").length;
+
+            return { inventoryValue, sellThroughRate, lowStockCount };
+        }
+    });
+    return { inventory, isLoading, isError, error };
+}
