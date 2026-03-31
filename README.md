@@ -14,7 +14,12 @@ A performance dashboard designed to help businesses visualize key performance in
 - Custom SQL Aggregations: Using raw SQL to calculate complex metrics like adSpend vs. Revenue, bypasssing standard API limitations.
 - Responsive Visualization: A mobile-first approach to complex data tables and charts.
 
+### Roadmap
+- [x] Write & Initialize Supabase schema. Generate test data.
+- [x] Create SQL views to make basic KPI cards.
+- [ ] Implement drill-down analytics per KPI card to visualize data trends.
+- [ ] Integrate AI-driven trend analysis to provide sales performance summaries.
+- [ ] Exportable report for business owners.
 
-<!-- Add Technical Challenge -->
-<!-- Add Roadmap -->
-<!-- Add Screenshot -->
+## Preview
+<img src="/public/analytics-dashboard-screenshot.png" width="100%" alt="Dashboard Preview">
