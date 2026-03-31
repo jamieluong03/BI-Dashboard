@@ -20,6 +20,7 @@ export interface ChartProps {
   chartData: ChartData[];
   Icon?: LucideIcon;
   iconColor?: string;
+  comment: string;
 };
 
 export interface InventoryCardProps {
@@ -29,4 +30,5 @@ export interface InventoryCardProps {
   lowStock: string
   Icon?: LucideIcon;
   iconColor?: string;
+  description: string;
 };

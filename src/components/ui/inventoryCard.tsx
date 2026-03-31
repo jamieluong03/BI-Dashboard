@@ -4,10 +4,11 @@ import {
   CardTitle, 
   CardContent,
   CardAction,
+  CardDescription,
 } from "@/components/ui/card";
 import { InventoryCardProps } from '@/types/dataTypes';
 
-export function InventoryCard({ title, inventoryValue, sellThroughRate, lowStock, Icon, iconColor }: InventoryCardProps) {
+export function InventoryCard({ title, inventoryValue, sellThroughRate, lowStock, description, Icon, iconColor }: InventoryCardProps) {
   const currencyFormatter = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
   return (
     <Card>
@@ -40,6 +41,9 @@ export function InventoryCard({ title, inventoryValue, sellThroughRate, lowStock
         <div className={`text-lg font-medium tracking-tight ${lowStock.includes("low") ? "bg-red-50 text-red-500" : "bg-emerald-50 text-emerald-500"}`}>
           {lowStock}
         </div>
+        <CardDescription className="mt-1 text-xs">
+          {description}
+        </CardDescription>
       </CardContent>
     </Card>
   );

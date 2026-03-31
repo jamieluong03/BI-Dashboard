@@ -6,7 +6,6 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
   CardAction,
@@ -24,7 +23,7 @@ const chartConfig = {
   },
 } satisfies ChartConfig
 
-export function ChartBarLabelCustom({ dataKey, title, description, chartData, Icon, iconColor }: ChartProps) {
+export function ChartBarLabelCustom({ dataKey, title, description, comment, chartData, Icon, iconColor }: ChartProps) {
   const [selectedNames, setSelectedNames] = useState<string[]>([]);
 
   const handleBarClick = (data: any) => {
@@ -110,10 +109,10 @@ export function ChartBarLabelCustom({ dataKey, title, description, chartData, Ic
             </Bar>
           </BarChart>
         </ChartContainer>
+        <CardDescription className="mt-1 text-xs">
+          {comment}
+        </CardDescription>
       </CardContent>
-      <CardFooter>
-        
-      </CardFooter>
     </Card>
   );
 }

@@ -25,15 +25,12 @@ const chartConfig = {
   },
 } satisfies ChartConfig
 
-export function ChartRadarDots({ title, description, dataKey, chartData, Icon, iconColor }: ChartProps) {
+export function ChartRadarDots({ title, description, dataKey, comment, chartData, Icon, iconColor }: ChartProps) {
 
   return (
     <Card>
-      <CardHeader className="items-center pb-2">
+      <CardHeader className="items-center">
         <CardTitle className="text-slate-700 font-medium">{title}</CardTitle>
-        <CardDescription>
-          {description}
-        </CardDescription>
         <CardAction>
           <div className="">
             {Icon && (
@@ -42,7 +39,7 @@ export function ChartRadarDots({ title, description, dataKey, chartData, Icon, i
           </div>
         </CardAction>
       </CardHeader>
-      <CardContent className="p-0">
+      <CardContent>
         <ChartContainer
           config={chartConfig}
           className="mx-auto aspect-square max-h-[200px] md:max-h-[300px] w-full"
@@ -62,6 +59,9 @@ export function ChartRadarDots({ title, description, dataKey, chartData, Icon, i
             />
           </RadarChart>
         </ChartContainer>
+        <CardDescription className="mt-1 text-xs">
+          {comment}
+        </CardDescription>
       </CardContent>
     </Card>
   )

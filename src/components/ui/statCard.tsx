@@ -24,7 +24,7 @@ export function StatCard({ title, value, description, Icon, iconColor }: StatCar
         </CardTitle>
       </CardHeader>
       
-      <CardContent>
+      <CardContent className="flex flex-col justify-between h-full">
         <div className="text-xl md:text-2xl font-bold text-slate-900 tracking-tight">
           {value}
         </div>
