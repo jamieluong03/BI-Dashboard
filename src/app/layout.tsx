@@ -35,9 +35,9 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col">
         <Providers>
           <div className="flex h-screen flex-col md:flex-row md:overflow-hidden">
-            <div className="w-full flex-none md:w-64">
+            {/* <div className="w-full flex-none md:w-64">
               <SideNav />
-            </div>
+            </div> */}
             <div className="grow p-6 md:overflow-y-auto md:p-12">{children}</div>
           </div>
         </Providers>
