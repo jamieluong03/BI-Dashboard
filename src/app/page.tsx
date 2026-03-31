@@ -77,29 +77,7 @@ export default function DashboardOverview() {
             description=""
           />
         </div>
-        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-6 p-2">
-          <StatCard
-            title="Return On Ad Spend (ROAS)"
-            value={`${(data?.roas.toFixed(2) || 0)}x`}
-            description=""
-          />
-          <StatCard
-            title="Conversion Rate"
-            value={(data?.conversionRate.toFixed(2) || 0)}
-            description=""
-          />
-          <StatCard
-            title="Click Through Rate (CTR)"
-            value={(data?.clickThroughRate.toFixed(2) || 0)}
-            description=""
-          />
-          <StatCard
-            title="Customer Lifetime Value (CLV)"
-            value={formatter.format(clv?.avgCLV || 0)}
-            description=""
-          />
-        </div>
-        <div className="grid grid-cols-2 gap-6 p-2">
+        <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 gap-6 p-2">
           <ChartBarLabelCustom 
             dataKey="value"
             title="Sales By Channel"
@@ -113,7 +91,39 @@ export default function DashboardOverview() {
             chartData={regionSales}
           />
         </div>
-        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-[2fr_1fr_1fr] gap-6 p-2">
+        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-6 p-2">
+          <StatCard
+            title="Return On Ad Spend (ROAS)"
+            value={`${(data?.roas.toFixed(2) || 0)}x`}
+            description=""
+          />
+          <StatCard
+            title="Return On Investment (ROI)"
+            value={`${(orders?.returnOnInvestment.toFixed(2) || 0)}%`}
+            description=""
+          />
+          <StatCard
+            title="Conversion Rate"
+            value={(data?.conversionRate.toFixed(2) || 0)}
+            description=""
+          />
+          <StatCard
+            title="Click Through Rate (CTR)"
+            value={(data?.clickThroughRate.toFixed(2) || 0)}
+            description=""
+          />
+        </div>
+        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-[1fr_1fr_2fr] gap-6 p-2">
+          <StatCard
+            title="Customer Lifetime Value (CLV)"
+            value={formatter.format(clv?.avgCLV || 0)}
+            description=""
+          />
+           <StatCard
+            title="Marketing Efficiency Ratio (MER)"
+            value={`${(orders?.marketingEfficiencyRatio.toFixed(2) || 0)}x`}
+            description=""
+          />
           <InventoryCard
             title="Inventory"
             inventoryValue={inventory?.inventoryValue.toFixed(2) || 0}
@@ -121,16 +131,6 @@ export default function DashboardOverview() {
             lowStock={
               (inventory?.lowStockCount ?? 0) > 0 ? `${inventory?.lowStockCount} items are low on stock` : "Stock levels are healthy"
             }
-          />
-          <StatCard
-            title="Return On Investment (ROI)"
-            value={`${(orders?.returnOnInvestment.toFixed(2) || 0)}%`}
-            description=""
-          />
-           <StatCard
-            title="Marketing Efficiency Ratio (MER)"
-            value={`${(orders?.marketingEfficiencyRatio.toFixed(2) || 0)}x`}
-            description=""
           />
         </div>
       </div>
