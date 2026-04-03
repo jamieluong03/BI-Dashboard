@@ -1,5 +1,3 @@
-"use client";
-
 import { useState, useMemo } from "react";
 import { Bar, BarChart, CartesianGrid, LabelList, XAxis, YAxis, Rectangle } from "recharts";
 import {

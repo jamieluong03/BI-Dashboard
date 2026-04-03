@@ -1,5 +1,3 @@
-import { LucideIcon } from "lucide-react";
-
 export interface ToolTipProps {
   display: boolean;
   comment: string;

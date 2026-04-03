@@ -5,8 +5,9 @@ import { useBlendedROAS, useCLVStats, useSalesStats, useSalesChannelPerformance,
 import { ChartBarLabelCustom } from '@/components/ui/customBarChart';
 import { InventoryCard } from '@/components/ui/inventoryCard';
 import { ChartRadarDots } from '@/components/ui/radarChart';
+import { DashboardSkeleton } from "@/components/dashboardSkeleton";
 
-export default function DashboardOverview() {
+export default function Dashboard() {
   const { data, isLoading: isRoasLoading, isError: isRoasError, error: roasError } = useBlendedROAS(30);
   const { clv, isLoading: isCLVLoading, isError: isCLVError, error: clvError } = useCLVStats();
   const { orders, isLoading: isOrdersLoading, isError: isOrdersError, error: ordersError } = useSalesStats(30);
@@ -18,7 +19,7 @@ export default function DashboardOverview() {
   const hasAnyErrors = isOrdersError || isRoasError || isCLVError || isChannelsError || isInventoryError || isRegionError;
   const anyErrorMessage = ordersError?.message || roasError?.message || clvError?.message || channelsError?.message || inventoryError?.message || regionError?.message;
 
-  if (isAnyDataLoading) return <div className="p-8 text-slate-500">Loading stats...</div>;
+  if (isAnyDataLoading) return <DashboardSkeleton />;
 
   if (hasAnyErrors) {
     return (
