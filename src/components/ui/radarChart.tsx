@@ -16,7 +16,7 @@ import {
   type ChartConfig,
 } from "@/components/ui/chart"
 import { ChartProps } from "@/types/dataTypes";
-import { ExpandIcon } from "./expandIcon";
+import { ExpandButton } from "./expandIcon";
 
 const chartConfig = {
   value: {
@@ -25,7 +25,7 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-export function ChartRadarDots({ title, description, dataKey, comment, chartData, icon }: ChartProps) {
+export function ChartRadarDots({ title, description, dataKey, comment, chartData }: ChartProps) {
 
   return (
     <Card className="relative overflow-hidden h-full">
@@ -33,7 +33,7 @@ export function ChartRadarDots({ title, description, dataKey, comment, chartData
         <CardTitle className="text-slate-700 font-medium">{title}</CardTitle>
         <CardAction>
           <div className="">
-            <ExpandIcon icon={icon.icon} iconColor={icon.iconColor} display={false} comment="" />
+            <ExpandButton display={true} comment="" />
           </div>
         </CardAction>
       </CardHeader>

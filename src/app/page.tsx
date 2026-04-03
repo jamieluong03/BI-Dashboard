@@ -5,7 +5,6 @@ import { useBlendedROAS, useCLVStats, useSalesStats, useSalesChannelPerformance,
 import { ChartBarLabelCustom } from '@/components/ui/customBarChart';
 import { InventoryCard } from '@/components/ui/inventoryCard';
 import { ChartRadarDots } from '@/components/ui/radarChart';
-import { Maximize2 } from 'lucide-react';
 
 export default function DashboardOverview() {
   const { data, isLoading: isRoasLoading, isError: isRoasError, error: roasError } = useBlendedROAS(30);
@@ -61,37 +60,21 @@ export default function DashboardOverview() {
             title="Total Revenue"
             value={formatter.format(orders?.totalRevenue || 0)}
             description="Steady high-ticket volume supported by premium product positioning."
-            icon={{
-              icon: Maximize2,
-              iconColor: ""
-            }}
           />
           <StatCard
             title="Net Profit"
             value={formatter.format(orders?.netProfit || 0)}
             description="Healthy 42% bottom-line margin after all operating expenses."
-            icon={{
-              icon: Maximize2,
-              iconColor: ""
-            }}
           />
           <StatCard
             title="Total Orders"
             value={orders?.totalOrders || 0}
             description=""
-            icon={{
-              icon: Maximize2,
-              iconColor: ""
-            }}
           />
           <StatCard
             title="AOV"
             value={formatter.format(orders?.averageOrderValue || 0)}
             description="Strong customer willingness to invest in luxury price points."
-            icon={{
-              icon: Maximize2,
-              iconColor: ""
-            }}
           />
           <div className="col-span-2">
             <ChartBarLabelCustom
@@ -99,10 +82,6 @@ export default function DashboardOverview() {
               title="Sales By Channel"
               description="Click the bars to calculate total sales by channels"
               chartData={salesChannel}
-              icon={{
-                icon: Maximize2,
-                iconColor: ""
-              }}
               comment="Omnichannel success: Physical shop leads, followed closely by Google Search."
             />
           </div>
@@ -112,10 +91,6 @@ export default function DashboardOverview() {
               description=""
               dataKey="value"
               chartData={regionSales}
-              icon={{
-                icon: Maximize2,
-                iconColor: ""
-              }}
               comment="Coastal dominance: CA and NY driving nearly 50% of total volume."
             />
           </div>
@@ -123,55 +98,31 @@ export default function DashboardOverview() {
             title="ROAS"
             value={`${(data?.roas.toFixed(2) || 0)}x`}
             description="Paid media is scaling efficiently; $4 returned for every $1 in ad spend."
-            icon={{
-              icon: Maximize2,
-              iconColor: ""
-            }}
           />
           <StatCard
             title="ROI"
             value={`${(orders?.returnOnInvestment.toFixed(2) || 0)}%`}
             description="Exceptional capital efficiency; for every $1 spent, $1.45 is returned in profit."
-            icon={{
-              icon: Maximize2,
-              iconColor: ""
-            }}
           />
           <StatCard
             title="Conversion Rate"
             value={(data?.conversionRate.toFixed(2) || 0)}
             description="Typical for high-AOV jewelry; focus on high-intent traffic to boost"
-            icon={{
-              icon: Maximize2,
-              iconColor: ""
-            }}
           />
           <StatCard
             title="CTR"
             value={(data?.clickThroughRate.toFixed(2) || 0)}
             description="Creative is resonating well, driving strong engagement across socials."
-            icon={{
-              icon: Maximize2,
-              iconColor: ""
-            }}
           />
           <StatCard
             title="CLV"
             value={formatter.format(clv?.avgCLV || 0)}
             description="Significant long-term brand loyalty; customers return for repeat gifting."
-            icon={{
-              icon: Maximize2,
-              iconColor: ""
-            }}
           />
           <StatCard
             title="MER"
             value={`${(orders?.marketingEfficiencyRatio.toFixed(2) || 0)}x`}
             description="Total marketing spend is well-balanced against gross revenue."
-            icon={{
-              icon: Maximize2,
-              iconColor: ""
-            }}
           />
           <div className="col-span-2">
             <InventoryCard
@@ -181,10 +132,6 @@ export default function DashboardOverview() {
               lowStock={
                 (inventory?.lowStockCount ?? 0) > 0 ? `${inventory?.lowStockCount} items are low on stock` : "Stock levels are healthy"
               }
-              icon={{
-                icon: Maximize2,
-                iconColor: ""
-              }}
               description="Capital tied in stock; ensure high-value pieces are prioritized for ads. Extremely high turnover velocity; monitor stock-outs on core collections."
             />
           </div>

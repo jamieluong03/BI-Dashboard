@@ -15,7 +15,7 @@ import {
   type ChartConfig,
 } from "@/components/ui/chart";
 import { ChartProps } from "@/types/dataTypes";
-import { ExpandIcon } from "./expandIcon";
+import { ExpandButton } from "./expandIcon";
 
 const chartConfig = {
   value: {
@@ -24,7 +24,7 @@ const chartConfig = {
   },
 } satisfies ChartConfig
 
-export function ChartBarLabelCustom({ dataKey, title, description, comment, chartData, icon }: ChartProps) {
+export function ChartBarLabelCustom({ dataKey, title, description, comment, chartData }: ChartProps) {
   const [selectedNames, setSelectedNames] = useState<string[]>([]);
 
   const handleBarClick = (data: any) => {
@@ -57,7 +57,7 @@ export function ChartBarLabelCustom({ dataKey, title, description, comment, char
           </p>
         </div>
         <CardAction>
-          <ExpandIcon icon={icon.icon} iconColor={icon.iconColor} display={false} comment="" />
+          <ExpandButton display={true} comment="" />
         </CardAction>
       </CardHeader>
       <CardContent>

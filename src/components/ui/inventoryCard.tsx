@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Card,
   CardHeader,
@@ -7,9 +9,9 @@ import {
   CardDescription,
 } from "@/components/ui/card";
 import { InventoryCardProps } from '@/types/dataTypes';
-import { ExpandIcon } from "./expandIcon";
+import { ExpandButton } from "./expandIcon";
 
-export function InventoryCard({ title, inventoryValue, sellThroughRate, lowStock, description, icon }: InventoryCardProps) {
+export function InventoryCard({ title, inventoryValue, sellThroughRate, lowStock, description }: InventoryCardProps) {
   const currencyFormatter = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
   return (
     <Card>
@@ -18,7 +20,7 @@ export function InventoryCard({ title, inventoryValue, sellThroughRate, lowStock
           {title}
         </CardTitle>
         <CardAction>
-          <ExpandIcon icon={icon.icon} iconColor={icon.iconColor} display={false} comment="" />
+          <ExpandButton display={true} comment="" />
         </CardAction>
       </CardHeader>
 

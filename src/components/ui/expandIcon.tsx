@@ -1,26 +1,32 @@
-import { IconProps, ToolTipProps } from '@/types/dataTypes';
+import { ToolTipProps } from '@/types/dataTypes';
 import {
     Tooltip,
     TooltipContent,
     TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { Button } from "@/components/ui/button";
+import { ArrowUpRightIcon } from "lucide-react";
 
-type ExpandIconProps = IconProps & ToolTipProps;
-
-export function ExpandIcon({ icon: Icon, iconColor, display, comment }: ExpandIconProps) {
-
-    if (!Icon) return null;
+export function ExpandButton({ display, comment }: ToolTipProps) {
 
     return (
-        <Tooltip>
-            <TooltipTrigger asChild>
-                <div className="">
-                    <Icon className={`aspect-square w-3 ${iconColor ?? ''}"}`} />
-                </div>
-            </TooltipTrigger>
-            <TooltipContent>
-                {display ? comment : <p>Coming Soon: Enhanced analytics for this section.</p>}
-            </TooltipContent>
-        </Tooltip>
+        <>
+        {display ?
+            <Tooltip>
+                <TooltipTrigger asChild>
+                    <Button size="icon-xs" aria-label="Submit" variant="outline">
+                        <ArrowUpRightIcon />
+                    </Button>   
+                </TooltipTrigger>
+                <TooltipContent>
+                    {comment ? comment : <p>Coming Soon: Enhanced analytics for this section.</p>}
+                </TooltipContent>
+            </Tooltip>
+            :
+            <Button size="icon-xs" aria-label="Submit" variant="outline">
+                <ArrowUpRightIcon />
+            </Button>   
+         }
+        </>
     )
 }

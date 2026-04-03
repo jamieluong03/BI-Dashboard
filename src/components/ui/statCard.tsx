@@ -6,15 +6,15 @@ import {
   CardAction, 
   CardDescription 
 } from "@/components/ui/card";
-import { ExpandIcon } from "./expandIcon";
+import { ExpandButton } from "./expandIcon";
 import { StatCardProps } from '@/types/dataTypes';
 
-export function StatCard({ title, value, description, icon }: StatCardProps) {
+export function StatCard({ title, value, description }: StatCardProps) {
   return (
     <Card>
       <CardHeader>
         <CardAction>
-          <ExpandIcon icon={icon.icon} iconColor={icon.iconColor} display={false} comment="" />
+          <ExpandButton display={true} comment="" />
         </CardAction>
         <CardTitle className="text-slate-700 font-normal">
           {title}
