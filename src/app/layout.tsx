@@ -3,7 +3,7 @@ import { Geist, Geist_Mono, Inter } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import Providers from './providers';
-import SideNav from "@/components/ui/sideNav";
+import SideNav from "@/components/sideNav";
 import { TooltipProvider } from "@/components/ui/tooltip"
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });

@@ -1,46 +1,58 @@
-'use client';
+"use client";
 
-import { StatCard } from '@/components/ui/statCard';
-import { useBlendedROAS, useCLVStats, useSalesStats, useSalesChannelPerformance, useInventoryPerformance, useRegionalData } from '@/hooks/views';
-import { ChartBarLabelCustom } from '@/components/ui/customBarChart';
-import { InventoryCard } from '@/components/ui/inventoryCard';
-import { ChartRadarDots } from '@/components/ui/radarChart';
+import { useState, useMemo } from "react";
+import { StatCard } from "@/components/statCard";
+import { useBlendedROAS, useCLVStats, useSalesStats, useSalesChannelPerformance, useInventoryPerformance, useRegionalData } from "@/hooks/views";
+import { ChartBarLabelCustom } from "@/components/customBarChart";
+import { InventoryCard } from "@/components/inventoryCard";
+import { ChartRadarDots } from "@/components/radarChart";
 import { DashboardSkeleton } from "@/components/dashboardSkeleton";
+import { SelectDate } from "@/components/dateSelect";
+import { getRangePresets } from "@/lib/utils";
+import { DateRange } from "react-day-picker";
 
 export default function Dashboard() {
-  const { data, isLoading: isRoasLoading, isError: isRoasError, error: roasError } = useBlendedROAS(30);
+
+  const [dateRange, setDateRange] = useState<DateRange | undefined>(() => {
+      const preset = getRangePresets("last_30");
+      return { from: new Date(preset.from), to: new Date(preset.to) };
+  });
+
+  const dateArgs = useMemo(() => {
+  // if there's no full date range, don't update dashboard
+  if (!dateRange?.from || !dateRange?.to) {
+    return null; 
+  }
+
+  return {
+    from: dateRange.from.toISOString(),
+    to: dateRange.to.toISOString()
+  };
+}, [dateRange]);
+
+const defaultRange = getRangePresets("last_30");
+const activeFrom = dateArgs?.from ?? defaultRange.from;
+const activeTo = dateArgs?.to ?? defaultRange.to;
+  
+  const { data, isLoading: isRoasLoading, isError: isRoasError, error: roasError } = useBlendedROAS(activeFrom, activeTo);
   const { clv, isLoading: isCLVLoading, isError: isCLVError, error: clvError } = useCLVStats();
-  const { orders, isLoading: isOrdersLoading, isError: isOrdersError, error: ordersError } = useSalesStats(30);
-  const { channels, isLoading: isChannelsLoading, isError: isChannelsError, error: channelsError } = useSalesChannelPerformance(30);
+  const { orders, isLoading: isOrdersLoading, isError: isOrdersError, error: ordersError } = useSalesStats(activeFrom, activeTo);
+  const { channels, isLoading: isChannelsLoading, isError: isChannelsError, error: channelsError } = useSalesChannelPerformance(activeFrom, activeTo);
   const { inventory, isLoading: isInventoryLoading, isError: isInventoryError, error: inventoryError } = useInventoryPerformance();
-  const { regions, isLoading: isRegionLoading, isError: isRegionError, error: regionError } = useRegionalData(30);
+  const { regions, isLoading: isRegionLoading, isError: isRegionError, error: regionError } = useRegionalData(activeFrom, activeTo);
 
   const isAnyDataLoading = isOrdersLoading || isRoasLoading || isCLVLoading || isChannelsLoading || isInventoryLoading || isRegionLoading;
   const hasAnyErrors = isOrdersError || isRoasError || isCLVError || isChannelsError || isInventoryError || isRegionError;
   const anyErrorMessage = ordersError?.message || roasError?.message || clvError?.message || channelsError?.message || inventoryError?.message || regionError?.message;
 
-  if (isAnyDataLoading) return <DashboardSkeleton />;
-
-  if (hasAnyErrors) {
-    return (
-      <div className="border-red-500 bg-red-50 p-4 rounded-lg">
-        <h3 className="text-red-800 font-bold">Failed to load data</h3>
-
-        <p className="text-red-600 text-sm">
-          Reason: {anyErrorMessage}
-        </p>
-      </div>
-    )
-  }
-
-  const salesChannel = Object.keys(channels).map(source => {
+  const salesChannel = Object.keys(channels || {}).map(source => {
     return {
       name: channels[source].name === "Facebook and Instagram by Meta" ? "Facebook & Instagram" : channels[source].name,
       value: channels[source].orders
     }
   });
 
-  const regionSales = Object.keys(regions).map(name => {
+  const regionSales = Object.keys(regions || {}).map(name => {
     return {
       name: regions[name].name,
       value: regions[name].value
@@ -51,12 +63,23 @@ export default function Dashboard() {
 
   return (
     <main className="min-h-screen bg-slate-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div className="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8 lg:py-12">
         <header className="mb-8">
-          <h1 className="text-3xl font-bold text-slate-900">Analytics Dashboard</h1>
-          <p className="text-slate-500 mt-2">Based on last 30 Days</p>
+          <h1 className="text-2xl lg:text-3xl font-bold text-slate-900">Analytics Dashboard</h1>
+          <SelectDate range={dateRange} onRangeChange={setDateRange}/>
         </header>
-        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-6 p-2">
+        {isAnyDataLoading ? (
+          <DashboardSkeleton />
+        ) : hasAnyErrors ? (
+          <div className="border-red-500 bg-red-50 p-4 rounded-lg">
+          <h3 className="text-red-800 font-bold">Failed to load data</h3>
+
+          <p className="text-red-600 text-sm">
+            Reason: {anyErrorMessage}
+          </p>
+        </div>
+        ) : (
+        <div className="grid grid-cols-2 grid-cols-2 lg:grid-cols-4 gap-6 p-2">
           <StatCard
             title="Total Revenue"
             value={formatter.format(orders?.totalRevenue || 0)}
@@ -137,6 +160,7 @@ export default function Dashboard() {
             />
           </div>
         </div>
+        )}
       </div>
     </main>
   );

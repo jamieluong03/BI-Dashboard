@@ -1,4 +1,4 @@
-import NavLinks from '@/components/ui/navLinks';
+import NavLinks from '@/components/navLinks';
 
 export default function SideNav() {
   return (

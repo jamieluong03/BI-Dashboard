@@ -1,14 +1,15 @@
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
 
-export function useBlendedROAS(days = 30) {
+export function useBlendedROAS(startDate: string, endDate: string) {
     const { data: data, isLoading, isError, error } = useQuery({
-        queryKey: ['blended-roas'],
+        queryKey: ['blended-roas', startDate, endDate],
         queryFn: async() => {
             const { data, error } = await supabase
                 .from('daily_roas')
                 .select('revenue, spend, orders, clicks, impressions')
-                .gte('date', new Date(Date.now() - days * 24 * 60 * 60 * 1000).toISOString());
+                .gte('date', startDate)
+                .lte('date', endDate);
             if (error) throw error;
             const totalRevenue = data.reduce((sum, row) => sum + row.revenue, 0);
             const totalSpend = data.reduce((sum, row) => sum + row.spend, 0);
@@ -32,7 +33,7 @@ export function useBlendedROAS(days = 30) {
     return { data, isLoading, isError, error };
 };
 
-export function useCLVStats(days = 30) {
+export function useCLVStats() {
     const { data: clv, isLoading, isError, error } = useQuery({
         queryKey: ['avg-clv'],
         queryFn: async() => {
@@ -51,14 +52,15 @@ export function useCLVStats(days = 30) {
     return { clv, isLoading, isError, error };
 };
 
-export function useSalesStats(days = 30) {
+export function useSalesStats(startDate: string, endDate: string) {
     const { data: orders, isLoading, isError, error } = useQuery({
-        queryKey: ['daily_sales_performance'],
+        queryKey: ['daily_sales_performance', startDate, endDate],
         queryFn: async() => {
             const { data, error } = await supabase
                 .from('daily_sales_performance')
                 .select('*')
-                .gte('date', new Date(Date.now() - days * 24 * 60 * 60 * 1000).toISOString());
+                .gte('date', startDate)
+                .lte('date', endDate);
             if (error) throw error;
             
             const totalRevenue = data.reduce((sum, o) => sum + Number(o.totalRevenue || 0), 0);
@@ -88,14 +90,15 @@ export function useSalesStats(days = 30) {
     return { orders, isLoading, isError, error };
 };
 
-export function useSalesChannelPerformance(days = 30) {
+export function useSalesChannelPerformance(startDate: string, endDate: string) {
     const { data: channels, isLoading, isError, error } = useQuery({
-        queryKey: ['daily_sales_channel_performance'],
+        queryKey: ['daily_sales_channel_performance', startDate, endDate],
         queryFn: async() => {
             const { data, error } = await supabase
                 .from('daily_sales_channel_performance')
                 .select('*')
-                .gte('date', new Date(Date.now() - days * 24 * 60 * 60 * 1000).toISOString());
+                .gte('date', startDate)
+                .lte('date', endDate);
             if (error) throw error;
 
             const channelStats = data.reduce((acc, row) => {
@@ -144,14 +147,15 @@ export function useInventoryPerformance() {
     return { inventory, isLoading, isError, error };
 };
 
-export function useRegionalData(days = 30) {
+export function useRegionalData(startDate: string, endDate: string) {
     const { data: regions, isLoading, isError, error } = useQuery({
-        queryKey: ['regional_sales'],
+        queryKey: ['regional_sales', startDate, endDate],
         queryFn: async() => {
             const { data, error } = await supabase
                 .from('regional_sales_performance')
                 .select('*')
-                .gte('date', new Date(Date.now() - days * 24 * 60 * 60 * 1000).toISOString());
+                .gte('date', startDate)
+                .lte('date', endDate);
             if (error) throw error;
 
             const regionalSales = data.reduce((acc, row) => {

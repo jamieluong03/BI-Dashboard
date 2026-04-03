@@ -1,5 +1,6 @@
-import { clsx, type ClassValue } from "clsx"
-import { twMerge } from "tailwind-merge"
+import { clsx, type ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
+import { startOfDay, endOfDay, subDays, subMonths, subYears, startOfMonth, endOfMonth } from "date-fns";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -28,4 +29,27 @@ export const getSeasonalMultiplier = (date: Date) => {
 
   // Default "Evergreen" multiplier
   return 1.0;
+};
+
+export const getRangePresets = (preset: string) => {
+  const now = new Date();
+  
+  switch (preset) {
+    case "today":
+      return { from: startOfDay(now).toISOString(), to: endOfDay(now).toISOString() };
+    case "last_7":
+      return { from: subDays(now, 7).toISOString(), to: now.toISOString() };
+    case "last_30":
+      return { from: subDays(now, 30).toISOString(), to: now.toISOString() };
+    case "last_90":
+      return { from: subDays(now, 90).toISOString(), to: now.toISOString() };
+    case "last_month":
+      const prev = subMonths(now, 1);
+      return { from: startOfMonth(prev).toISOString(), to: endOfMonth(prev).toISOString() };
+    case "last_year":
+      return { from: subYears(now, 1).toISOString(), to: now.toISOString() };
+    default:
+      console.warn(`No preset found for: ${preset}. Falling back to 30 days.`);
+      return { from: subDays(now, 30).toISOString(), to: now.toISOString() };
+  }
 };
