@@ -18,7 +18,7 @@ export function InventoryCard({ title, inventoryValue, sellThroughRate, lowStock
           {title}
         </CardTitle>
         <CardAction>
-          <ExpandIcon icon={icon.icon} iconColor={icon.iconColor} />
+          <ExpandIcon icon={icon.icon} iconColor={icon.iconColor} display={false} comment="" />
         </CardAction>
       </CardHeader>
 

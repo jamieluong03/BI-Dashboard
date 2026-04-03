@@ -1,11 +1,13 @@
-import { IconProps } from '@/types/dataTypes';
+import { IconProps, ToolTipProps } from '@/types/dataTypes';
 import {
     Tooltip,
     TooltipContent,
     TooltipTrigger,
-} from "@/components/ui/tooltip"
+} from "@/components/ui/tooltip";
 
-export function ExpandIcon({ icon: Icon, iconColor }: IconProps) {
+type ExpandIconProps = IconProps & ToolTipProps;
+
+export function ExpandIcon({ icon: Icon, iconColor, display, comment }: ExpandIconProps) {
 
     if (!Icon) return null;
 
@@ -17,7 +19,7 @@ export function ExpandIcon({ icon: Icon, iconColor }: IconProps) {
                 </div>
             </TooltipTrigger>
             <TooltipContent>
-                <p>Coming Soon: Enhanced analytics for this section.</p>
+                {display ? comment : <p>Coming Soon: Enhanced analytics for this section.</p>}
             </TooltipContent>
         </Tooltip>
     )

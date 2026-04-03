@@ -14,7 +14,7 @@ export function StatCard({ title, value, description, icon }: StatCardProps) {
     <Card>
       <CardHeader>
         <CardAction>
-          <ExpandIcon icon={icon.icon} iconColor={icon.iconColor} />
+          <ExpandIcon icon={icon.icon} iconColor={icon.iconColor} display={false} comment="" />
         </CardAction>
         <CardTitle className="text-slate-700 font-normal">
           {title}

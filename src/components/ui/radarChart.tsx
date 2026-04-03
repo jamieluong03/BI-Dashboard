@@ -33,7 +33,7 @@ export function ChartRadarDots({ title, description, dataKey, comment, chartData
         <CardTitle className="text-slate-700 font-medium">{title}</CardTitle>
         <CardAction>
           <div className="">
-            <ExpandIcon icon={icon.icon} iconColor={icon.iconColor} />
+            <ExpandIcon icon={icon.icon} iconColor={icon.iconColor} display={false} comment="" />
           </div>
         </CardAction>
       </CardHeader>

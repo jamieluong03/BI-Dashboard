@@ -5,6 +5,11 @@ export interface IconProps {
   iconColor?: string;
 };
 
+export interface ToolTipProps {
+  display: boolean;
+  comment: string;
+};
+
 export interface StatCardProps {
   title: string;
   value: string | number;

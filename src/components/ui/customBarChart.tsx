@@ -57,7 +57,7 @@ export function ChartBarLabelCustom({ dataKey, title, description, comment, char
           </p>
         </div>
         <CardAction>
-          <ExpandIcon icon={icon.icon} iconColor={icon.iconColor} />
+          <ExpandIcon icon={icon.icon} iconColor={icon.iconColor} display={false} comment="" />
         </CardAction>
       </CardHeader>
       <CardContent>
