@@ -1,7 +1,6 @@
 "use client";
 
 import { PolarAngleAxis, PolarGrid, Radar, RadarChart } from "recharts";
-
 import {
   Card,
   CardContent,
@@ -17,15 +16,16 @@ import {
   type ChartConfig,
 } from "@/components/ui/chart"
 import { ChartProps } from "@/types/dataTypes";
+import { ExpandIcon } from "./expandIcon";
 
 const chartConfig = {
   value: {
     label: "Sales",
     color: "var(--color-blue-300)",
   },
-} satisfies ChartConfig
+} satisfies ChartConfig;
 
-export function ChartRadarDots({ title, description, dataKey, comment, chartData, Icon, iconColor }: ChartProps) {
+export function ChartRadarDots({ title, description, dataKey, comment, chartData, icon }: ChartProps) {
 
   return (
     <Card className="relative overflow-hidden h-full">
@@ -33,9 +33,7 @@ export function ChartRadarDots({ title, description, dataKey, comment, chartData
         <CardTitle className="text-slate-700 font-medium">{title}</CardTitle>
         <CardAction>
           <div className="">
-            {Icon && (
-              <Icon className={`aspect-square w-3 ${iconColor}"}`} />
-            )}
+            <ExpandIcon icon={icon.icon} iconColor={icon.iconColor} />
           </div>
         </CardAction>
       </CardHeader>

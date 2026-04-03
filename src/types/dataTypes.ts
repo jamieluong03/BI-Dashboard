@@ -1,12 +1,16 @@
 import { LucideIcon } from "lucide-react";
 
+export interface IconProps {
+  icon?: LucideIcon;
+  iconColor?: string;
+};
+
 export interface StatCardProps {
   title: string;
   value: string | number;
   description: string;
-  Icon?: LucideIcon;
-  iconColor?: string;
-}
+  icon: IconProps;
+};
 
 export type ChartData = {
   name: string;
@@ -18,8 +22,7 @@ export interface ChartProps {
   title: string;
   description: string;
   chartData: ChartData[];
-  Icon?: LucideIcon;
-  iconColor?: string;
+  icon: IconProps
   comment: string;
 };
 
@@ -28,7 +31,6 @@ export interface InventoryCardProps {
   inventoryValue: number;
   sellThroughRate: number;
   lowStock: string
-  Icon?: LucideIcon;
-  iconColor?: string;
+  icon: IconProps
   description: string;
 };

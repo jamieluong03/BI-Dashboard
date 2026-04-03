@@ -7,8 +7,9 @@ import {
   CardDescription,
 } from "@/components/ui/card";
 import { InventoryCardProps } from '@/types/dataTypes';
+import { ExpandIcon } from "./expandIcon";
 
-export function InventoryCard({ title, inventoryValue, sellThroughRate, lowStock, description, Icon, iconColor }: InventoryCardProps) {
+export function InventoryCard({ title, inventoryValue, sellThroughRate, lowStock, description, icon }: InventoryCardProps) {
   const currencyFormatter = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
   return (
     <Card>
@@ -17,11 +18,7 @@ export function InventoryCard({ title, inventoryValue, sellThroughRate, lowStock
           {title}
         </CardTitle>
         <CardAction>
-          <div className="">
-            {Icon && (
-              <Icon className={`aspect-square w-3 ${iconColor}"}`} />
-            )}
-          </div>
+          <ExpandIcon icon={icon.icon} iconColor={icon.iconColor} />
         </CardAction>
       </CardHeader>
 
