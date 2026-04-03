@@ -4,6 +4,7 @@ import "./globals.css";
 import { cn } from "@/lib/utils";
 import Providers from './providers';
 import SideNav from "@/components/ui/sideNav";
+import { TooltipProvider } from "@/components/ui/tooltip"
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
 
@@ -34,12 +35,14 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col">
         <Providers>
-          <div className="flex h-screen flex-col md:flex-row md:overflow-hidden">
-            {/* <div className="w-full flex-none md:w-64">
-              <SideNav />
-            </div> */}
-            <div className="grow p-6 md:overflow-y-auto md:p-12">{children}</div>
-          </div>
+          <TooltipProvider>
+            <div className="flex h-screen flex-col md:flex-row md:overflow-hidden">
+              {/* <div className="w-full flex-none md:w-64">
+                <SideNav />
+              </div> */}
+              <div className="grow p-6 md:overflow-y-auto md:p-12">{children}</div>
+            </div>
+          </TooltipProvider>
         </Providers>
       </body>
     </html>
