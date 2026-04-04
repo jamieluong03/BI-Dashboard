@@ -62,9 +62,9 @@ const activeTo = dateArgs?.to ?? defaultRange.to;
   const formatter = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
 
   return (
-    <main className="min-h-screen bg-slate-50">
-      <div className="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8 lg:py-12">
-        <header className="mb-8">
+    <main className="min-h-screen">
+      <div className="max-w-7xl mx-auto sm:px-6 lg:px-2 lg:py-2">
+        <header className="mb-8 p-6 bg-slate-50 rounded-xl">
           <h1 className="text-2xl lg:text-3xl font-bold text-slate-900">Analytics Dashboard</h1>
           <SelectDate range={dateRange} onRangeChange={setDateRange}/>
         </header>
@@ -79,7 +79,7 @@ const activeTo = dateArgs?.to ?? defaultRange.to;
           </p>
         </div>
         ) : (
-        <div className="grid grid-cols-2 grid-cols-2 lg:grid-cols-4 gap-6 p-2">
+        <div className="grid grid-cols-2 grid-cols-2 lg:grid-cols-4 gap-6 p-6 bg-slate-50 rounded-xl">
           <StatCard
             title="Total Revenue"
             value={formatter.format(orders?.totalRevenue || 0)}
