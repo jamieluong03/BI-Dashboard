@@ -23,7 +23,7 @@ interface SelectDateProps {
 export function SelectDate({ range, onRangeChange }: SelectDateProps) {
   const [dateValue, setDateValue] = useState<string>("last_30");
   const [localRange, setLocalRange] = useState<DateRange | undefined>(range);
-  
+  const [isCalendarOpen, setIsCalendarOpen] = useState(false);
 
   useEffect(() => {
     setLocalRange(range);
@@ -31,11 +31,16 @@ export function SelectDate({ range, onRangeChange }: SelectDateProps) {
 
   const handleSelectChange = (value: string) => {
     setDateValue(value);
-    if (value !== "custom") {
+    if (value === "custom") {
+        setTimeout(() => {
+        setIsCalendarOpen(true);
+        }, 100);
+    } else {
       const preset = getRangePresets(value);
       const newRange = { from: new Date(preset.from), to: new Date(preset.to) };
       setLocalRange(newRange);
       onRangeChange(newRange);
+      setIsCalendarOpen(false);
     }
   };
 
@@ -46,12 +51,10 @@ export function SelectDate({ range, onRangeChange }: SelectDateProps) {
     }
 
     onRangeChange(newRange);
-
     if (dateValue !== "custom") setDateValue("custom");
 
     if (newRange?.from && newRange?.to) {
-        onRangeChange(newRange);
-    }
+        setTimeout(() => setIsCalendarOpen(false), 200);    }
 };
 
   return (
@@ -76,7 +79,9 @@ export function SelectDate({ range, onRangeChange }: SelectDateProps) {
 
       <DateRangePicker 
         value={localRange}
-        onValueChange={handleRangeChange} 
+        onValueChange={handleRangeChange}
+        open={isCalendarOpen}
+        onOpenChange={setIsCalendarOpen}
       />
     </div>
   );

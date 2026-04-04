@@ -17,16 +17,20 @@ interface DateRangePickerProps {
   className?: string;
   value?: DateRange;
   onValueChange?: (range: DateRange | undefined, selectedDay: Date) => void;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
 }
 
 export function DateRangePicker({
   className,
   value,
   onValueChange,
+  open,
+  onOpenChange
 }: DateRangePickerProps) {
   return (
     <div className={cn("grid gap-2", className)}>
-      <Popover>
+      <Popover open={open} onOpenChange={onOpenChange}>
         <PopoverTrigger asChild>
           <Button
             id="date"
@@ -51,7 +55,14 @@ export function DateRangePicker({
             )}
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-auto p-0" align="start">
+        <PopoverContent className="w-auto p-0" align="start"
+          onPointerDownOutside={(e) => {
+            const target = e.target as HTMLElement;
+            if (target?.closest('[role="combobox"]')) {
+              e.preventDefault();
+            }
+          }}
+        >
           <Calendar
             mode="range"
             selected={value}
