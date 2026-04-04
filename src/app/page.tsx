@@ -81,7 +81,7 @@ const activeTo = dateArgs?.to ?? defaultRange.to;
           </p>
         </div>
         ) : (
-        <div className="grid grid-cols-2 grid-cols-2 lg:grid-cols-4 gap-6 p-6 bg-slate-50 rounded-xl">
+        <div className="grid grid-cols-2 grid-cols-2 lg:grid-cols-4 gap-6 p-4 md:p-6 bg-slate-50 rounded-xl">
           <StatCard
             title="Total Revenue"
             value={formatter.format(orders?.totalRevenue || 0)}
