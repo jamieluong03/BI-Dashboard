@@ -65,7 +65,7 @@ const activeTo = dateArgs?.to ?? defaultRange.to;
     <main className="min-h-screen">
       <div className="max-w-7xl mx-auto sm:px-6 lg:px-2 lg:py-2">
         <header className="mb-8 p-6 bg-slate-50 rounded-xl">
-          <h1 className="text-2xl lg:text-3xl font-bold text-slate-900">Analytics Dashboard</h1>
+          <h1 className="text-2xl lg:text-3xl font-bold text-slate-900 mb-4">Analytics Dashboard</h1>
           <SelectDate range={dateRange} onRangeChange={setDateRange}/>
         </header>
         {isAnyDataLoading ? (

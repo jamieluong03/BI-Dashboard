@@ -60,7 +60,7 @@ export function SelectDate({ range, onRangeChange }: SelectDateProps) {
   return (
     <div className="flex flex-col md:flex-row gap-3">
       <Select value={dateValue} onValueChange={handleSelectChange}>
-        <SelectTrigger className="w-full md:w-[180px]">
+        <SelectTrigger className="w-full md:w-[180px] bg-white">
           <SelectValue placeholder="Select a date" />
         </SelectTrigger>
         <SelectContent>
