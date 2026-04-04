@@ -65,7 +65,7 @@ export function SelectDate({ range, onRangeChange }: SelectDateProps) {
         </SelectTrigger>
         <SelectContent>
           <SelectGroup>
-            <SelectLabel>Presets</SelectLabel>
+            <SelectLabel>Date</SelectLabel>
             <SelectItem value="today">Today</SelectItem>
             <SelectItem value="last_7">Last Week</SelectItem>
             <SelectItem value="last_30">Last 30 Days</SelectItem>
