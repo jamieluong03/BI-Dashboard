@@ -12,6 +12,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { useIsMobile } from "@/components/mobileScreen";
 
 interface DateRangePickerProps {
   className?: string;
@@ -28,6 +29,9 @@ export function DateRangePicker({
   open,
   onOpenChange
 }: DateRangePickerProps) {
+
+  const isMobile = useIsMobile();
+
   return (
     <div className={cn("grid gap-2", className)}>
       <Popover open={open} onOpenChange={onOpenChange}>
@@ -35,12 +39,10 @@ export function DateRangePicker({
           <Button
             id="date"
             variant={"outline"}
-            className={cn(
-              "w-[300px] justify-start text-left font-normal",
-              !value && "text-muted-foreground"
-            )}
+            className="w-full md:w-[300px] justify-start text-left font-normal bg-white"
           >
             <CalendarIcon className="mr-2 h-4 w-4" />
+            <span className="truncate">
             {value?.from ? (
               value.to ? (
                 <>
@@ -53,21 +55,23 @@ export function DateRangePicker({
             ) : (
               <span>Pick a date range</span>
             )}
+            </span>
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-auto p-0" align="start"
+        <PopoverContent className="w-auto p-0 border-none shadow-2xl" align={isMobile ? "center" : "start"}
           onPointerDownOutside={(e) => {
             const target = e.target as HTMLElement;
             if (target?.closest('[role="combobox"]')) {
               e.preventDefault();
             }
           }}
+          sideOffset={8}
         >
           <Calendar
             mode="range"
             selected={value}
             onSelect={(range, selectedDay) => onValueChange?.(range, selectedDay)}
-            numberOfMonths={2}
+            numberOfMonths={isMobile ? 1 : 2}
             defaultMonth={value?.from}
             autoFocus
           />
