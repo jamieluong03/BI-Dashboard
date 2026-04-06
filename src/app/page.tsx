@@ -20,19 +20,19 @@ export default function Dashboard() {
 
   const dateArgs = useMemo(() => {
   // if there's no full date range, don't update dashboard
-  if (!dateRange?.from || !dateRange?.to) {
-    return null; 
-  }
+    if (!dateRange?.from || !dateRange?.to) {
+      return null; 
+    }
 
-  return {
-    from: dateRange.from.toISOString(),
-    to: dateRange.to.toISOString()
-  };
-}, [dateRange]);
+    return {
+      from: dateRange.from.toISOString(),
+      to: dateRange.to.toISOString()
+    };
+  }, [dateRange]);
 
-const defaultRange = getRangePresets("last_30");
-const activeFrom = dateArgs?.from ?? defaultRange.from;
-const activeTo = dateArgs?.to ?? defaultRange.to;
+  const defaultRange = getRangePresets("last_30");
+  const activeFrom = dateArgs?.from ?? defaultRange.from;
+  const activeTo = dateArgs?.to ?? defaultRange.to;
   
   const { data, isLoading: isRoasLoading, isError: isRoasError, error: roasError } = useBlendedROAS(activeFrom, activeTo);
   const { clv, isLoading: isCLVLoading, isError: isCLVError, error: clvError } = useCLVStats();
@@ -81,26 +81,30 @@ const activeTo = dateArgs?.to ?? defaultRange.to;
           </p>
         </div>
         ) : (
-        <div className="grid grid-cols-2 grid-cols-2 lg:grid-cols-4 gap-6 p-4 md:p-6 bg-slate-50 rounded-xl">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 p-4 md:p-6 bg-slate-50 rounded-xl">
           <StatCard
             title="Total Revenue"
             value={formatter.format(orders?.totalRevenue || 0)}
             description="Steady high-ticket volume supported by premium product positioning."
+            metric="total_revenue"
           />
           <StatCard
             title="Net Profit"
             value={formatter.format(orders?.netProfit || 0)}
             description="Healthy 42% bottom-line margin after all operating expenses."
+            metric="net_profit"
           />
           <StatCard
             title="Total Orders"
             value={orders?.totalOrders || 0}
             description=""
+            metric="total_orders"
           />
           <StatCard
             title="AOV"
             value={formatter.format(orders?.averageOrderValue || 0)}
             description="Strong customer willingness to invest in luxury price points."
+            metric="aov"
           />
           <div className="col-span-2">
             <ChartBarLabelCustom
@@ -124,31 +128,37 @@ const activeTo = dateArgs?.to ?? defaultRange.to;
             title="ROAS"
             value={`${(data?.roas.toFixed(2) || 0)}x`}
             description="Paid media is scaling efficiently; $4 returned for every $1 in ad spend."
+            metric="roas"
           />
           <StatCard
             title="ROI"
             value={`${(orders?.returnOnInvestment.toFixed(2) || 0)}%`}
             description="Exceptional capital efficiency; for every $1 spent, $1.45 is returned in profit."
+            metric="roi"
           />
           <StatCard
             title="Conversion Rate"
             value={(data?.conversionRate.toFixed(2) || 0)}
             description="Typical for high-AOV jewelry; focus on high-intent traffic to boost"
+            metric="conversion_rate"
           />
           <StatCard
             title="CTR"
             value={(data?.clickThroughRate.toFixed(2) || 0)}
             description="Creative is resonating well, driving strong engagement across socials."
+            metric="ctr"
           />
           <StatCard
             title="CLV"
             value={formatter.format(clv?.avgCLV || 0)}
             description="Significant long-term brand loyalty; customers return for repeat gifting."
+            metric="clv"
           />
           <StatCard
             title="MER"
             value={`${(orders?.marketingEfficiencyRatio.toFixed(2) || 0)}x`}
             description="Total marketing spend is well-balanced against gross revenue."
+            metric="mer"
           />
           <div className="col-span-2">
             <InventoryCard
