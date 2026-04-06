@@ -72,6 +72,16 @@ export function SelectDate({ range, onRangeChange }: SelectDateProps) {
             <SelectItem value="last_90">Last 90 Days</SelectItem>
             <SelectItem value="last_month">Last Month</SelectItem>
             <SelectItem value="last_year">Last Year</SelectItem>
+          </SelectGroup>
+          <SelectGroup>
+            <SelectLabel>Quarter</SelectLabel>
+            <SelectItem value="q1">Q1 (Jan - Mar)</SelectItem>
+            <SelectItem value="q2">Q2 (Apr - Jun)</SelectItem>
+            <SelectItem value="q3">Q3 (Jul - Sep)</SelectItem>
+            <SelectItem value="q4">Q4 (Oct - Dec)</SelectItem>
+          </SelectGroup>
+          <SelectGroup>
+            <SelectLabel>Custom</SelectLabel>
             <SelectItem value="custom">Custom Range</SelectItem>
           </SelectGroup>
         </SelectContent>

@@ -1,6 +1,6 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
-import { startOfDay, endOfDay, subDays, subMonths, subYears, startOfMonth, endOfMonth } from "date-fns";
+import { startOfDay, endOfDay, subDays, subMonths, subYears, startOfMonth, endOfMonth, startOfQuarter, endOfQuarter, setMonth, startOfYear } from "date-fns";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -33,6 +33,7 @@ export const getSeasonalMultiplier = (date: Date) => {
 
 export const getRangePresets = (preset: string) => {
   const now = new Date();
+  const currentYear = now.getFullYear();
   
   switch (preset) {
     case "today":
@@ -48,6 +49,22 @@ export const getRangePresets = (preset: string) => {
       return { from: startOfMonth(prev).toISOString(), to: endOfMonth(prev).toISOString() };
     case "last_year":
       return { from: subYears(now, 1).toISOString(), to: now.toISOString() };
+    case "q1":
+      // Jan 1 to Mar 31
+      const q1Date = setMonth(startOfYear(now), 0);
+      return { from: startOfQuarter(q1Date).toISOString(), to: endOfQuarter(q1Date).toISOString() };
+    case "q2":
+      // Apr 1 to Jun 30
+      const q2Date = setMonth(startOfYear(now), 3);
+      return { from: startOfQuarter(q2Date).toISOString(), to: endOfQuarter(q2Date).toISOString() };
+    case "q3":
+      // Jul 1 to Sep 30
+      const q3Date = setMonth(startOfYear(now), 6);
+      return { from: startOfQuarter(q3Date).toISOString(), to: endOfQuarter(q3Date).toISOString() };
+    case "q4":
+      // Oct 1 to Dec 31
+      const q4Date = setMonth(startOfYear(now), 9);
+      return { from: startOfQuarter(q4Date).toISOString(), to: endOfQuarter(q4Date).toISOString() };
     default:
       console.warn(`No preset found for: ${preset}. Falling back to 30 days.`);
       return { from: subDays(now, 30).toISOString(), to: now.toISOString() };
