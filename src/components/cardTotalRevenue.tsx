@@ -4,6 +4,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { RevenueComparisonChart } from "@/components/revenueComparisonChart";
 import { useRevenueComparisonQuery } from "@/hooks/calculations";
 import { startOfMonth, endOfMonth, startOfQuarter, endOfQuarter, subQuarters, format, subMonths, setMonth, setYear } from "date-fns";
+import { lastOrderDate } from "@/lib/utils";
 
 type CompType = "mom" | "qoq" | "yoy";
 
@@ -11,15 +12,15 @@ export default function TotalRevenueCard() {
     const [activeTab, setActiveTab] = useState<CompType>("mom");
 
     // state for months
-    const [momA, setMomA] = useState<Date>(() => startOfMonth(new Date()));
-    const [momB, setMomB] = useState<Date>(() => startOfMonth(subMonths(new Date(), 1)));
+    const [momA, setMomA] = useState<Date>(() => startOfMonth(lastOrderDate));
+    const [momB, setMomB] = useState<Date>(() => startOfMonth(subMonths(lastOrderDate, 1)));
 
     // state for quarters
-    const [qoqA, setQoqA] = useState<Date>(() => startOfQuarter(new Date()));
-    const [qoqB, setQoqB] = useState<Date>(() => startOfQuarter(subQuarters(new Date(), 1)));
+    const [qoqA, setQoqA] = useState<Date>(() => startOfQuarter(lastOrderDate));
+    const [qoqB, setQoqB] = useState<Date>(() => startOfQuarter(subQuarters(lastOrderDate, 1)));
 
     // state for years
-    const [yoyMonth, setYoyMonth] = useState<number>(new Date().getMonth());
+    const [yoyMonth, setYoyMonth] = useState<number>(lastOrderDate.getMonth());
     const [yoyYearA, setYoyYearA] = useState<number>(2026);
     const [yoyYearB, setYoyYearB] = useState<number>(2025);
 
@@ -37,8 +38,8 @@ export default function TotalRevenueCard() {
             };
         }
 
-        const dateA = setYear(setMonth(new Date(), yoyMonth), yoyYearA);
-        const dateB = setYear(setMonth(new Date(), yoyMonth), yoyYearB);
+        const dateA = setYear(setMonth(lastOrderDate, yoyMonth), yoyYearA);
+        const dateB = setYear(setMonth(lastOrderDate, yoyMonth), yoyYearB);
         return {
             rangeA: { from: startOfMonth(dateA), to: endOfMonth(dateA) },
             rangeB: { from: startOfMonth(dateB), to: endOfMonth(dateB) }
@@ -117,7 +118,7 @@ export default function TotalRevenueCard() {
 };
 
 function MonthSelect({ value, onChange }: { value: Date, onChange: (d: Date) => void }) {
-    const months = Array.from({ length: 12 }).map((_, i) => subMonths(startOfMonth(new Date()), i));
+    const months = Array.from({ length: 12 }).map((_, i) => subMonths(startOfMonth(lastOrderDate), i));
     return (
         <Select value={value.toISOString()} onValueChange={(v) => onChange(new Date(v))}>
             <SelectTrigger className="h-8 w-[130px] text-xs font-semibold bg-white">
