@@ -45,10 +45,8 @@ export const RevenueComparisonChart = ({ current, previous }: RevenueProps) => {
             .tickFormat((d) => {
                 const index = Number(d);
                 const item = current[index] || previous[index];
-
                 if (item && item.date) {
                     const [year, month, day] = item.date.split('-').map(Number);
-
                     return `${month}/${day}`;
                 }
                 return "";
@@ -59,39 +57,36 @@ export const RevenueComparisonChart = ({ current, previous }: RevenueProps) => {
             .tickPadding(10)
             .tickFormat(d => `$${d3.format(".2s")(d)}`);
 
-        // X Axis
+        // X Axis (The actual baseline)
         g.append("g")
             .attr("transform", `translate(0,${height})`)
             .attr("class", "text-slate-400 font-medium text-[10px]")
             .call(xAxis)
             .call(g => g.select(".domain")
-                .attr("display", "block")
                 .attr("stroke", "#94a3b8")
                 .attr("stroke-width", "1.5")
-            )
-            .call(g => g.selectAll(".tick line")
-                .attr("stroke", "#cbd5e1")
             );
 
-        // Y Axis
+        // Y Axis (Labels only)
         g.append("g")
             .attr("class", "text-slate-400 font-medium text-[10px]")
             .call(yAxis)
-            .call(g => g.select(".domain").attr("display", "none"));
+            .call(g => g.select(".domain").attr("display", "block"));
 
+        // --- 4. LABELS (X and Y) ---
         // X-Axis Label
         g.append("text")
             .attr("text-anchor", "middle")
             .attr("x", width / 2)
-            .attr("y", height + 45)
+            .attr("y", height + 50)
             .attr("class", "fill-slate-400 text-[10px] font-bold uppercase tracking-widest")
-            .text("Day of Period");
+            .text("Days");
 
         // Y-Axis Label
         g.append("text")
             .attr("text-anchor", "middle")
             .attr("transform", "rotate(-90)")
-            .attr("y", -margin.left + 30)
+            .attr("y", -margin.left + 20)
             .attr("x", -height / 2)
             .attr("class", "fill-slate-400 text-[10px] font-bold uppercase tracking-widest")
             .text("Revenue ($)");
@@ -99,8 +94,16 @@ export const RevenueComparisonChart = ({ current, previous }: RevenueProps) => {
         // --- 5. GRID & LINES ---
         g.append("g")
             .attr("class", "grid-lines")
-            .call(d3.axisLeft(y).ticks(5).tickSize(-width).tickFormat(() => ""))
-            .call(g => g.selectAll(".tick line").attr("stroke", "#f8fafc"));
+            .call(d3.axisLeft(y)
+                .ticks(5)
+                .tickSize(-width)
+                .tickFormat(() => "")
+            )
+            .call(g => g.select(".domain").remove())
+            .call(g => g.selectAll(".tick line")
+                .attr("stroke", "#f1f5f9e7")
+                .attr("stroke-width", 1)
+            );
 
         const line = d3.line<RevenueDataPoint>()
             .x(d => x(d.dayIndex))
@@ -128,68 +131,68 @@ export const RevenueComparisonChart = ({ current, previous }: RevenueProps) => {
                 if (tooltipRef.current) tooltipRef.current.style.opacity = "0";
             })
             .on("mousemove", function (event) {
-    const [mX, mY] = d3.pointer(event);
-    const index = Math.round(x.invert(mX));
+                const [mX, mY] = d3.pointer(event);
+                const index = Math.round(x.invert(mX));
 
-    if (index >= 0 && index < maxDays) {
-        const dA = current[index];
-        const dB = previous[index];
-        const xPos = x(index);
+                if (index >= 0 && index < maxDays) {
+                    const dA = current[index];
+                    const dB = previous[index];
+                    const xPos = x(index);
 
-        // Update the vertical line and dots
-        focus.select("line").attr("x1", xPos).attr("x2", xPos);
-        if (dA) dotA.attr("cx", xPos).attr("cy", y(dA.value)).style("display", null);
-        else dotA.style("display", "none");
-        
-        if (dB) dotB.attr("cx", xPos).attr("cy", y(dB.value)).style("display", null);
-        else dotB.style("display", "none");
+                    // Update the vertical line and dots
+                    focus.select("line").attr("x1", xPos).attr("x2", xPos);
+                    if (dA) dotA.attr("cx", xPos).attr("cy", y(dA.value)).style("display", null);
+                    else dotA.style("display", "none");
 
-        // --- TOOLTIP UPDATE ---
-        if (tooltipRef.current) {
-            const item = dA || dB;
-            let dateLabel = "";
+                    if (dB) dotB.attr("cx", xPos).attr("cy", y(dB.value)).style("display", null);
+                    else dotB.style("display", "none");
 
-            if (item && item.date) {
-                const [year, month, day] = item.date.split('-').map(Number);
-                dateLabel = `${month}/${day}`;
-            }
+                    // --- TOOLTIP UPDATE ---
+                    if (tooltipRef.current) {
+                        const item = dA || dB;
+                        let dateLabel = "";
 
-            // 1. Show the tooltip
-            tooltipRef.current.style.opacity = "1";
-            
-            // 2. Position it (Adjusting for margins and adding a slight offset)
-            tooltipRef.current.style.left = `${mX + margin.left + 15}px`;
-            tooltipRef.current.style.top = `${mY + margin.top - 10}px`;
+                        if (item && item.date) {
+                            const [year, month, day] = item.date.split('-').map(Number);
+                            dateLabel = `${month}/${day}`;
+                        }
 
-            // 3. Inject the HTML
-            tooltipRef.current.innerHTML = `
-                <div class="flex flex-col gap-1.5 min-w-[120px]">
-                    <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest border-b border-slate-100 pb-1 mb-1">
-                        ${dateLabel}
-                    </div>
-                    
-                    <div class="flex justify-between items-center gap-4">
-                        <span class="flex items-center gap-1.5 text-slate-700 font-medium">
-                            <div class="w-1.5 h-1.5 rounded-full bg-blue-500"></div> Now
-                        </span>
-                        <span class="font-bold text-slate-900">
-                            $${dA?.value.toLocaleString() || "0"}
-                        </span>
-                    </div>
+                        // 1. Show the tooltip
+                        tooltipRef.current.style.opacity = "1";
 
-                    <div class="flex justify-between items-center gap-4">
-                        <span class="flex items-center gap-1.5 text-slate-400 font-medium">
-                            <div class="w-1.5 h-1.5 rounded-full bg-slate-300"></div> Prev
-                        </span>
-                        <span class="font-bold text-slate-500">
-                            $${dB?.value.toLocaleString() || "0"}
-                        </span>
-                    </div>
-                </div>
-            `;
-        }
-    }
-});
+                        // 2. Position it (Adjusting for margins and adding a slight offset)
+                        tooltipRef.current.style.left = `${mX + margin.left + 15}px`;
+                        tooltipRef.current.style.top = `${mY + margin.top - 10}px`;
+
+                        // 3. Inject the HTML
+                        tooltipRef.current.innerHTML = `
+                            <div class="flex flex-col gap-1.5 min-w-[120px]">
+                                <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest border-b border-slate-100 pb-1 mb-1">
+                                    ${dateLabel}
+                                </div>
+                                
+                                <div class="flex justify-between items-center gap-4">
+                                    <span class="flex items-center gap-1.5 text-slate-700 font-medium">
+                                        <div class="w-1.5 h-1.5 rounded-full bg-blue-500"></div> Now
+                                    </span>
+                                    <span class="font-bold text-slate-900">
+                                        $${dA?.value.toLocaleString() || "0"}
+                                    </span>
+                                </div>
+
+                                <div class="flex justify-between items-center gap-4">
+                                    <span class="flex items-center gap-1.5 text-slate-400 font-medium">
+                                        <div class="w-1.5 h-1.5 rounded-full bg-slate-300"></div> Prev
+                                    </span>
+                                    <span class="font-bold text-slate-500">
+                                        $${dB?.value.toLocaleString() || "0"}
+                                    </span>
+                                </div>
+                            </div>
+                        `;
+                    }
+                }
+            });
 
     }, [current, previous]);
 
