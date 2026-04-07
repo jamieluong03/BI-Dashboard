@@ -8,13 +8,13 @@ import { InventoryCard } from "@/components/inventoryCard";
 import { ChartRadarDots } from "@/components/radarChart";
 import { DashboardSkeleton } from "@/components/dashboardSkeleton";
 import { SelectDate } from "@/components/dateSelect";
-import { getRangePresets } from "@/lib/utils";
+import { getRangePresets, lastOrderDate } from "@/lib/utils";
 import { DateRange } from "react-day-picker";
 
-export default function Dashboard() {
 
+export default function Dashboard() {
   const [dateRange, setDateRange] = useState<DateRange | undefined>(() => {
-      const preset = getRangePresets("last_30");
+      const preset = getRangePresets("last_30", lastOrderDate);
       return { from: new Date(preset.from), to: new Date(preset.to) };
   });
 
