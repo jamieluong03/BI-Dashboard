@@ -48,10 +48,10 @@ export default function TotalRevenueCard() {
     const { data, isLoading, isError, error } = useRevenueComparisonQuery(ranges.rangeA, ranges.rangeB);
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-6 pt-2">
             <div className="flex flex-col gap-4">
                 <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as CompType)}>
-                    <TabsList className="grid w-full grid-cols-3">
+                    <TabsList className="grid w-full grid-cols-3 h-11 bg-slate-100/50 p-1">
                         <TabsTrigger value="mom">Month (MoM)</TabsTrigger>
                         <TabsTrigger value="qoq">Quarter (QoQ)</TabsTrigger>
                         <TabsTrigger value="yoy">Year (YoY)</TabsTrigger>
@@ -59,9 +59,9 @@ export default function TotalRevenueCard() {
                 </Tabs>
 
                 <div className="flex flex-wrap items-center justify-between bg-slate-50 p-3 rounded-lg border border-slate-100 gap-3">
-                    <span className="text-[10px] font-bold text-slate-400 uppercase">Comparison Periods</span>
+                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Comparison Periods</span>
 
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-3">
                         {activeTab === "mom" && (
                             <>
                                 <MonthSelect value={momA} onChange={setMomA} />
@@ -94,7 +94,7 @@ export default function TotalRevenueCard() {
                 {isLoading ? (
                     <div className="flex flex-col items-center gap-2">
                         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-                        <p className="text-xs text-slate-400 font-medium">Crunching Numbers...</p>
+                        <p className="text-xs text-slate-400 font-medium">Loading...</p>
                     </div>
                 ) : isError ? (
                     <div className="text-center space-y-2">
@@ -104,7 +104,7 @@ export default function TotalRevenueCard() {
                         </p>
                     </div>
                 ) : (
-                    <div className="bg-white rounded-xl border border-slate-200 p-4 mt-4">
+                    <div className="bg-white border-slate-200 p-4 mt-4">
                         <RevenueComparisonChart
                             current={data?.current || []}
                             previous={data?.previous || []}

@@ -4,181 +4,210 @@ import React, { useRef, useEffect } from "react";
 import * as d3 from "d3";
 
 export interface RevenueDataPoint {
-  dayIndex: number;
-  value: number;
-  date: string;
+    dayIndex: number;
+    value: number;
+    date: string;
 }
 
 export interface RevenueProps {
-  current: RevenueDataPoint[];
-  previous: RevenueDataPoint[];
+    current: RevenueDataPoint[];
+    previous: RevenueDataPoint[];
 }
 
 export const RevenueComparisonChart = ({ current, previous }: RevenueProps) => {
-  const svgRef = useRef<SVGSVGElement>(null);
-  const tooltipRef = useRef<HTMLDivElement>(null);
+    const svgRef = useRef<SVGSVGElement>(null);
+    const containerRef = useRef<HTMLDivElement>(null);
+    const tooltipRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    if (!svgRef.current || current.length === 0) return;
+    useEffect(() => {
+        if (!svgRef.current || current.length === 0) return;
 
-    // --- 2. DIMENSIONS & MARGINS ---
-    const margin = { top: 30, right: 30, bottom: 50, left: 70 };
-    const width = svgRef.current.clientWidth - margin.left - margin.right;
-    const height = 350 - margin.top - margin.bottom;
+        const margin = { top: 20, right: 20, bottom: 100, left: 70 };
+        const width = svgRef.current.clientWidth - margin.left - margin.right;
+        const height = 350 - margin.top - margin.bottom;
 
-    const svg = d3.select(svgRef.current);
-    svg.selectAll("*").remove(); // Clear previous render
+        const svg = d3.select(svgRef.current);
+        svg.selectAll("*").remove();
 
-    const g = svg.append("g")
-      .attr("transform", `translate(${margin.left},${margin.top})`);
+        const g = svg.append("g")
+            .attr("transform", `translate(${margin.left},${margin.top})`);
 
-    // --- 3. SCALES ---
-    const maxDays = Math.max(current.length, previous.length);
-    const x = d3.scaleLinear().domain([0, maxDays - 1]).range([0, width]);
-    
-    const maxValue = d3.max([...current, ...previous], d => d.value) || 100;
-    const y = d3.scaleLinear()
-      .domain([0, maxValue * 1.1]) // 10% padding at top
-      .range([height, 0]);
+        // --- 2. SCALES ---
+        const maxDays = Math.max(current.length, previous.length);
+        const x = d3.scaleLinear().domain([0, maxDays - 1]).range([0, width]);
+        const maxValue = d3.max([...current, ...previous], d => d.value) || 100;
+        const y = d3.scaleLinear().domain([0, maxValue * 1.1]).range([height, 0]);
 
-    // --- 4. AXES ---
-    // X Axis
-    const xAxis = d3.axisBottom(x)
-      .ticks(Math.min(maxDays, 10))
-      .tickFormat(d => `Day ${Number(d) + 1}`);
+        // --- 3. AXES ---
+        const xAxis = d3.axisBottom(x)
+            .ticks(Math.min(maxDays, 8))
+            .tickPadding(12)
+            .tickFormat((d) => {
+                const index = Number(d);
+                const item = current[index] || previous[index];
 
-    g.append("g")
-      .attr("transform", `translate(0,${height})`)
-      .attr("class", "text-slate-400 font-medium text-[10px]")
-      .call(xAxis)
-      .call(g => g.select(".domain").attr("stroke", "#e2e8f0"));
+                if (item && item.date) {
+                    const [year, month, day] = item.date.split('-').map(Number);
 
-    // Y Axis (Currency Format)
-    const yAxis = d3.axisLeft(y)
-      .ticks(5)
-      .tickFormat(d => `$${d3.format(".2s")(d)}`);
+                    return `${month}/${day}`;
+                }
+                return "";
+            });
 
-    g.append("g")
-      .attr("class", "text-slate-400 font-medium text-[10px]")
-      .call(yAxis)
-      .call(g => g.select(".domain").attr("stroke", "none"));
+        const yAxis = d3.axisLeft(y)
+            .ticks(5)
+            .tickPadding(10)
+            .tickFormat(d => `$${d3.format(".2s")(d)}`);
 
-    // --- 5. GRID LINES ---
-    g.append("g")
-      .attr("class", "grid-lines stroke-slate-100")
-      .call(d3.axisLeft(y).ticks(5).tickSize(-width).tickFormat(() => ""));
+        // X Axis
+        g.append("g")
+            .attr("transform", `translate(0,${height})`)
+            .attr("class", "text-slate-400 font-medium text-[10px]")
+            .call(xAxis)
+            .call(g => g.select(".domain")
+                .attr("display", "block")
+                .attr("stroke", "#94a3b8")
+                .attr("stroke-width", "1.5")
+            )
+            .call(g => g.selectAll(".tick line")
+                .attr("stroke", "#cbd5e1")
+            );
 
-    // --- 6. LINE GENERATOR ---
-    const lineGenerator = d3.line<RevenueDataPoint>()
-      .x(d => x(d.dayIndex))
-      .y(d => y(d.value))
-      .curve(d3.curveMonotoneX);
+        // Y Axis
+        g.append("g")
+            .attr("class", "text-slate-400 font-medium text-[10px]")
+            .call(yAxis)
+            .call(g => g.select(".domain").attr("display", "none"));
 
-    // Draw Previous (Dashed Grey)
-    if (previous.length > 0) {
-      g.append("path")
-        .datum(previous)
-        .attr("fill", "none")
-        .attr("stroke", "#cbd5e1")
-        .attr("stroke-width", 2)
-        .attr("stroke-dasharray", "5,5")
-        .attr("d", lineGenerator);
-    }
+        // X-Axis Label
+        g.append("text")
+            .attr("text-anchor", "middle")
+            .attr("x", width / 2)
+            .attr("y", height + 45)
+            .attr("class", "fill-slate-400 text-[10px] font-bold uppercase tracking-widest")
+            .text("Day of Period");
 
-    // Draw Current (Solid Blue)
-    g.append("path")
-      .datum(current)
-      .attr("fill", "none")
-      .attr("stroke", "#3b82f6")
-      .attr("stroke-width", 3)
-      .attr("d", lineGenerator);
+        // Y-Axis Label
+        g.append("text")
+            .attr("text-anchor", "middle")
+            .attr("transform", "rotate(-90)")
+            .attr("y", -margin.left + 30)
+            .attr("x", -height / 2)
+            .attr("class", "fill-slate-400 text-[10px] font-bold uppercase tracking-widest")
+            .text("Revenue ($)");
 
-    // --- 7. HOVER OVERLAY SYSTEM ---
-    const focus = g.append("g").style("display", "none");
+        // --- 5. GRID & LINES ---
+        g.append("g")
+            .attr("class", "grid-lines")
+            .call(d3.axisLeft(y).ticks(5).tickSize(-width).tickFormat(() => ""))
+            .call(g => g.selectAll(".tick line").attr("stroke", "#f8fafc"));
 
-    // Snapping vertical line
-    focus.append("line")
-      .attr("class", "stroke-slate-300")
-      .attr("stroke-width", 1)
-      .attr("stroke-dasharray", "3,3")
-      .attr("y1", 0)
-      .attr("y2", height);
+        const line = d3.line<RevenueDataPoint>()
+            .x(d => x(d.dayIndex))
+            .y(d => y(d.value))
+            .curve(d3.curveMonotoneX);
 
-    // Snapping dots
-    const dotCurrent = focus.append("circle").attr("r", 5).attr("fill", "#3b82f6").attr("stroke", "white").attr("stroke-width", 2);
-    const dotPrevious = focus.append("circle").attr("r", 5).attr("fill", "#94a3b8").attr("stroke", "white").attr("stroke-width", 2);
-
-    // Catch-all invisible rectangle for mouse tracking
-    g.append("rect")
-      .attr("width", width)
-      .attr("height", height)
-      .attr("fill", "transparent")
-      .on("mouseover", () => focus.style("display", null))
-      .on("mouseout", () => {
-        focus.style("display", "none");
-        if (tooltipRef.current) tooltipRef.current.style.opacity = "0";
-      })
-      .on("mousemove", function(event) {
-        const [mouseX] = d3.pointer(event);
-        const index = Math.round(x.invert(mouseX));
-        
-        if (index >= 0 && index < maxDays) {
-          const dCurr = current[index];
-          const dPrev = previous[index];
-          const xPos = x(index);
-
-          // Update focus line position
-          focus.select("line").attr("x1", xPos).attr("x2", xPos);
-          
-          // Position dots on the lines
-          if (dCurr) dotCurrent.attr("cx", xPos).attr("cy", y(dCurr.value)).style("display", null);
-          else dotCurrent.style("display", "none");
-
-          if (dPrev) dotPrevious.attr("cx", xPos).attr("cy", y(dPrev.value)).style("display", null);
-          else dotPrevious.style("display", "none");
-
-          // Update tooltip position and content
-          if (tooltipRef.current) {
-            tooltipRef.current.style.opacity = "1";
-            tooltipRef.current.style.left = `${event.pageX + 15}px`;
-            tooltipRef.current.style.top = `${event.pageY - 60}px`;
-            tooltipRef.current.innerHTML = `
-              <div class="space-y-1.5 min-w-[120px]">
-                <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Day ${index + 1}</div>
-                <div class="flex justify-between items-center gap-4">
-                  <span class="flex items-center gap-1.5 text-slate-700">
-                    <div class="w-1.5 h-1.5 rounded-full bg-blue-500"></div> Current
-                  </span>
-                  <span class="font-bold">$${dCurr?.value.toLocaleString() || 0}</span>
-                </div>
-                <div class="flex justify-between items-center gap-4">
-                  <span class="flex items-center gap-1.5 text-slate-400">
-                    <div class="w-1.5 h-1.5 rounded-full bg-slate-300"></div> Previous
-                  </span>
-                  <span class="font-bold text-slate-500">$${dPrev?.value.toLocaleString() || 0}</span>
-                </div>
-              </div>
-            `;
-          }
+        if (previous.length > 0) {
+            g.append("path").datum(previous).attr("fill", "none").attr("stroke", "#cbd5e1").attr("stroke-width", 2).attr("stroke-dasharray", "4,4").attr("d", line);
         }
-      });
+        g.append("path").datum(current).attr("fill", "none").attr("stroke", "#3b82f6").attr("stroke-width", 3).attr("d", line);
 
-  }, [current, previous]);
+        // --- 6. TOOLTIP OVERLAY ---
+        const focus = g.append("g").style("display", "none");
+        focus.append("line").attr("stroke", "#e2e8f0").attr("stroke-width", 1).attr("stroke-dasharray", "3,3").attr("y1", 0).attr("y2", height);
+        const dotA = focus.append("circle").attr("r", 4).attr("fill", "#3b82f6").attr("stroke", "white").attr("stroke-width", 2);
+        const dotB = focus.append("circle").attr("r", 4).attr("fill", "#94a3b8").attr("stroke", "white").attr("stroke-width", 2);
 
-  return (
-    <div className="relative w-full overflow-visible">
-      <div className="overflow-x-auto overflow-y-hidden">
-        <svg 
-          ref={svgRef} 
-          className="w-full min-w-[600px]" 
-          style={{ height: "350px" }} 
-        />
-      </div>
-      {/* Floating Tooltip */}
-      <div 
-        ref={tooltipRef} 
-        className="fixed pointer-events-none opacity-0 bg-white/95 backdrop-blur-md border border-slate-200 shadow-2xl p-3 rounded-md text-[11px] z-[999] transition-opacity duration-150"
-      />
-    </div>
-  );
+        g.append("rect")
+            .attr("width", width)
+            .attr("height", height)
+            .attr("fill", "transparent")
+            .on("mouseover", () => focus.style("display", null))
+            .on("mouseout", () => {
+                focus.style("display", "none");
+                if (tooltipRef.current) tooltipRef.current.style.opacity = "0";
+            })
+            .on("mousemove", function (event) {
+    const [mX, mY] = d3.pointer(event);
+    const index = Math.round(x.invert(mX));
+
+    if (index >= 0 && index < maxDays) {
+        const dA = current[index];
+        const dB = previous[index];
+        const xPos = x(index);
+
+        // Update the vertical line and dots
+        focus.select("line").attr("x1", xPos).attr("x2", xPos);
+        if (dA) dotA.attr("cx", xPos).attr("cy", y(dA.value)).style("display", null);
+        else dotA.style("display", "none");
+        
+        if (dB) dotB.attr("cx", xPos).attr("cy", y(dB.value)).style("display", null);
+        else dotB.style("display", "none");
+
+        // --- TOOLTIP UPDATE ---
+        if (tooltipRef.current) {
+            const item = dA || dB;
+            let dateLabel = "";
+
+            if (item && item.date) {
+                const [year, month, day] = item.date.split('-').map(Number);
+                dateLabel = `${month}/${day}`;
+            }
+
+            // 1. Show the tooltip
+            tooltipRef.current.style.opacity = "1";
+            
+            // 2. Position it (Adjusting for margins and adding a slight offset)
+            tooltipRef.current.style.left = `${mX + margin.left + 15}px`;
+            tooltipRef.current.style.top = `${mY + margin.top - 10}px`;
+
+            // 3. Inject the HTML
+            tooltipRef.current.innerHTML = `
+                <div class="flex flex-col gap-1.5 min-w-[120px]">
+                    <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest border-b border-slate-100 pb-1 mb-1">
+                        ${dateLabel}
+                    </div>
+                    
+                    <div class="flex justify-between items-center gap-4">
+                        <span class="flex items-center gap-1.5 text-slate-700 font-medium">
+                            <div class="w-1.5 h-1.5 rounded-full bg-blue-500"></div> Now
+                        </span>
+                        <span class="font-bold text-slate-900">
+                            $${dA?.value.toLocaleString() || "0"}
+                        </span>
+                    </div>
+
+                    <div class="flex justify-between items-center gap-4">
+                        <span class="flex items-center gap-1.5 text-slate-400 font-medium">
+                            <div class="w-1.5 h-1.5 rounded-full bg-slate-300"></div> Prev
+                        </span>
+                        <span class="font-bold text-slate-500">
+                            $${dB?.value.toLocaleString() || "0"}
+                        </span>
+                    </div>
+                </div>
+            `;
+        }
+    }
+});
+
+    }, [current, previous]);
+
+    return (
+        <div ref={containerRef} className="relative w-full h-[350px] overflow-hidden bg-white">
+            <div className="overflow-x-auto h-full scrollbar-hide">
+                <svg
+                    ref={svgRef}
+                    className="w-full min-w-[650px] h-full"
+                    style={{ display: "block" }}
+                />
+            </div>
+            {/* Floating Tooltip */}
+            <div
+                ref={tooltipRef}
+                className="absolute pointer-events-none opacity-0 bg-white/95 backdrop-blur-md border border-slate-200 shadow-xl p-2 rounded-lg text-[10px] z-[100] transition-opacity duration-150"
+                style={{ minWidth: "100px" }}
+            />
+        </div>
+    );
 };
