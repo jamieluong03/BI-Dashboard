@@ -30,3 +30,9 @@ export interface InventoryCardProps {
   lowStock: string
   description: string;
 };
+
+export interface DataPoint {
+  date: string;
+  revenue: number;
+  topProduct: string;
+}

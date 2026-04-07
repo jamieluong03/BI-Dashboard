@@ -1,3 +1,4 @@
+import React from "react";
 import { ToolTipProps } from '@/types/dataTypes';
 import {
     Tooltip,
@@ -7,14 +8,19 @@ import {
 import { Button } from "@/components/ui/button";
 import { ArrowUpRightIcon } from "lucide-react";
 
-export function ExpandButton({ display, comment }: ToolTipProps) {
-
+export const ExpandButton = React.forwardRef<HTMLButtonElement, ToolTipProps>(({ display, comment, ...props }, ref) => {
     return (
         <>
             {display ?
                 <Tooltip>
                     <TooltipTrigger asChild>
-                        <Button size="icon-xs" aria-label="Submit" variant="outline">
+                        <Button 
+                            ref={ref} 
+                            {...props} 
+                            size="icon-xs" 
+                            aria-label="Submit" 
+                            variant="outline"
+                        >
                             <ArrowUpRightIcon />
                         </Button>
                     </TooltipTrigger>
@@ -29,4 +35,6 @@ export function ExpandButton({ display, comment }: ToolTipProps) {
             }
         </>
     )
-}
+});
+
+ExpandButton.displayName = "ExpandButton";
