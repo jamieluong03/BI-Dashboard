@@ -51,7 +51,7 @@ export default function TotalRevenueCard() {
         <div className="space-y-6 pt-2">
             <div className="flex flex-col gap-4">
                 <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as CompType)}>
-                    <TabsList className="grid w-full grid-cols-3 h-11 bg-slate-100/50 p-1">
+                    <TabsList className="grid w-full grid-cols-3 h-11 bg-slate-100/50">
                         <TabsTrigger value="mom">Month (MoM)</TabsTrigger>
                         <TabsTrigger value="qoq">Quarter (QoQ)</TabsTrigger>
                         <TabsTrigger value="yoy">Year (YoY)</TabsTrigger>
@@ -120,7 +120,7 @@ function MonthSelect({ value, onChange }: { value: Date, onChange: (d: Date) => 
     const months = Array.from({ length: 12 }).map((_, i) => subMonths(startOfMonth(new Date()), i));
     return (
         <Select value={value.toISOString()} onValueChange={(v) => onChange(new Date(v))}>
-            <SelectTrigger className="h-8 w-[130px] text-xs font-semibold">
+            <SelectTrigger className="h-8 w-[130px] text-xs font-semibold bg-white">
                 <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -135,7 +135,7 @@ function MonthSelect({ value, onChange }: { value: Date, onChange: (d: Date) => 
 function QuarterSelect({ value, onChange }: { value: Date, onChange: (d: Date) => void }) {
     return (
         <Select value={value.toISOString()} onValueChange={(v) => onChange(new Date(v))}>
-            <SelectTrigger className="h-8 w-[110px] text-xs font-semibold">
+            <SelectTrigger className="h-8 w-[110px] text-xs font-semibold bg-white">
                 <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -151,7 +151,7 @@ function MonthIndexSelect({ value, onChange }: { value: number, onChange: (v: nu
     const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
     return (
         <Select value={value.toString()} onValueChange={(v) => onChange(parseInt(v))}>
-            <SelectTrigger className="h-8 w-[80px] text-xs font-semibold">
+            <SelectTrigger className="h-8 w-[80px] text-xs font-semibold bg-white">
                 <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -166,7 +166,7 @@ function MonthIndexSelect({ value, onChange }: { value: number, onChange: (v: nu
 function YearSelect({ value, onChange }: { value: number, onChange: (v: number) => void }) {
     return (
         <Select value={value.toString()} onValueChange={(v) => onChange(parseInt(v))}>
-            <SelectTrigger className="h-8 w-[80px] text-xs font-semibold">
+            <SelectTrigger className="h-8 w-[80px] text-xs font-semibold bg-white">
                 <SelectValue />
             </SelectTrigger>
             <SelectContent>
