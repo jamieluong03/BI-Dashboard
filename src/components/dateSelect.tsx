@@ -13,7 +13,7 @@ import {
   SelectValue 
 } from "@/components/ui/select";
 import { DateRangePicker } from "@/components/ui/date-range-picker";
-import { getRangePresets } from "@/lib/utils";
+import { getRangePresets, lastOrderDate } from "@/lib/utils";
 
 interface SelectDateProps {
   range: DateRange | undefined;
@@ -37,7 +37,7 @@ export function SelectDate({ range, onRangeChange }: SelectDateProps) {
         setIsCalendarOpen(true);
         }, 100);
     } else {
-      const preset = getRangePresets(value);
+      const preset = getRangePresets(value, lastOrderDate);
       const newRange = { from: new Date(preset.from), to: new Date(preset.to) };
       setLocalRange(newRange);
       onRangeChange(newRange);
