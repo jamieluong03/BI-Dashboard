@@ -44,7 +44,7 @@ export function StatCard({ title, value, description, metric }: StatCardProps) {
       case "total_revenue":
         return <TotalRevenueCard />;
       default:
-        return <p className="p-4 text-center text-slate-500">No Insight Found</p>;
+        return <p className="p-4 text-center text-slate-500">Insight Coming Soon</p>;
     }
   };
 
