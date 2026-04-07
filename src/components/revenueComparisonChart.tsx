@@ -3,7 +3,6 @@
 import React, { useRef, useEffect } from "react";
 import * as d3 from "d3";
 
-// --- 1. DEFINE TYPES LOCALLY ---
 export interface RevenueDataPoint {
   dayIndex: number;
   value: number;
@@ -20,7 +19,6 @@ export const RevenueComparisonChart = ({ current, previous }: RevenueProps) => {
   const tooltipRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Check for data and ref
     if (!svgRef.current || current.length === 0) return;
 
     // --- 2. DIMENSIONS & MARGINS ---
@@ -169,7 +167,6 @@ export const RevenueComparisonChart = ({ current, previous }: RevenueProps) => {
 
   return (
     <div className="relative w-full overflow-visible">
-      {/* Scroll container for mobile/tablet */}
       <div className="overflow-x-auto overflow-y-hidden">
         <svg 
           ref={svgRef} 
@@ -180,7 +177,7 @@ export const RevenueComparisonChart = ({ current, previous }: RevenueProps) => {
       {/* Floating Tooltip */}
       <div 
         ref={tooltipRef} 
-        className="fixed pointer-events-none opacity-0 bg-white/95 backdrop-blur-md border border-slate-200 shadow-2xl p-3 rounded-xl text-[11px] z-[999] transition-opacity duration-150"
+        className="fixed pointer-events-none opacity-0 bg-white/95 backdrop-blur-md border border-slate-200 shadow-2xl p-3 rounded-md text-[11px] z-[999] transition-opacity duration-150"
       />
     </div>
   );
