@@ -69,7 +69,7 @@ export function StatCard({ title, value, description, metric }: StatCardProps) {
         </CardContent>
       </Card>
 
-      <ModalContent className={isDesktop ? "sm:max-w-[425px]" : "p-6"}>
+      <ModalContent className={isDesktop ? "sm:max-w-3xl" : "p-6"}>
         <ModalHeader>
           <ModalTitle>{title}</ModalTitle>
         </ModalHeader>

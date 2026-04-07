@@ -5,9 +5,9 @@ import { eachDayOfInterval, format } from "date-fns";
 const fetchRevenueRange = async (start: Date, end: Date) => {
   const { data, error } = await supabase
     .from("orders")
-    .select("total_price, created_at")
-    .gte("created_at", start.toISOString())
-    .lte("created_at", end.toISOString());
+    .select("totalCost, createdAt")
+    .gte("createdAt", start.toISOString())
+    .lte("createdAt", end.toISOString());
 
   if (error) throw new Error(error.message);
 
@@ -16,8 +16,8 @@ const fetchRevenueRange = async (start: Date, end: Date) => {
   return days.map((day, index) => {
     const dayStr = format(day, "yyyy-MM-dd");
     const dayTotal = data
-      .filter(o => format(new Date(o.created_at), "yyyy-MM-dd") === dayStr)
-      .reduce((sum, o) => sum + Number(o.total_price), 0);
+      .filter(o => format(new Date(o.createdAt), "yyyy-MM-dd") === dayStr)
+      .reduce((sum, o) => sum + Number(o.totalCost), 0);
 
     return { 
       dayIndex: index, 
