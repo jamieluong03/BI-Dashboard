@@ -14,6 +14,7 @@ import {
   Dialog,
   DialogContent,
   DialogHeader,
+  DialogDescription,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
@@ -21,6 +22,7 @@ import {
   Drawer,
   DrawerContent,
   DrawerHeader,
+  DrawerDescription,
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
@@ -35,6 +37,7 @@ export function StatCard({ title, value, description, metric }: StatCardProps) {
   const ModalContent = isDesktop ? DialogContent : DrawerContent;
   const ModalHeader = isDesktop ? DialogHeader : DrawerHeader;
   const ModalTitle = isDesktop ? DialogTitle : DrawerTitle;
+  const ModalDescription = isDesktop ? DialogDescription : DrawerDescription;
 
   const renderModalContent = (metric: string) => {
     switch (metric) {
@@ -57,6 +60,9 @@ export function StatCard({ title, value, description, metric }: StatCardProps) {
           <CardTitle className="text-md md:text-base text-slate-700 font-normal">
             {title}
           </CardTitle>
+          <ModalDescription className="sr-only">
+            Detailed revenue comparison and historical analysis for {title}.
+          </ModalDescription>
         </CardHeader>
 
         <CardContent className="flex flex-col justify-center h-full gap-2">
