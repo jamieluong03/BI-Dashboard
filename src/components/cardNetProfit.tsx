@@ -6,10 +6,9 @@ import {
     startOfMonth, endOfMonth,
     startOfQuarter, endOfQuarter,
     startOfYear, endOfYear,
-    format, subMonths, setYear,
-    parseISO
+    format, subMonths
 } from "date-fns";
-import { lastOrderDate } from "@/lib/utils";
+import { lastOrderDate, RawEntry, computeWaterfallData } from "@/lib/utils";
 import { type ChartConfig } from "@/components/ui/chart";
 import { NetProfitWaterfall } from "@/components/netProfitWaterfall";
 
@@ -57,19 +56,44 @@ export default function CardNetProfit() {
 
     const { orders, isLoading, isError } = useSalesStats(dateRange.startStr, dateRange.endStr);
 
-    const chartData = useMemo(() => {
+    const waterfallData = useMemo(() => {
         if (!orders) return [];
-        const { totalRevenue: rev, totalCost: cost, totalShipping: ship, totalAdSpend: ad, totalRefunds: refund, netProfit: net } = orders;
 
-        return [
-            { name: "Revenue", base: 0, displayValue: rev, fill: chartConfig.revenue.color },
-            { name: "COGS", base: rev - cost, displayValue: cost, fill: chartConfig.cogs.color },
-            { name: "Shipping", base: (rev - cost) - ship, displayValue: ship, fill: chartConfig.shipping.color },
-            { name: "Ad Spend", base: (rev - cost - ship) - ad, displayValue: ad, fill: chartConfig.ads.color },
-            { name: "Refunds", base: (rev - cost - ship - ad) - refund, displayValue: refund, fill: chartConfig.refunds.color },
-            { name: "Net Profit", base: 0, displayValue: net, fill: chartConfig.profit.color },
+        const steps = [
+            { name: "Revenue", value: orders.totalRevenue, configKey: "revenue" },
+            { name: "COGS", value: -orders.totalCost, configKey: "cogs" },
+            { name: "Shipping", value: -orders.totalShipping, configKey: "shipping" },
+            { name: "Ads", value: -orders.totalAdSpend, configKey: "ads" },
+            { name: "Refunds", value: -(orders.totalRefunds || 0), configKey: "refunds" },
+            { name: "Net Profit", value: orders.netProfit, configKey: "profit", isTotal: true },
         ];
+
+        let runningTotal = 0;
+        return steps.map((step) => {
+            let low: number, high: number;
+
+            if (step.isTotal) {
+                low = 0;
+                high = step.value;
+            } else if (step.value >= 0) {
+                low = runningTotal;
+                high = runningTotal + step.value;
+                runningTotal += step.value;
+            } else {
+                low = runningTotal + step.value;
+                high = runningTotal;
+                runningTotal += step.value;
+            }
+
+            return {
+                name: step.name,
+                displayValue: step.value,
+                waterfallRange: [low, high],
+                configKey: step.configKey,
+            };
+        });
     }, [orders]);
+
 
     return (
         <div className="space-y-6 pt-2">
@@ -101,7 +125,7 @@ export default function CardNetProfit() {
                         Error fetching data for this period.
                     </div>
                 ) : (
-                    <NetProfitWaterfall data={chartData} config={chartConfig} />
+                    <NetProfitWaterfall data={waterfallData} config={chartConfig} />
                 )}
             </div>
 
@@ -109,7 +133,7 @@ export default function CardNetProfit() {
                 {isLoading ? (
                     "Calculating breakdown..."
                 ) : (
-                    `Viewing breakdown from ${format(dateRange.displayStart, "MMM d")} to ${format(dateRange.displayEnd, "MMM d, yyyy")}`
+                    <p>Viewing breakdown from {format(startOfMonth(selectedMonth), "MMM d")} to {format(endOfMonth(selectedMonth), "MMM d, yyyy")}</p>
                 )}
             </div>
         </div>
@@ -139,7 +163,6 @@ function QuarterPicker({ selectedDate, onSelect }: { selectedDate: Date, onSelec
                 <SelectValue />
             </SelectTrigger>
             <SelectContent>
-                {/* Dynamic Qs based on your data anchor (2026) */}
                 <SelectItem value={startOfQuarter(new Date(2026, 0, 1)).toISOString()}>Q1 2026</SelectItem>
                 <SelectItem value={startOfQuarter(new Date(2025, 9, 1)).toISOString()}>Q4 2025</SelectItem>
                 <SelectItem value={startOfQuarter(new Date(2025, 6, 1)).toISOString()}>Q3 2025</SelectItem>

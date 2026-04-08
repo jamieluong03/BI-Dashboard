@@ -108,7 +108,6 @@ export const getMockRefunds = (revenue: number, date: Date, channel?: string) =>
     // Post-Mother's Day
     returnMultiplier = 1.5;
   }
-
   // Add a jitter of +/- 2.5% so the data doesn't look like a flat math formula
   const jitter = (Math.random() * 0.05) - 0.025;
   
@@ -117,4 +116,37 @@ export const getMockRefunds = (revenue: number, date: Date, channel?: string) =>
   const clampedRate = Math.min(Math.max(finalRate, 0.02), 0.45);
 
   return parseFloat((revenue * clampedRate).toFixed(2));
+};
+
+export type RawEntry = { name: string; value: number; isTotal?: boolean; color: string };
+
+export function computeWaterfallData(raw: RawEntry[]) {
+  let runningTotal = 0;
+
+  return raw.map(entry => {
+    const { value, isTotal = false } = entry;
+    let barBottom: number, barTop: number;
+
+    if (isTotal) {
+      barBottom = 0;
+      barTop = value;
+    } else if (value >= 0) {
+      // For Revenue (Positive)
+      barBottom = runningTotal;
+      barTop = runningTotal + value;
+    } else {
+      // For Expenses (Negative)
+      barBottom = runningTotal + value;
+      barTop = runningTotal; 
+    }
+
+    if (!isTotal) {
+      runningTotal += value;
+    }
+
+    return {
+      ...entry,
+      waterfallRange: [barBottom, barTop],
+    };
+  });
 };
