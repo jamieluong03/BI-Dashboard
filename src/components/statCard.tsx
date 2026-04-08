@@ -27,6 +27,7 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer";
 import TotalRevenueCard from "@/components/cardTotalRevenue";
+import NetProfitCard from "./cardNetProfit";
 
 export function StatCard({ title, value, description, metric }: StatCardProps) {
   const [cardOpen, setCardOpen] = useState(false);
@@ -43,6 +44,8 @@ export function StatCard({ title, value, description, metric }: StatCardProps) {
     switch (metric) {
       case "total_revenue":
         return <TotalRevenueCard />;
+      case "net_profit":
+        return <NetProfitCard />;
       default:
         return <p className="p-4 text-center text-slate-500">Insight Coming Soon</p>;
     }

@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
+import { getMockRefunds } from '@/lib/utils';
 
 export function useBlendedROAS(startDate: string, endDate: string) {
     const { data: data, isLoading, isError, error } = useQuery({
@@ -62,24 +63,46 @@ export function useSalesStats(startDate: string, endDate: string) {
                 .gte('date', startDate)
                 .lte('date', endDate);
             if (error) throw error;
+
+            const totals = data.reduce((acc, day) => {
+                const dailyRevenue = Number(day.totalRevenue || 0);
+                
+                // Calculate specific refund for THIS specific day
+                const dailyRefund = getMockRefunds(
+                  dailyRevenue, 
+                  new Date(day.date), 
+                  day.adSource
+                );
+
+                return {
+                    revenue: acc.revenue + dailyRevenue,
+                    cost: acc.cost + Number(day.totalCost || 0),
+                    adSpend: acc.adSpend + Number(day.totalAdSpend || 0),
+                    shipping: acc.shipping + Number(day.totalShipping || 0),
+                    refunds: acc.refunds + dailyRefund
+                };
+            }, { revenue: 0, cost: 0, adSpend: 0, shipping: 0, refunds: 0 });
             
-            const totalRevenue = data.reduce((sum, o) => sum + Number(o.totalRevenue || 0), 0);
-            const totalCost = data.reduce((sum, o) => sum + Number(o.totalCost || 0), 0);
-            const totalAdSpend = data.reduce((sum, m) => sum + Number(m.totalAdSpend || 0), 0);
-            const totalShipping = data.reduce((sum, o) => sum + Number(o.totalShipping || 0), 0);
-            const netProfit = totalRevenue - (totalCost + totalAdSpend + totalShipping);
-            const profitMargin = totalRevenue > 0 ? (netProfit / totalRevenue) * 100 : 0;
-            const averageOrderValue = data.length > 0 ? totalRevenue / data.length : 0;
-            const returnOnInvestment = (netProfit / totalAdSpend) * 100;
-            const marketingEfficiencyRatio = totalRevenue / totalAdSpend;
+            // const totalRevenue = data.reduce((sum, o) => sum + Number(o.totalRevenue || 0), 0);
+            // const totalCost = data.reduce((sum, o) => sum + Number(o.totalCost || 0), 0);
+            // const totalAdSpend = data.reduce((sum, m) => sum + Number(m.totalAdSpend || 0), 0);
+            // const totalShipping = data.reduce((sum, o) => sum + Number(o.totalShipping || 0), 0);
+            // const totalRefunds = getMockRefunds(totalRevenue, new Date(endDate));
+            const netProfit = totals.revenue - (totals.cost + totals.adSpend + totals.shipping + totals.refunds);
+            const profitMargin = totals.revenue > 0 ? (netProfit / totals.revenue) * 100 : 0;
+            const averageOrderValue = data.length > 0 ? totals.revenue / data.length : 0;
+            const returnOnInvestment = totals.adSpend > 0 ? (netProfit / totals.adSpend) * 100 : 0;
+            const marketingEfficiencyRatio = totals.adSpend > 0 ? totals.revenue / totals.adSpend : 0;
+
 
             return { 
-                totalRevenue,
+                totalRevenue: totals.revenue,
                 netProfit,
-                totalCost,
-                totalAdSpend,
+                totalRefunds: totals.refund,
+                totalCost: totals.cost,
+                totalAdSpend: totals.adSpend,
                 profitMargin,
-                totalShipping,
+                totalShipping: totals.shipping,
                 averageOrderValue,
                 totalOrders: data.length,
                 returnOnInvestment,
