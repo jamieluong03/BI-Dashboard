@@ -98,7 +98,7 @@ export function useSalesStats(startDate: string, endDate: string) {
             return { 
                 totalRevenue: totals.revenue,
                 netProfit,
-                totalRefunds: totals.refund,
+                totalRefunds: totals.refunds,
                 totalCost: totals.cost,
                 totalAdSpend: totals.adSpend,
                 profitMargin,
