@@ -24,15 +24,15 @@ export function NetProfitWaterfall({ data, config }: WaterfallProps) {
           margin={{ top: 20, right: 10, left: 10, bottom: 20 }}
           barSize={55}
         >
-          <CartesianGrid vertical={false} strokeDasharray="3 3" stroke="#f1f5f9" />
+          <CartesianGrid vertical={false} strokeDasharray="3 3" stroke="#9d9e9ebd" />
           <XAxis 
             dataKey="name" 
-            axisLine={false} 
+            axisLine={true} 
             tickLine={false} 
             tick={{ fill: '#94a3b8', fontSize: 10, fontWeight: 600 }}
           />
           <YAxis 
-            axisLine={false} 
+            axisLine={true} 
             tickLine={false} 
             tick={{ fill: '#94a3b8', fontSize: 10 }}
             tickFormatter={(val) => `$${Intl.NumberFormat('en', { notation: 'compact' }).format(val)}`}
@@ -58,14 +58,11 @@ export function NetProfitWaterfall({ data, config }: WaterfallProps) {
             }}
           />
 
-          {/* THE BRIDGE BAR */}
           <Bar 
             dataKey="waterfallRange" 
             isAnimationActive={false}
-            // We use a custom shape to pull the color from your 'config' prop
             shape={(props: any) => {
               const { fill, ...rest } = props;
-              // configKey is passed from the parent (e.g., 'revenue', 'cogs')
               const configKey = props.payload.configKey;
               const barColor = config[configKey]?.color || fill;
               return <Rectangle {...rest} fill={barColor} radius={[4, 4, 4, 4]} />;
