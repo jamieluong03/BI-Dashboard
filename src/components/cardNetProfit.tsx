@@ -11,6 +11,7 @@ import {
 import { lastOrderDate, RawEntry, computeWaterfallData } from "@/lib/utils";
 import { type ChartConfig } from "@/components/ui/chart";
 import { NetProfitWaterfall } from "@/components/netProfitWaterfall";
+import { NetProfitEfficiencyChart } from "@/components/netProfitEffiencyChart";
 
 type ViewType = "month" | "quarter" | "year";
 
@@ -94,6 +95,9 @@ export default function CardNetProfit() {
         });
     }, [orders]);
 
+    const dailyMarginData = useMemo(() => {
+        return orders?.daily || [];
+    }, [orders]);
 
     return (
         <div className="space-y-6 pt-2">
@@ -115,7 +119,7 @@ export default function CardNetProfit() {
                 </div>
             </div>
 
-            <div className="h-[400px] w-full">
+            <div className="h-full w-full">
                 {isLoading ? (
                     <div className="h-full flex items-center justify-center text-slate-400 italic text-sm">
                         Crunching margins...
@@ -125,17 +129,28 @@ export default function CardNetProfit() {
                         Error fetching data for this period.
                     </div>
                 ) : (
-                    <NetProfitWaterfall data={waterfallData} config={chartConfig} />
+                    <>
+                        <div className="h-[350px]">
+                            <NetProfitWaterfall data={waterfallData} config={chartConfig} />
+
+                        </div>
+                        <div className="text-center text-[11px] text-slate-400 italic">
+                            {isLoading ? (
+                                "Calculating breakdown..."
+                            ) : (
+                                <p>Viewing breakdown from {format(startOfMonth(selectedMonth), "MMM d")} to {format(endOfMonth(selectedMonth), "MMM d, yyyy")}</p>
+                            )}
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-6">
+                            <div className="bg-slate-50/50 p-4 rounded-2xl border border-slate-100">
+                                <NetProfitEfficiencyChart data={dailyMarginData} />
+                            </div>
+                        </div>
+                    </>
                 )}
             </div>
 
-            <div className="text-center text-[11px] text-slate-400 italic">
-                {isLoading ? (
-                    "Calculating breakdown..."
-                ) : (
-                    <p>Viewing breakdown from {format(startOfMonth(selectedMonth), "MMM d")} to {format(endOfMonth(selectedMonth), "MMM d, yyyy")}</p>
-                )}
-            </div>
+
         </div>
     );
 }

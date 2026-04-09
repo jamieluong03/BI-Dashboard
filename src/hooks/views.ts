@@ -61,7 +61,8 @@ export function useSalesStats(startDate: string, endDate: string) {
                 .from('daily_sales_performance')
                 .select('*')
                 .gte('date', startDate)
-                .lte('date', endDate);
+                .lte('date', endDate)
+                .order('date', { ascending: true });
             if (error) throw error;
 
             const totals = data.reduce((acc, day) => {
@@ -94,6 +95,29 @@ export function useSalesStats(startDate: string, endDate: string) {
             const returnOnInvestment = totals.adSpend > 0 ? (netProfit / totals.adSpend) * 100 : 0;
             const marketingEfficiencyRatio = totals.adSpend > 0 ? totals.revenue / totals.adSpend : 0;
 
+            const dailyData = data.map(day => {
+                const revenue = Number(day.totalRevenue || 0);
+                const cost = Number(day.totalCost || 0);
+                const adSpend = Number(day.totalAdSpend || 0);
+                const shipping = Number(day.totalShipping || 0);
+                
+                const refunds = getMockRefunds(
+                    revenue, 
+                    new Date(day.date), 
+                    day.adSource
+                );
+
+                const netProfit = revenue - (cost + adSpend + shipping + refunds);
+                const margin = revenue > 0 ? (netProfit / revenue) * 100 : 0;
+
+                return {
+                    date: day.date,
+                    revenue,
+                    netProfit,
+                    margin: parseFloat(margin.toFixed(2))
+                };
+            });
+
 
             return { 
                 totalRevenue: totals.revenue,
@@ -106,7 +130,8 @@ export function useSalesStats(startDate: string, endDate: string) {
                 averageOrderValue,
                 totalOrders: data.length,
                 returnOnInvestment,
-                marketingEfficiencyRatio
+                marketingEfficiencyRatio,
+                daily: dailyData
              }
         }
     });
