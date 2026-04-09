@@ -12,6 +12,7 @@ import { lastOrderDate } from "@/lib/utils";
 import { type ChartConfig } from "@/components/ui/chart";
 import { NetProfitWaterfall } from "@/components/netProfitWaterfall";
 import { NetProfitEfficiencyChart } from "@/components/netProfitEffiencyChart";
+import { InfoTooltip } from "./infoToolTip";
 
 type ViewType = "month" | "quarter" | "year";
 
@@ -116,7 +117,10 @@ export default function CardNetProfit() {
                 </Tabs>
 
                 <div className="flex flex-wrap items-center justify-between bg-slate-50 p-3 rounded-lg border border-slate-100 gap-3">
-                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Analysis Period</span>
+                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex gap-2">Analysis Period
+                        <InfoTooltip display={true} comment="A chart showing how Revenue becomes Net Profit by subtracting COGS, Shipping, Ads, and Refunds in sequence." />
+
+                    </span>
 
                     {view === "month" && <MonthPicker selectedDate={selectedMonth} onSelect={setSelectedMonth} />}
                     {view === "quarter" && <QuarterPicker selectedDate={selectedQuarter} onSelect={setSelectedQuarter} />}

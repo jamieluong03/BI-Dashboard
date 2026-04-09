@@ -8,6 +8,7 @@ import {
     ChartTooltip,
     ChartTooltipContent,
 } from "@/components/ui/chart";
+import { InfoTooltip } from "./infoToolTip";
 
 const efficiencyChartConfig = {
     margin: {
@@ -23,14 +24,13 @@ interface EfficiencyChartProps {
 };
 
 export function NetProfitEfficiencyChart({ data, floor, ceiling }: EfficiencyChartProps) {
-    console.log("data", data);
-
     const avgMargin = data.length > 0 ? data.reduce((sum, d) => sum + d.margin, 0) / data.length : 0;
 
     return (
         <div className="h-[200px] w-full">
-            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-4">
+            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-4 flex gap-2">
                 Margin Efficiency Trend (%)
+                <InfoTooltip display={true} comment="Tracks daily Net Margin %. This measures how many cents of every dollar you kept as profit for each day in this calendar range." />
             </p>
 
             <ChartContainer config={{ margin: { color: "#10b981" } }} className="h-full w-full">
