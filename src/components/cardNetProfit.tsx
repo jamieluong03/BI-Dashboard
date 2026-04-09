@@ -8,7 +8,7 @@ import {
     startOfYear, endOfYear,
     format, subMonths
 } from "date-fns";
-import { lastOrderDate, RawEntry, computeWaterfallData } from "@/lib/utils";
+import { lastOrderDate } from "@/lib/utils";
 import { type ChartConfig } from "@/components/ui/chart";
 import { NetProfitWaterfall } from "@/components/netProfitWaterfall";
 import { NetProfitEfficiencyChart } from "@/components/netProfitEffiencyChart";
@@ -99,6 +99,11 @@ export default function CardNetProfit() {
         return orders?.daily || [];
     }, [orders]);
 
+    const businessTargets = {
+        targetFloor: 15,
+        profitCeiling: 35,
+    };
+
     return (
         <div className="space-y-6 pt-2">
             <div className="flex flex-col gap-4">
@@ -143,7 +148,7 @@ export default function CardNetProfit() {
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-6">
                             <div className="bg-slate-50/50 p-4 rounded-2xl border border-slate-100">
-                                <NetProfitEfficiencyChart data={dailyMarginData} />
+                                <NetProfitEfficiencyChart data={dailyMarginData} floor={businessTargets.targetFloor} ceiling={businessTargets.profitCeiling} />
                             </div>
                         </div>
                     </>
