@@ -1,34 +1,43 @@
-import { useMemo } from 'react';
-import {  } from '@/hooks/dataTables';
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from '@/lib/supabase';
+import { eachDayOfInterval, format } from "date-fns";
 
-// export function useSalesChannelPerformance() {
-//     const { orders, isLoading: ordersLoading, isError, error } = useOrders();
-//     const { marketing, isLoading: marketingLoading } = useMarketingSpend();
+const fetchRevenueRange = async (start: Date, end: Date) => {
+  const { data, error } = await supabase
+    .from("orders")
+    .select("totalCost, createdAt")
+    .gte("createdAt", start.toISOString())
+    .lte("createdAt", end.toISOString());
 
-//     const performance = useMemo(() => {
-//         if (!orders || !marketing) return null;
+  if (error) throw new Error(error.message);
 
-//         const successfulOrders = orders.filter(o => o.status !== 'cancelled');
-//         const totalOrders = successfulOrders.length;  
-//         const totalRevenue = successfulOrders.reduce((sum, o) => sum + Number(o.totalRevenue || 0), 0);
-//         const totalCost = successfulOrders.reduce((sum, o) => sum + Number(o.totalCost || 0), 0);
-//         const totalAdSpend = marketing.reduce((sum, m) => sum + Number(m.adSpend || 0), 0);
-//         const totalShipping = successfulOrders.reduce((sum, o) => sum + Number(o.totalShipping || 0), 0);
-//         const netProfit = totalRevenue - (totalCost + totalAdSpend + totalShipping);
-//         const profitMargin = totalRevenue > 0 ? (netProfit / totalRevenue) * 100 : 0;
-//         const aov = successfulOrders.length > 0 ? totalRevenue / successfulOrders.length : 0;
+  const days = eachDayOfInterval({ start, end });
+  
+  return days.map((day, index) => {
+    const dayStr = format(day, "yyyy-MM-dd");
+    const dayTotal = data
+      .filter(o => format(new Date(o.createdAt), "yyyy-MM-dd") === dayStr)
+      .reduce((sum, o) => sum + Number(o.totalCost), 0);
 
-//         return {
-//             totalOrders,
-//             totalRevenue,
-//             netProfit,
-//             totalAdSpend,
-//             profitMargin,
-//             totalShipping,
-//             aov,
-//             averageOrderValue: totalRevenue / orders.length
-//         };
-//     }, [orders, marketing]);
+    return { 
+      dayIndex: index, 
+      value: dayTotal, 
+      date: dayStr 
+    };
+  });
+};
 
-//     return { performance, isLoading: ordersLoading || marketingLoading, isError, error };
-// }
+export function useRevenueComparisonQuery(rangeA: { from: Date; to: Date }, rangeB: { from: Date; to: Date }) {
+  return useQuery({
+    queryKey: ["revenue-comparison", rangeA.from.toISOString(), rangeB.from.toISOString()],
+    queryFn: async () => {
+      const [current, previous] = await Promise.all([
+        fetchRevenueRange(rangeA.from, rangeA.to),
+        fetchRevenueRange(rangeB.from, rangeB.to),
+      ]);
+      return { current, previous };
+    },
+    placeholderData: (previousData) => previousData,
+    staleTime: 1000 * 60 * 5, // 5 minutes
+  });
+}

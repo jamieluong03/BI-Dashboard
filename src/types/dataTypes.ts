@@ -7,6 +7,7 @@ export interface StatCardProps {
   title: string;
   value: string | number;
   description: string;
+  metric: string;
 };
 
 export type ChartData = {
