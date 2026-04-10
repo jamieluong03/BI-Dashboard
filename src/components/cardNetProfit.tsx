@@ -139,7 +139,7 @@ export default function CardNetProfit() {
                             </div>
                         </div>
 
-                        <div className="lg:col-span-2 bg-white p-6 rounded-2xl border border-slate-100 shadow-sm min-h-[400px] flex flex-col">
+                        <div className="lg:col-span-2 bg-white pt-6 px-6 pb-0 rounded-2xl border border-slate-100 shadow-sm min-h-[200px] flex flex-col">
                             <div className="flex">
                             <h3 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-6 px-2">Profit Waterfall (%)</h3>
                             <InfoTooltip display={true} comment="Tracks daily Net Margin %. This measures how many cents of every dollar you kept as profit for each day in this calendar range." />
