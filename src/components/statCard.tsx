@@ -81,13 +81,14 @@ export function StatCard({ title, value, description, metric }: StatCardProps) {
       <ModalContent
         className={isDesktop
           ? "sm:max-w-[95vw] lg:max-w-[1200px] h-[90vh] overflow-y-auto p-8"
-          : "w-full h-full max-h-screen overflow-y-auto p-4 pt-12"
+          : "h-[100dvh] w-screen p-0 flex flex-col"
         }
       >
-        <ModalHeader>
+        <ModalHeader className={isDesktop ? "" : "px-4 pt-6"}>
           <ModalTitle className="text-2xl font-bold">{title}</ModalTitle>
         </ModalHeader>
-        <div className={isDesktop ? "" : "pb-8"}>
+
+        <div className={isDesktop ? "" : "flex-1 overflow-y-auto px-6"}>
           {renderModalContent(metric)}
         </div>
       </ModalContent>
