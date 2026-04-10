@@ -95,7 +95,7 @@ export default function CardNetProfit() {
                 <div className="flex flex-wrap items-center justify-between bg-slate-50 p-3 rounded-lg border border-slate-100 gap-3">
                     <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2">
                         Analysis Period
-                        <InfoTooltip display comment="Waterfall analysis breaking down Revenue into Net Profit." />
+                        
                         <span className="text-[10px] text-slate-400 tabular-nums ml-2">
                             {dateRange.formatted}
                         </span>
@@ -114,16 +114,21 @@ export default function CardNetProfit() {
                 ) : (
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                         <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm h-[420px] flex flex-col">
+                            <div className="flex">
                             <h3 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-6 px-1">Profit Waterfall</h3>
+                            <InfoTooltip display comment="Waterfall analysis breaking down Revenue into Net Profit." />
+                            </div>
                             <div className="flex-1 w-full px-2">
                                 <NetProfitWaterfall data={waterfallData} config={CHART_CONFIG} />
                             </div>
                         </div>
 
-                        <div className="bg-white rounded-2xl border border-slate-100 shadow-sm h-[420px] flex flex-col overflow-hidden">
+                        <div className="bg-white p-2 rounded-2xl border border-slate-100 shadow-sm h-[420px] flex flex-col overflow-hidden">
                             <div className="p-4 border-b border-slate-50 flex justify-between items-center bg-white">
+                                <div className="flex">
                                 <h3 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-1">Period Variance</h3>
-                                <span className="text-[10px] text-slate-400 italic font-medium pr-1">Vs. Last {view}</span>
+                                <InfoTooltip display comment="Compares performance against previous equivalent period." />
+                                </div>
                             </div>
                             <div className="flex-1">
                                 <NetProfitVarianceTable
@@ -135,7 +140,10 @@ export default function CardNetProfit() {
                         </div>
 
                         <div className="lg:col-span-2 bg-white p-6 rounded-2xl border border-slate-100 shadow-sm min-h-[400px] flex flex-col">
-                            <h3 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-6 px-2">Efficiency & Margin Trend (%)</h3>
+                            <div className="flex">
+                            <h3 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-6 px-2">Profit Waterfall (%)</h3>
+                            <InfoTooltip display={true} comment="Tracks daily Net Margin %. This measures how many cents of every dollar you kept as profit for each day in this calendar range." />
+                            </div>
                             <div className="flex-1 w-full">
                                 <NetProfitEfficiencyChart
                                     data={orders?.daily || []}
