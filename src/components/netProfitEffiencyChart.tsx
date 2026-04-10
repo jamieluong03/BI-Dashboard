@@ -8,7 +8,6 @@ import {
     ChartTooltip,
     ChartTooltipContent,
 } from "@/components/ui/chart";
-import { InfoTooltip } from "./infoToolTip";
 
 interface EfficiencyChartProps {
     data: { date: string; margin: number }[];
@@ -24,7 +23,7 @@ export function NetProfitEfficiencyChart({ data, floor, ceiling }: EfficiencyCha
                 <ResponsiveContainer width="100%" height="100%">
                     <AreaChart
                         data={data}
-                        margin={{ top: 10, right: 10, left: 0, bottom: 0 }}
+                        margin={{ top: 10, right: 0, left: 0, bottom: 0 }}
                     >
                         <defs>
                             <linearGradient id="fillMargin" x1="0" y1="0" x2="0" y2="1">
@@ -43,7 +42,21 @@ export function NetProfitEfficiencyChart({ data, floor, ceiling }: EfficiencyCha
 
                         <CartesianGrid vertical={false} strokeDasharray="3 3" stroke="#f1f5f9" />
 
-                        <XAxis dataKey="date" hide />
+                        <XAxis 
+                            dataKey="date"
+                            tick={{ fill: '#94a3b8', fontSize: 9 }}
+                            axisLine={false}
+                            tickLine={false}
+                            minTickGap={30}
+                            tickFormatter={(value) => {
+                                const parts = value.split('-');
+                                if (parts.length < 3) return value;
+                                
+                                const month = parseInt(parts[1], 10);
+                                const day = parseInt(parts[2], 10);
+                                return `${month}/${day}`;
+                            }}
+                        />
                         <YAxis
                             orientation="right"
                             tick={{ fill: '#94a3b8', fontSize: 9 }}

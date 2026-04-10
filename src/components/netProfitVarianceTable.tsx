@@ -29,7 +29,7 @@ export function NetProfitVarianceTable({ currentStats, previousStats, isLoading 
   if (isLoading) return <div className="animate-pulse space-y-3 p-4">...</div>;
 
   return (
-    <div className="w-full overflow-hidden">
+    <div className="w-full md:overflow-hidden">
       <table className="w-full text-left text-xs border-collapse">
         <thead className="bg-slate-50/80 text-[10px] font-bold uppercase tracking-wider text-slate-400">
           <tr>

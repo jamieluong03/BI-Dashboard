@@ -92,7 +92,7 @@ export default function CardNetProfit() {
                     </TabsList>
                 </Tabs>
 
-                <div className="flex flex-wrap items-center justify-between bg-slate-50 p-3 rounded-lg border border-slate-100 gap-3">
+                <div className="flex flex-wrap items-center justify-center md:justify-between bg-slate-50 p-3 rounded-lg border border-slate-100 gap-3">
                     <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2">
                         Analysis Period
                         <span className="text-[10px] text-slate-400 tabular-nums ml-2">
@@ -112,7 +112,7 @@ export default function CardNetProfit() {
                     </div>
                 ) : (
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                        <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm min-h-[350px] lg:h-[420px] flex flex-col">
+                        <div className="bg-white pt-6 px-2 md:p-6 rounded-2xl border border-slate-100 shadow-sm min-h-[350px] lg:h-[420px] flex flex-col">
                             <div className="flex items-center gap-1 mb-6">
                                 <h3 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-1">Profit Waterfall</h3>
                                 <InfoTooltip display comment="Waterfall analysis breaking down Revenue into Net Profit." />
@@ -122,8 +122,8 @@ export default function CardNetProfit() {
                             </div>
                         </div>
 
-                        <div className="bg-white rounded-2xl border border-slate-100 shadow-sm min-h-[350px] lg:h-[420px] flex flex-col overflow-hidden">
-                            <div className="p-4 border-b border-slate-50 flex justify-between items-center bg-white">
+                        <div className="bg-white rounded-2xl border border-slate-100 shadow-sm min-h-[350px] lg:h-[420px] flex flex-col overflow-x-auto md:overflow-hidden">
+                            <div className="pt-6 px-2 md:p-6 border-b border-slate-50 flex justify-between items-center bg-white pb-6">
                                 <div className="flex items-center gap-1">
                                     <h3 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-1">Period Variance</h3>
                                     <InfoTooltip display comment="Compares performance against previous equivalent period." />
@@ -139,7 +139,7 @@ export default function CardNetProfit() {
                             </div>
                         </div>
 
-                        <div className="lg:col-span-2 bg-white p-6 rounded-2xl border border-slate-100 shadow-sm min-h-[300px] lg:h-[400px] flex flex-col">
+                        <div className="lg:col-span-2 bg-white pt-6 px-2 md:p-6 rounded-2xl border border-slate-100 shadow-sm min-h-[300px] lg:h-[300px] flex flex-col">
                             <div className="flex items-center gap-1 mb-6">
                                 <h3 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-2">Efficiency Trend (%)</h3>
                                 <InfoTooltip display={true} comment="Tracks daily Net Margin %. Measures how many cents of every dollar you kept as profit." />
