@@ -36,7 +36,7 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col">
         <Providers>
           <TooltipProvider>
-            <div className="flex h-screen flex-col md:flex-row md:overflow-hidden">
+            <div className="flex flex-col md:flex-row md:overflow-hidden">
               {/* <div className="w-full flex-none md:w-64">
                 <SideNav />
               </div> */}
