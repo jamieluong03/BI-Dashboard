@@ -33,6 +33,8 @@ export const getSeasonalMultiplier = (date: Date) => {
 
 export const lastOrderDate = new Date("2026-03-27T00:17:29.997Z");
 
+export const lastOrderMonth = startOfMonth(lastOrderDate);
+
 export const getRangePresets = (preset: string, referenceDate: Date = lastOrderDate) => {
   const now = referenceDate;
   

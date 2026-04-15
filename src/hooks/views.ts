@@ -100,6 +100,7 @@ export function useSalesStats(startDate: string, endDate: string) {
                 const cost = Number(day.totalCost || 0);
                 const adSpend = Number(day.totalAdSpend || 0);
                 const shipping = Number(day.totalShipping || 0);
+                const totalOrders = Number(day.ordersLength || 0);
                 
                 const refunds = getMockRefunds(
                     revenue, 
@@ -114,7 +115,8 @@ export function useSalesStats(startDate: string, endDate: string) {
                     date: day.date,
                     revenue,
                     netProfit,
-                    margin: parseFloat(margin.toFixed(2))
+                    margin: parseFloat(margin.toFixed(2)),
+                    totalOrders
                 };
             });
 
