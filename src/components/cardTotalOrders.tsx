@@ -123,7 +123,7 @@ export default function TotalOrdersCard() {
 
                         <div className="flex items-center gap-4">
                             <div className="flex items-center gap-1.5">
-                                <div className="h-1.5 w-1.5 rounded-full bg-[hsl(var(--chart-1))]" />
+                                <div className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
                                 <span className="text-[9px] font-bold text-slate-400 uppercase">{format(currentStart, 'yyyy')}</span>
                             </div>
                             <div className="flex items-center gap-1.5">
@@ -142,7 +142,7 @@ export default function TotalOrdersCard() {
                 <LineChart
                     accessibilityLayer
                     data={pacingData}
-                    margin={{ top: 0, left: -10, right: 10, bottom: 0 }} 
+                    margin={{ top: 20, left: -10, right: 10, bottom: 20 }} 
                 >
                     <CartesianGrid vertical={false} strokeDasharray="3 3" className="stroke-muted/50" />
                     <XAxis
@@ -153,6 +153,14 @@ export default function TotalOrdersCard() {
                         tick={{ fontSize: 9, fill: "hsl(var(--muted-foreground))" }}
                         interval={isDesktop ? 4 : 6} 
                         tickFormatter={(v) => v.toLocaleString()}
+                        label={{ 
+                            value: "Day of Month", 
+                            position: "insideBottom", 
+                            offset: -15,
+                            fontSize: 11, 
+                            fill: "hsl(var(--muted-foreground))",
+                            fontWeight: 500
+                        }}
                     />
                     <YAxis
                         tickLine={false}
@@ -160,6 +168,16 @@ export default function TotalOrdersCard() {
                         tickMargin={8}
                         tick={{ fontSize: 9, fill: "hsl(var(--muted-foreground))" }}
                         tickFormatter={(v) => v >= 1000 ? `${(v/1000).toFixed(1)}k` : v}
+                        label={{ 
+                            value: "Number of Orders", 
+                            angle: -90, 
+                            position: "insideLeft", 
+                            offset: 20,
+                            dy: 50,
+                            fontSize: 11, 
+                            fill: "hsl(var(--muted-foreground))",
+                            fontWeight: 500
+                        }}
                     />
                     <ChartTooltip
                         cursor={{ stroke: "hsl(var(--muted))", strokeWidth: 1 }}
