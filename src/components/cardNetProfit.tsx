@@ -85,9 +85,9 @@ export default function CardNetProfit() {
             <div className="flex flex-col gap-4">
                 <Tabs value={view} onValueChange={(v) => setView(v as ViewType)}>
                     <TabsList className="grid w-full grid-cols-3 h-11 bg-slate-100/50">
-                        <TabsTrigger value="month">Month</TabsTrigger>
-                        <TabsTrigger value="quarter">Quarter</TabsTrigger>
-                        <TabsTrigger value="year">Year</TabsTrigger>
+                        <TabsTrigger value="month">Month (MoM)</TabsTrigger>
+                        <TabsTrigger value="quarter">Quarter (QoQ)</TabsTrigger>
+                        <TabsTrigger value="year">Year (YoY)</TabsTrigger>
                     </TabsList>
                 </Tabs>
 
