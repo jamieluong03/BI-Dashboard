@@ -2,7 +2,7 @@ import { useState, useMemo } from "react";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { RevenueComparisonChart } from "@/components/revenueComparisonChart";
 import { useRevenueComparisonQuery } from "@/hooks/calculations";
-import { startOfMonth, endOfMonth, startOfQuarter, endOfQuarter, subQuarters, format, subMonths, setMonth, setYear } from "date-fns";
+import { startOfMonth, endOfMonth, startOfQuarter, endOfQuarter, subQuarters, subMonths, setMonth, setYear } from "date-fns";
 import { lastOrderDate } from "@/lib/utils";
 import { MonthSelect, QuarterSelect, YearSelect, MonthIndexSelect } from "./periodPicker";
 import { ViewType } from "@/types/dataTypes";
