@@ -1,15 +1,14 @@
 import { useState, useMemo } from "react";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { RevenueComparisonChart } from "@/components/revenueComparisonChart";
 import { useRevenueComparisonQuery } from "@/hooks/calculations";
 import { startOfMonth, endOfMonth, startOfQuarter, endOfQuarter, subQuarters, format, subMonths, setMonth, setYear } from "date-fns";
 import { lastOrderDate } from "@/lib/utils";
-
-type CompType = "mom" | "qoq" | "yoy";
+import { MonthSelect, QuarterSelect, YearSelect, MonthIndexSelect } from "./periodPicker";
+import { ViewType } from "@/types/dataTypes";
 
 export default function TotalRevenueCard() {
-    const [activeTab, setActiveTab] = useState<CompType>("mom");
+    const [activeTab, setActiveTab] = useState<ViewType>("month");
 
     // state for months
     const [momA, setMomA] = useState<Date>(() => startOfMonth(lastOrderDate));
@@ -25,13 +24,13 @@ export default function TotalRevenueCard() {
     const [yoyYearB, setYoyYearB] = useState<number>(2025);
 
     const ranges = useMemo(() => {
-        if (activeTab === "mom") {
+        if (activeTab === "month") {
             return {
                 rangeA: { from: startOfMonth(momA), to: endOfMonth(momA) },
                 rangeB: { from: startOfMonth(momB), to: endOfMonth(momB) }
             };
         }
-        if (activeTab === "qoq") {
+        if (activeTab === "quarter") {
             return {
                 rangeA: { from: startOfQuarter(qoqA), to: endOfQuarter(qoqA) },
                 rangeB: { from: startOfQuarter(qoqB), to: endOfQuarter(qoqB) }
@@ -51,11 +50,11 @@ export default function TotalRevenueCard() {
     return (
         <div className="space-y-6 pt-2">
             <div className="flex flex-col gap-4">
-                <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as CompType)}>
+                <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as ViewType)}>
                     <TabsList className="grid w-full grid-cols-3 h-11 bg-slate-100/50">
-                        <TabsTrigger value="mom">Month (MoM)</TabsTrigger>
-                        <TabsTrigger value="qoq">Quarter (QoQ)</TabsTrigger>
-                        <TabsTrigger value="yoy">Year (YoY)</TabsTrigger>
+                        <TabsTrigger value="month">Month (MoM)</TabsTrigger>
+                        <TabsTrigger value="quarter">Quarter (QoQ)</TabsTrigger>
+                        <TabsTrigger value="year">Year (YoY)</TabsTrigger>
                     </TabsList>
                 </Tabs>
 
@@ -63,7 +62,7 @@ export default function TotalRevenueCard() {
                     <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Comparison Periods</span>
 
                     <div className="flex items-center gap-3">
-                        {activeTab === "mom" && (
+                        {activeTab === "month" && (
                             <>
                                 <MonthSelect value={momA} onChange={setMomA} />
                                 <span className="text-xs font-bold text-slate-300">vs</span>
@@ -71,7 +70,7 @@ export default function TotalRevenueCard() {
                             </>
                         )}
 
-                        {activeTab === "qoq" && (
+                        {activeTab === "quarter" && (
                             <>
                                 <QuarterSelect value={qoqA} onChange={setQoqA} />
                                 <span className="text-xs font-bold text-slate-300">vs</span>
@@ -79,7 +78,7 @@ export default function TotalRevenueCard() {
                             </>
                         )}
 
-                        {activeTab === "yoy" && (
+                        {activeTab === "year" && (
                             <>
                                 <MonthIndexSelect value={yoyMonth} onChange={setYoyMonth} />
                                 <YearSelect value={yoyYearA} onChange={setYoyYearA} />
@@ -117,64 +116,3 @@ export default function TotalRevenueCard() {
     );
 };
 
-function MonthSelect({ value, onChange }: { value: Date, onChange: (d: Date) => void }) {
-    const months = Array.from({ length: 12 }).map((_, i) => subMonths(startOfMonth(lastOrderDate), i));
-    return (
-        <Select value={value.toISOString()} onValueChange={(v) => onChange(new Date(v))}>
-            <SelectTrigger className="h-8 w-[130px] text-xs font-semibold bg-white">
-                <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-                {months.map((m) => (
-                    <SelectItem key={m.toISOString()} value={m.toISOString()}>{format(m, "MMM yyyy")}</SelectItem>
-                ))}
-            </SelectContent>
-        </Select>
-    );
-};
-
-function QuarterSelect({ value, onChange }: { value: Date, onChange: (d: Date) => void }) {
-    return (
-        <Select value={value.toISOString()} onValueChange={(v) => onChange(new Date(v))}>
-            <SelectTrigger className="h-8 w-[110px] text-xs font-semibold bg-white">
-                <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-                <SelectItem value={startOfQuarter(new Date(2026, 0, 1)).toISOString()}>Q1 2026</SelectItem>
-                <SelectItem value={startOfQuarter(new Date(2025, 9, 1)).toISOString()}>Q4 2025</SelectItem>
-                <SelectItem value={startOfQuarter(new Date(2025, 6, 1)).toISOString()}>Q3 2025</SelectItem>
-            </SelectContent>
-        </Select>
-    );
-};
-
-function MonthIndexSelect({ value, onChange }: { value: number, onChange: (v: number) => void }) {
-    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-    return (
-        <Select value={value.toString()} onValueChange={(v) => onChange(parseInt(v))}>
-            <SelectTrigger className="h-8 w-[80px] text-xs font-semibold bg-white">
-                <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-                {monthNames.map((name, i) => (
-                    <SelectItem key={name} value={i.toString()}>{name}</SelectItem>
-                ))}
-            </SelectContent>
-        </Select>
-    );
-};
-
-function YearSelect({ value, onChange }: { value: number, onChange: (v: number) => void }) {
-    return (
-        <Select value={value.toString()} onValueChange={(v) => onChange(parseInt(v))}>
-            <SelectTrigger className="h-8 w-[80px] text-xs font-semibold bg-white">
-                <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-                <SelectItem value="2026">2026</SelectItem>
-                <SelectItem value="2025">2025</SelectItem>
-                <SelectItem value="2024">2024</SelectItem>
-            </SelectContent>
-        </Select>
-    );
-};

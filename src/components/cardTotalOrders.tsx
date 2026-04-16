@@ -1,41 +1,41 @@
 import { useState, useMemo } from "react";
 import { useSalesStats } from "@/hooks/views";
-import { 
-    startOfMonth, 
-    endOfMonth, 
-    subYears, 
+import {
+    startOfMonth,
+    endOfMonth,
+    subYears,
     subMonths,
-    format, 
-    getDate, 
+    format,
+    getDate,
     parseISO
 } from "date-fns";
 import { lastOrderMonth } from "@/lib/utils";
 import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
-import { 
-    Select, 
-    SelectContent, 
-    SelectItem, 
-    SelectTrigger, 
-    SelectValue 
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue
 } from "@/components/ui/select";
-import { 
-    ChartConfig, 
-    ChartContainer, 
-    ChartTooltip, 
-    ChartTooltipContent 
+import {
+    ChartConfig,
+    ChartContainer,
+    ChartTooltip,
+    ChartTooltipContent
 } from "@/components/ui/chart";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 
 const chartConfig = {
-  current: {
-    label: "Current Year",
-    color: "#10b981",
-  },
-  previous: {
-    label: "Previous Year",
-    color: "#94a3b8",
-  },
+    current: {
+        label: "Current Year",
+        color: "#10b981",
+    },
+    previous: {
+        label: "Previous Year",
+        color: "#94a3b8",
+    },
 } satisfies ChartConfig;
 
 export default function TotalOrdersCard() {
@@ -105,8 +105,8 @@ export default function TotalOrdersCard() {
                     </div>
 
                     <div className="flex flex-col items-end gap-3 w-full sm:w-auto">
-                        <Select 
-                            value={selectedDate.toISOString()} 
+                        <Select
+                            value={selectedDate.toISOString()}
                             onValueChange={(v) => setSelectedDate(new Date(v))}
                         >
                             <SelectTrigger className="h-8 w-full sm:w-[160px] text-xs font-bold bg-slate-50 border-none shadow-none focus:ring-0">
@@ -134,74 +134,74 @@ export default function TotalOrdersCard() {
                     </div>
                 </div>
 
-                <div className="w-full md:h-full h-[125px]"> 
-        {loadingCurrent || loadingPrev ? (
-            <Skeleton className="h-full w-full rounded-lg" />
-        ) : (
-            <ChartContainer config={chartConfig} className="h-full w-full aspect-[4/1]">
-                <LineChart
-                    accessibilityLayer
-                    data={pacingData}
-                    margin={{ top: 20, left: -10, right: 10, bottom: 20 }} 
-                >
-                    <CartesianGrid vertical={false} strokeDasharray="3 3" className="stroke-muted/50" />
-                    <XAxis
-                        dataKey="day"
-                        tickLine={false}
-                        axisLine={true}
-                        tickMargin={8}
-                        tick={{ fontSize: 9, fill: "hsl(var(--muted-foreground))" }}
-                        interval={isDesktop ? 4 : 6} 
-                        tickFormatter={(v) => v.toLocaleString()}
-                        label={{ 
-                            value: "Day of Month", 
-                            position: "insideBottom", 
-                            offset: -15,
-                            fontSize: 11, 
-                            fill: "hsl(var(--muted-foreground))",
-                            fontWeight: 500
-                        }}
-                    />
-                    <YAxis
-                        tickLine={false}
-                        axisLine={true}
-                        tickMargin={8}
-                        tick={{ fontSize: 9, fill: "hsl(var(--muted-foreground))" }}
-                        tickFormatter={(v) => v >= 1000 ? `${(v/1000).toFixed(1)}k` : v}
-                        label={{ 
-                            value: "Number of Orders", 
-                            angle: -90, 
-                            position: "insideLeft", 
-                            offset: 20,
-                            dy: 50,
-                            fontSize: 11, 
-                            fill: "hsl(var(--muted-foreground))",
-                            fontWeight: 500
-                        }}
-                    />
-                    <ChartTooltip
-                        cursor={{ stroke: "hsl(var(--muted))", strokeWidth: 1 }}
-                        content={<ChartTooltipContent indicator="dot" />}
-                    />
-                    <Line
-                        dataKey="previous"
-                        type="monotone"
-                        stroke="var(--color-previous)"
-                        strokeWidth={1.5}
-                        strokeDasharray="4 4"
-                        dot={false}
-                    />
-                    <Line
-                        dataKey="current"
-                        type="monotone"
-                        stroke="var(--color-current)"
-                        strokeWidth={2}
-                        dot={false}
-                        activeDot={{ r: 4 }}
-                    />
-                </LineChart>
-            </ChartContainer>
-        )}
+                <div className="w-full md:h-full h-[125px]">
+                    {loadingCurrent || loadingPrev ? (
+                        <Skeleton className="h-full w-full rounded-lg" />
+                    ) : (
+                        <ChartContainer config={chartConfig} className="h-full w-full aspect-[4/1]">
+                            <LineChart
+                                accessibilityLayer
+                                data={pacingData}
+                                margin={{ top: 20, left: -10, right: 10, bottom: 20 }}
+                            >
+                                <CartesianGrid vertical={false} strokeDasharray="3 3" className="stroke-muted/50" />
+                                <XAxis
+                                    dataKey="day"
+                                    tickLine={false}
+                                    axisLine={true}
+                                    tickMargin={8}
+                                    tick={{ fontSize: 9, fill: "hsl(var(--muted-foreground))" }}
+                                    interval={isDesktop ? 4 : 6}
+                                    tickFormatter={(v) => v.toLocaleString()}
+                                    label={{
+                                        value: "Day of Month",
+                                        position: "insideBottom",
+                                        offset: -15,
+                                        fontSize: 11,
+                                        fill: "hsl(var(--muted-foreground))",
+                                        fontWeight: 500
+                                    }}
+                                />
+                                <YAxis
+                                    tickLine={false}
+                                    axisLine={true}
+                                    tickMargin={8}
+                                    tick={{ fontSize: 9, fill: "hsl(var(--muted-foreground))" }}
+                                    tickFormatter={(v) => v >= 1000 ? `${(v / 1000).toFixed(1)}k` : v}
+                                    label={{
+                                        value: "Number of Orders",
+                                        angle: -90,
+                                        position: "insideLeft",
+                                        offset: 20,
+                                        dy: 50,
+                                        fontSize: 11,
+                                        fill: "hsl(var(--muted-foreground))",
+                                        fontWeight: 500
+                                    }}
+                                />
+                                <ChartTooltip
+                                    cursor={{ stroke: "hsl(var(--muted))", strokeWidth: 1 }}
+                                    content={<ChartTooltipContent indicator="dot" />}
+                                />
+                                <Line
+                                    dataKey="previous"
+                                    type="monotone"
+                                    stroke="var(--color-previous)"
+                                    strokeWidth={1.5}
+                                    strokeDasharray="4 4"
+                                    dot={false}
+                                />
+                                <Line
+                                    dataKey="current"
+                                    type="monotone"
+                                    stroke="var(--color-current)"
+                                    strokeWidth={2}
+                                    dot={false}
+                                    activeDot={{ r: 4 }}
+                                />
+                            </LineChart>
+                        </ChartContainer>
+                    )}
                 </div>
             </div>
         </div>

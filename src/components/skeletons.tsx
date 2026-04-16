@@ -1,5 +1,3 @@
-'use client';
-
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 
@@ -68,4 +66,14 @@ export function DashboardSkeleton() {
       </div>
     </div>
   );
+};
+
+export function NetProfitLoadingSkeleton() {
+    return (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <Skeleton className="h-[420px] w-full rounded-2xl" />
+            <Skeleton className="h-[420px] w-full rounded-2xl" />
+            <Skeleton className="lg:col-span-2 h-[400px] w-full rounded-2xl" />
+        </div>
+    );
 };

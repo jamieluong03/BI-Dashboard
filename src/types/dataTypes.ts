@@ -1,3 +1,5 @@
+export type ViewType = "month" | "quarter" | "year";
+
 export interface ToolTipProps {
   display: boolean;
   comment: string;
