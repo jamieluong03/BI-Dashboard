@@ -260,3 +260,34 @@ export function useOrderDistribution(startDate: string, endDate: string) {
 
     return { distribution, isLoading, isError, error };
 };
+
+export function useOrderFulfillment(startDate: string, endDate: string) {
+    const { data: fulfillment, isLoading, isError, error } = useQuery({
+        queryKey: ['order_fulfillment', startDate, endDate],
+        queryFn: async () => {
+            const { data, error } = await supabase
+                .from('order_fulfillment_stats')
+                .select('*')
+                .gte('date', startDate)
+                .lte('date', endDate);
+            if (error) throw error;
+
+            const summary = data.reduce((acc, row) => {
+                const status = row.status.toLowerCase();
+                if (status === 'cancelled') acc.cancelled += row.count;
+                else if (status === 'refunded') acc.refunded += row.count;
+                else acc.successful += row.count;
+                
+                acc.total += row.count;
+                return acc;
+            }, { successful: 0, cancelled: 0, refunded: 0, total: 0 });
+
+            return [
+                { name: "Successful", value: summary.successful },
+                { name: "Cancelled", value: summary.cancelled },
+                { name: "Refunded", value: summary.refunded },
+            ];
+        }
+    })
+    return { fulfillment, isLoading, isError, error };
+};

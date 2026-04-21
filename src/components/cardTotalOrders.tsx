@@ -95,9 +95,12 @@ export default function TotalOrdersCard() {
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                        <div className="bg-white pt-6 px-2 md:p-6 rounded-2xl border border-slate-100 shadow-sm min-h-[300px] lg:h-[320px] flex flex-col">
-                            <TotalOrdersPeaks data={ordersDistribution || []} />
-                        </div>
+                    <div className="bg-white pt-6 px-2 md:p-6 rounded-2xl border border-slate-100 shadow-sm min-h-[300px] lg:h-[320px] flex flex-col">
+                        <TotalOrdersPeaks data={ordersDistribution || []} />
+                    </div>
+                    <div className="bg-white pt-6 px-2 md:p-6 rounded-2xl border border-slate-100 shadow-sm min-h-[300px] lg:h-[320px] flex flex-col">
+                        
+                    </div>
                 </div>
             </div>
         </div>
