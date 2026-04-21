@@ -1,11 +1,12 @@
 import { useState, useMemo } from "react";
-import { useOrderDistribution, useSalesStats } from "@/hooks/views";
+import { useOrderDistribution, useSalesStats, useOrderFulfillment } from "@/hooks/views";
 import { startOfMonth, endOfMonth, subYears, format, getDate, parseISO } from "date-fns";
 import { lastOrderMonth } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
 import { TotalOrdersChart } from "./totalOrdersPacingChart";
 import { MonthSelect } from "./periodPicker";
 import { TotalOrdersPeaks } from "./totalOrdersPeakBars";
+import { TotalOrdersFulfillment } from "./TotalOrdersFulfillmentChart";
 
 export default function TotalOrdersCard() {
 
@@ -29,7 +30,12 @@ export default function TotalOrdersCard() {
     const { distribution: ordersDistribution, isLoading: loadingSurge } = useOrderDistribution(
         format(currentStart, "yyyy-MM-dd"),
         format(currentEnd, "yyyy-MM-dd")
-    )
+    );
+
+    const { fulfillment: ordersFulfillment, isLoading: loadingFulfillment } = useOrderFulfillment(
+        format(currentStart, "yyyy-MM-dd"),
+        format(currentEnd, "yyyy-MM-dd")
+    );
 
     const pacingData = useMemo(() => {
         if (!currentOrders?.daily && !previousOrders?.daily) return [];
@@ -46,7 +52,7 @@ export default function TotalOrdersCard() {
         });
     }, [currentOrders, previousOrders]);
 
-    if (loadingCurrent || loadingPrev || loadingSurge) {
+    if (loadingCurrent || loadingPrev || loadingSurge || loadingFulfillment) {
         return <div className="p-6 space-y-4"><Skeleton className="h-[300px] w-full rounded-xl" /></div>;
     }
 
@@ -99,7 +105,7 @@ export default function TotalOrdersCard() {
                         <TotalOrdersPeaks data={ordersDistribution || []} />
                     </div>
                     <div className="bg-white pt-6 px-2 md:p-6 rounded-2xl border border-slate-100 shadow-sm min-h-[300px] lg:h-[320px] flex flex-col">
-                        
+                        <TotalOrdersFulfillment data={ordersFulfillment || []} />
                     </div>
                 </div>
             </div>

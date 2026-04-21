@@ -283,9 +283,9 @@ export function useOrderFulfillment(startDate: string, endDate: string) {
             }, { successful: 0, cancelled: 0, refunded: 0, total: 0 });
 
             return [
-                { name: "Successful", value: summary.successful },
-                { name: "Cancelled", value: summary.cancelled },
-                { name: "Refunded", value: summary.refunded },
+                { name: "successful", value: summary.successful },
+                { name: "cancelled", value: summary.cancelled },
+                { name: "refunded", value: summary.refunded },
             ];
         }
     })
