@@ -5,15 +5,7 @@ import { lastOrderMonth } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
 import { TotalOrdersChart } from "./totalOrdersPacingChart";
 import { MonthSelect } from "./periodPicker";
-import { Bar, BarChart, XAxis, YAxis, Tooltip, ResponsiveContainer, LabelList, CartesianGrid } from "recharts";
-import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "./ui/chart";
-
-const surgeConfig = {
-    avgOrders: {
-        label: "Avg Orders",
-        color: "#10b981",
-    },
-} satisfies ChartConfig;
+import { TotalOrdersPeaks } from "./totalOrdersPeakBars";
 
 export default function TotalOrdersCard() {
 
@@ -103,49 +95,9 @@ export default function TotalOrdersCard() {
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <div className="bg-white pt-6 px-2 md:p-6 rounded-2xl border border-slate-100 shadow-sm min-h-[300px] lg:h-[300px] flex flex-col">
-                        <ChartContainer config={surgeConfig} className="">
-                            <ResponsiveContainer width="100%" height="100%">
-                                <BarChart
-                                    data={ordersDistribution}
-                                    layout="vertical"
-                                    margin={{ top: 5, right: 30, left: 40, bottom: 5 }}
-                                >
-                                    <CartesianGrid horizontal={false} strokeDasharray="3 3" className="stroke-muted/50" />
-                                    <XAxis
-                                        type="number"
-                                        hide
-                                    />
-                                    <YAxis
-                                        dataKey="name"
-                                        type="category"
-                                        tickLine={false}
-                                        axisLine={false}
-                                        fontSize={10}
-                                        fontWeight={600}
-                                        width={40}
-                                    />
-                                    {/* <ChartTooltip
-                                        cursor={{ fill: "hsl(var(--muted))", opacity: 0.4 }}
-                                        content={<ChartTooltipContent hideLabel />}
-                                    /> */}
-                                    <Bar
-                                        dataKey="avgOrders"
-                                        fill="var(--color-avgOrders)"
-                                        barSize={24}
-                                    >
-                                        <LabelList
-                                            dataKey="avgOrders"
-                                            position="right"
-                                            offset={8}
-                                            className="fill-slate-400 font-bold"
-                                            fontSize={10}
-                                        />
-                                    </Bar>
-                                </BarChart>
-                            </ResponsiveContainer>
-                        </ChartContainer>
-                    </div>
+                        <div className="bg-white pt-6 px-2 md:p-6 rounded-2xl border border-slate-100 shadow-sm min-h-[300px] lg:h-[320px] flex flex-col">
+                            <TotalOrdersPeaks data={ordersDistribution || []} />
+                        </div>
                 </div>
             </div>
         </div>
