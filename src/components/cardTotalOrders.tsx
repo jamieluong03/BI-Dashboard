@@ -106,7 +106,7 @@ export default function TotalOrdersCard() {
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <div className="bg-white pt-6 px-2 md:p-6 rounded-2xl border border-slate-100 shadow-sm min-h-[300px] lg:h-[320px] flex flex-col">
+                    <div className="bg-white p-6 md:p-6 rounded-2xl border border-slate-100 shadow-sm min-h-[100px] lg:h-[320px] flex flex-col">
                         <div className="flex gap-1 mb-6">
                             <h3 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">
                                 Orders Peak Activity
@@ -115,7 +115,7 @@ export default function TotalOrdersCard() {
                         </div>
                         <TotalOrdersPeaks data={ordersDistribution} />
                     </div>
-                    <div className="bg-white pt-6 px-2 md:p-6 rounded-2xl border border-slate-100 shadow-sm min-h-[300px] lg:h-[320px] flex flex-col">
+                    <div className="bg-white p-6 md:p-6 rounded-2xl border border-slate-100 shadow-sm min-h-[100px]] lg:h-[320px] flex flex-col">
                         <div className="flex gap-1 mb-6">
                             <h3 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">
                                 Fulfillment Health
