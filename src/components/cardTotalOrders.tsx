@@ -101,7 +101,7 @@ export default function TotalOrdersCard() {
                     </div>
 
                     <div className="w-full md:h-full h-[125px]">
-                        <TotalOrdersChart data={pacingData} />
+                        <TotalOrdersChart data={pacingData} selectedDate={selectedDate}/>
                     </div>
                 </div>
 

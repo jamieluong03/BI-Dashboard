@@ -1,8 +1,13 @@
 import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
+import { useMemo } from "react";
+import { format } from "date-fns";
 
 const chartConfig = {
+    day: {
+        label: "Day",
+    },
     current: {
         label: "Current Year",
         color: "#10b981",
@@ -10,6 +15,10 @@ const chartConfig = {
     previous: {
         label: "Previous Year",
         color: "#94a3b8",
+    },
+    target: {
+        label: "Monthly Target",
+        color: "#d00e0e",
     },
 } satisfies ChartConfig;
 
@@ -21,18 +30,26 @@ type PacingData = {
 
 type TotalOrdersPacingChartProps = {
     data: PacingData[];
+    selectedDate: Date;
 };
 
-export function TotalOrdersChart({ data }: TotalOrdersPacingChartProps) {
+export function TotalOrdersChart({ data, selectedDate }: TotalOrdersPacingChartProps) {
 
     const isDesktop = useMediaQuery("(min-width: 768px)");
+    const targetValue = useMemo(() => {
+        return data.map((d) => ({
+            ...d,
+            target: d.previous > 0 ? Math.round(d.previous * 1.15) : 0,
+        }));
+    }, [data]);
+    const monthName = format(selectedDate, "MMMM");
 
     return (
         <>
             <ChartContainer config={chartConfig} className="h-full w-full aspect-[4/1]">
                 <LineChart
                     accessibilityLayer
-                    data={data}
+                    data={targetValue}
                     margin={{ top: 20, left: -10, right: 10, bottom: 20 }}
                 >
                     <CartesianGrid vertical={false} strokeDasharray="3 3" className="stroke-muted/50" />
@@ -72,7 +89,12 @@ export function TotalOrdersChart({ data }: TotalOrdersPacingChartProps) {
                     />
                     <ChartTooltip
                         cursor={{ stroke: "hsl(var(--muted))", strokeWidth: 1 }}
-                        content={<ChartTooltipContent indicator="dot" />}
+                        content={<ChartTooltipContent indicator="dot" labelKey="day"
+                            labelFormatter={(value, payload) => {
+                                const day = payload?.[0]?.payload?.day || value;
+                                return `${monthName} ${day}`;
+                            }}
+                        />}
                     />
                     <Line
                         dataKey="previous"
@@ -83,10 +105,19 @@ export function TotalOrdersChart({ data }: TotalOrdersPacingChartProps) {
                         dot={false}
                     />
                     <Line
+                        dataKey="target"
+                        type="monotone"
+                        stroke="var(--color-target)"
+                        strokeWidth={1.5}
+                        strokeDasharray="2 2"
+                        dot={false}
+                        opacity={0.6}
+                    />
+                    <Line
                         dataKey="current"
                         type="monotone"
                         stroke="var(--color-current)"
-                        strokeWidth={2}
+                        strokeWidth={2.5}
                         dot={false}
                         activeDot={{ r: 4 }}
                     />
