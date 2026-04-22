@@ -29,12 +29,12 @@ export default function TotalOrdersCard() {
         format(prevEnd, "yyyy-MM-dd")
     );
 
-    const { distribution: ordersDistribution, isLoading: loadingSurge } = useOrderDistribution(
+    const { distribution: ordersDistribution = [], isLoading: loadingSurge } = useOrderDistribution(
         format(currentStart, "yyyy-MM-dd"),
         format(currentEnd, "yyyy-MM-dd")
     );
 
-    const { fulfillment: ordersFulfillment, isLoading: loadingFulfillment } = useOrderFulfillment(
+    const { fulfillment: ordersFulfillment = [], isLoading: loadingFulfillment } = useOrderFulfillment(
         format(currentStart, "yyyy-MM-dd"),
         format(currentEnd, "yyyy-MM-dd")
     );
@@ -113,7 +113,7 @@ export default function TotalOrdersCard() {
                             </h3>
                             <InfoTooltip display comment="Displaying peak ordering hours grouped in time" />
                         </div>
-                        <TotalOrdersPeaks data={ordersDistribution || []} />
+                        <TotalOrdersPeaks data={ordersDistribution} />
                     </div>
                     <div className="bg-white pt-6 px-2 md:p-6 rounded-2xl border border-slate-100 shadow-sm min-h-[300px] lg:h-[320px] flex flex-col">
                         <div className="flex gap-1 mb-6">
@@ -122,7 +122,7 @@ export default function TotalOrdersCard() {
                             </h3>
                             <InfoTooltip display comment="Displays the proportion of orders that are successful versus those with issues" />
                         </div>
-                        <TotalOrdersFulfillment data={ordersFulfillment || []} />
+                        <TotalOrdersFulfillment data={ordersFulfillment} />
                     </div>
                 </div>
             </div>
