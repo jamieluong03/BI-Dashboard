@@ -77,3 +77,60 @@ export function NetProfitLoadingSkeleton() {
         </div>
     );
 };
+
+export function TotalOrdersSkeleton() {
+    return (
+        <div className="w-full animate-pulse">
+            <div className="flex flex-col gap-4">
+                <div className="flex items-center justify-between bg-slate-50 p-3 rounded-lg border border-slate-100 gap-3">
+                    <Skeleton className="h-3 w-24 bg-slate-200" />
+                    <Skeleton className="h-8 w-32 rounded-md bg-slate-200" />
+                </div>
+
+                <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex flex-col h-auto lg:min-h-[250px]">
+                    <div className="flex flex-col sm:flex-row justify-between items-start gap-4 mb-8">
+                        <div className="space-y-2">
+                            <Skeleton className="h-3 w-32 bg-slate-100" />
+                            <div className="flex items-baseline gap-2">
+                                <Skeleton className="h-10 w-24 bg-slate-100" />
+                                <Skeleton className="h-3 w-16 bg-slate-100" />
+                            </div>
+                        </div>
+                        <div className="flex gap-4">
+                            <Skeleton className="h-3 w-12 rounded-full bg-slate-100" />
+                            <Skeleton className="h-3 w-12 rounded-full bg-slate-100" />
+                        </div>
+                    </div>
+                    <Skeleton className="w-full h-[125px] md:h-[180px] rounded-lg bg-slate-50" />
+                </div>
+
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm min-h-[300px] lg:h-[320px] flex flex-col space-y-4">
+                        <Skeleton className="h-3 w-32 bg-slate-100" />
+                        <div className="flex-1 flex flex-col gap-3 justify-center">
+                            <Skeleton className="h-8 w-[90%] bg-slate-50" />
+                            <Skeleton className="h-8 w-[75%] bg-slate-50" />
+                            <Skeleton className="h-8 w-[85%] bg-slate-50" />
+                            <Skeleton className="h-8 w-[60%] bg-slate-50" />
+                        </div>
+                    </div>
+
+                    <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm min-h-[300px] lg:h-[320px] flex flex-col items-center justify-between">
+                        <div className="w-full">
+                            <Skeleton className="h-3 w-32 bg-slate-100" />
+                        </div>
+                        <div className="relative flex items-center justify-center">
+                            <Skeleton className="h-32 w-32 rounded-full border-[12px] border-slate-50 bg-transparent" />
+                            <Skeleton className="absolute h-8 w-12 bg-slate-50" />
+                        </div>
+                        <div className="grid grid-cols-3 gap-4 w-full">
+                            <Skeleton className="h-8 w-full bg-slate-50" />
+                            <Skeleton className="h-8 w-full bg-slate-50" />
+                            <Skeleton className="h-8 w-full bg-slate-50" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+}

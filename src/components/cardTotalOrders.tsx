@@ -2,7 +2,7 @@ import { useState, useMemo } from "react";
 import { useOrderDistribution, useSalesStats, useOrderFulfillment } from "@/hooks/views";
 import { startOfMonth, endOfMonth, subYears, format, getDate, parseISO } from "date-fns";
 import { lastOrderMonth } from "@/lib/utils";
-import { Skeleton } from "@/components/ui/skeleton";
+import { TotalOrdersSkeleton } from "@/components/skeletons";
 import { TotalOrdersChart } from "./totalOrdersPacingChart";
 import { MonthSelect } from "./periodPicker";
 import { TotalOrdersPeaks } from "./totalOrdersPeakBars";
@@ -53,7 +53,7 @@ export default function TotalOrdersCard() {
     }, [currentOrders, previousOrders]);
 
     if (loadingCurrent || loadingPrev || loadingSurge || loadingFulfillment) {
-        return <div className="p-6 space-y-4"><Skeleton className="h-[300px] w-full rounded-xl" /></div>;
+        return <div className="p-6 space-y-4"><TotalOrdersSkeleton /></div>;
     }
 
     return (
