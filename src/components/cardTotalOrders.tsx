@@ -61,7 +61,7 @@ export default function TotalOrdersCard() {
     return (
         <div className="w-full">
             <div className="flex flex-col gap-4">
-                <div className="flex flex-wrap items-center justify-center md:justify-between bg-slate-50 p-3 rounded-lg border border-slate-100 gap-3">
+                <div className="flex flex-wrap items-center justify-between bg-slate-50 p-3 rounded-lg border border-slate-100 gap-3">
                     <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2">
                         Analysis Period
                     </span>
