@@ -17,11 +17,17 @@ type TotalOrdersFulfillment = {
 };
 
 export function TotalOrdersFulfillment({ data }: TotalOrdersFulfillment) {
-    console.log("Received Orders Fulfillment Data:", data.find(d => d.name === "Successful")?.value);
-    const totalOrders = data.reduce((acc, curr) => acc + curr.value, 0);
-    const orders = data ? data.find(d => d.name === "Successful")?.value || 0 : 0;
+    const chartData = data.map((item) => ({
+        ...item,
+        name: item.name.toLowerCase(), 
+        fill: `var(--color-${item.name.toLowerCase()})`, 
+    }));
+
+    const totalOrders = chartData.reduce((acc, curr) => acc + curr.value, 0);
+    const successfulCount = chartData.find(d => d.name === "successful")?.value || 0;
+    
     const successRate = totalOrders > 0 
-        ? ((orders / totalOrders) * 100).toFixed(0) 
+        ? ((successfulCount / totalOrders) * 100).toFixed(0) 
         : 0;
 
     return (
@@ -35,7 +41,7 @@ export function TotalOrdersFulfillment({ data }: TotalOrdersFulfillment) {
                     <PieChart>
                         <ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
                         <Pie
-                            data={data}
+                            data={chartData}
                             dataKey="value"
                             nameKey="name"
                             innerRadius={45}
@@ -65,7 +71,7 @@ export function TotalOrdersFulfillment({ data }: TotalOrdersFulfillment) {
             </div>
 
             <div className="grid grid-cols-3 gap-2 mt-2">
-                {data.map((item) => (
+                {chartData.map((item) => (
                     <div key={item.name} className="flex flex-col items-center">
                         <span className="text-[10px] font-bold text-slate-900">{item.value}</span>
                         <span className="text-[8px] text-slate-400 uppercase font-medium">{item.name}</span>
