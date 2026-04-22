@@ -5,7 +5,7 @@ import { getMockRefunds } from '@/lib/utils';
 export function useBlendedROAS(startDate: string, endDate: string) {
     const { data: data, isLoading, isError, error } = useQuery({
         queryKey: ['blended-roas', startDate, endDate],
-        queryFn: async() => {
+        queryFn: async () => {
             const { data, error } = await supabase
                 .from('daily_roas')
                 .select('revenue, spend, orders, clicks, impressions')
@@ -18,9 +18,9 @@ export function useBlendedROAS(startDate: string, endDate: string) {
             const totalClicks = data.reduce((sum, row) => sum + row.clicks, 0);
             const totalImpressions = data.reduce((sum, row) => sum + row.impressions, 0);
 
-            return { 
+            return {
                 roas: totalSpend > 0 ? (totalRevenue / totalSpend) : 0,
-                totalRevenue, 
+                totalRevenue,
                 totalSpend,
                 conversionRate: (totalOrders / totalClicks) * 100,
                 totalOrders,
@@ -37,7 +37,7 @@ export function useBlendedROAS(startDate: string, endDate: string) {
 export function useCLVStats() {
     const { data: clv, isLoading, isError, error } = useQuery({
         queryKey: ['avg-clv'],
-        queryFn: async() => {
+        queryFn: async () => {
             const { data, error } = await supabase
                 .from('customer_lifetime_value')
                 .select('lifetime_profit')
@@ -56,7 +56,7 @@ export function useCLVStats() {
 export function useSalesStats(startDate: string, endDate: string) {
     const { data: orders, isLoading, isError, error } = useQuery({
         queryKey: ['daily_sales_performance', startDate, endDate],
-        queryFn: async() => {
+        queryFn: async () => {
             const { data, error } = await supabase
                 .from('daily_sales_performance')
                 .select('*')
@@ -67,12 +67,12 @@ export function useSalesStats(startDate: string, endDate: string) {
 
             const totals = data.reduce((acc, day) => {
                 const dailyRevenue = Number(day.totalRevenue || 0);
-                
+
                 // Calculate specific refund for THIS specific day
                 const dailyRefund = getMockRefunds(
-                  dailyRevenue, 
-                  new Date(day.date), 
-                  day.adSource
+                    dailyRevenue,
+                    new Date(day.date),
+                    day.adSource
                 );
 
                 return {
@@ -83,7 +83,7 @@ export function useSalesStats(startDate: string, endDate: string) {
                     refunds: acc.refunds + dailyRefund
                 };
             }, { revenue: 0, cost: 0, adSpend: 0, shipping: 0, refunds: 0 });
-            
+
             // const totalRevenue = data.reduce((sum, o) => sum + Number(o.totalRevenue || 0), 0);
             // const totalCost = data.reduce((sum, o) => sum + Number(o.totalCost || 0), 0);
             // const totalAdSpend = data.reduce((sum, m) => sum + Number(m.totalAdSpend || 0), 0);
@@ -100,10 +100,11 @@ export function useSalesStats(startDate: string, endDate: string) {
                 const cost = Number(day.totalCost || 0);
                 const adSpend = Number(day.totalAdSpend || 0);
                 const shipping = Number(day.totalShipping || 0);
-                
+                const totalOrders = Number(day.ordersLength || 0);
+
                 const refunds = getMockRefunds(
-                    revenue, 
-                    new Date(day.date), 
+                    revenue,
+                    new Date(day.date),
                     day.adSource
                 );
 
@@ -114,12 +115,13 @@ export function useSalesStats(startDate: string, endDate: string) {
                     date: day.date,
                     revenue,
                     netProfit,
-                    margin: parseFloat(margin.toFixed(2))
+                    margin: parseFloat(margin.toFixed(2)),
+                    totalOrders
                 };
             });
 
 
-            return { 
+            return {
                 totalRevenue: totals.revenue,
                 netProfit,
                 totalRefunds: totals.refunds,
@@ -132,7 +134,7 @@ export function useSalesStats(startDate: string, endDate: string) {
                 returnOnInvestment,
                 marketingEfficiencyRatio,
                 daily: dailyData
-             }
+            }
         }
     });
     return { orders, isLoading, isError, error };
@@ -141,7 +143,7 @@ export function useSalesStats(startDate: string, endDate: string) {
 export function useSalesChannelPerformance(startDate: string, endDate: string) {
     const { data: channels, isLoading, isError, error } = useQuery({
         queryKey: ['daily_sales_channel_performance', startDate, endDate],
-        queryFn: async() => {
+        queryFn: async () => {
             const { data, error } = await supabase
                 .from('daily_sales_channel_performance')
                 .select('*')
@@ -151,13 +153,13 @@ export function useSalesChannelPerformance(startDate: string, endDate: string) {
 
             const channelStats = data.reduce((acc, row) => {
                 const source = row.channel;
-                
+
                 if (!acc[source]) {
-                    acc[source] = { 
-                        name: source, 
-                        revenue: 0, 
-                        orders: 0, 
-                        cost: 0, 
+                    acc[source] = {
+                        name: source,
+                        revenue: 0,
+                        orders: 0,
+                        cost: 0,
                         shipping: 0
                     };
                 }
@@ -179,7 +181,7 @@ export function useSalesChannelPerformance(startDate: string, endDate: string) {
 export function useInventoryPerformance() {
     const { data: inventory, isLoading, isError, error } = useQuery({
         queryKey: ['inventory_performance'],
-        queryFn: async() => {
+        queryFn: async () => {
             const { data, error } = await supabase
                 .from('product_performance_analytics')
                 .select('*')
@@ -198,7 +200,7 @@ export function useInventoryPerformance() {
 export function useRegionalData(startDate: string, endDate: string) {
     const { data: regions, isLoading, isError, error } = useQuery({
         queryKey: ['regional_sales', startDate, endDate],
-        queryFn: async() => {
+        queryFn: async () => {
             const { data, error } = await supabase
                 .from('regional_sales_performance')
                 .select('*')
@@ -214,9 +216,78 @@ export function useRegionalData(startDate: string, endDate: string) {
 
                 acc[region].value += Number(row.ordersLength || 0);
                 return acc;
-            }, {} as Record<string, { name: string, value: number}>);
+            }, {} as Record<string, { name: string, value: number }>);
             return regionalSales;
         }
     });
     return { regions, isLoading, isError, error };
+};
+
+export function useOrderDistribution(startDate: string, endDate: string) {
+    const { data: distribution, isLoading, isError, error } = useQuery({
+        queryKey: ['order_distribution', startDate, endDate],
+        queryFn: async () => {
+            const { data, error } = await supabase
+                .from('order_surge_distribution')
+                .select('*')
+                .gte('date', startDate)
+                .lte('date', endDate);
+            if (error) throw error;
+
+            const uniqueDays = new Set(data.map(row => row.date)).size || 1;
+
+            const summary = data.reduce((acc, row) => {
+                const dp = row.daypart;
+                if (!acc[dp]) {
+                    acc[dp] = { name: dp, totalOrders: 0, avgOrders: 0 };
+                }
+                acc[dp].totalOrders += Number(row.totalOrders || 0);
+                return acc;
+            }, {} as Record<string, { name: string, totalOrders: number, avgOrders: number }>);
+
+            const order = ["Morning", "Afternoon", "Evening", "Night"];
+
+            return order.map(name => {
+                const item = summary[name] || { name, totalOrders: 0 };
+                return {
+                    ...item,
+                    avgOrders: Number((item.totalOrders / uniqueDays).toFixed(1))
+                };
+            });
+        },
+        enabled: !!startDate && !!endDate
+    });
+
+    return { distribution, isLoading, isError, error };
+};
+
+export function useOrderFulfillment(startDate: string, endDate: string) {
+    const { data: fulfillment, isLoading, isError, error } = useQuery({
+        queryKey: ['order_fulfillment', startDate, endDate],
+        queryFn: async () => {
+            const { data, error } = await supabase
+                .from('order_fulfillment_stats')
+                .select('*')
+                .gte('date', startDate)
+                .lte('date', endDate);
+            if (error) throw error;
+
+            const summary = data.reduce((acc, row) => {
+                const status = row.status.toLowerCase();
+                if (status === 'cancelled') acc.cancelled += row.count;
+                else if (status === 'refunded') acc.refunded += row.count;
+                else acc.successful += row.count;
+                
+                acc.total += row.count;
+                return acc;
+            }, { successful: 0, cancelled: 0, refunded: 0, total: 0 });
+
+            return [
+                { name: "successful", value: summary.successful },
+                { name: "cancelled", value: summary.cancelled },
+                { name: "refunded", value: summary.refunded },
+            ];
+        }
+    })
+    return { fulfillment, isLoading, isError, error };
 };

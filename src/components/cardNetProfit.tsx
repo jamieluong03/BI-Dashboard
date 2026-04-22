@@ -1,22 +1,21 @@
 import { useState, useMemo } from "react";
 import { useSalesStats } from "@/hooks/views";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Skeleton } from "@/components/ui/skeleton";
 import {
     startOfMonth, endOfMonth,
     startOfQuarter, endOfQuarter,
     startOfYear, endOfYear,
     format, subMonths, subQuarters, subYears
 } from "date-fns";
-import { lastOrderDate } from "@/lib/utils";
+import { lastOrderDate,  } from "@/lib/utils";
 import { type ChartConfig } from "@/components/ui/chart";
 import { NetProfitWaterfall } from "@/components/netProfitWaterfall";
 import { NetProfitEfficiencyChart } from "@/components/netProfitEffiencyChart";
 import { InfoTooltip } from "./infoToolTip";
 import { NetProfitVarianceTable } from "@/components/netProfitVarianceTable";
-
-type ViewType = "month" | "quarter" | "year";
+import { PeriodPicker } from "./periodPicker";
+import { ViewType } from "@/types/dataTypes";
+import { NetProfitLoadingSkeleton } from "@/components/skeletons";
 
 const CHART_CONFIG = {
     revenue: { label: "Revenue", color: "#3b82f6" },
@@ -86,9 +85,9 @@ export default function CardNetProfit() {
             <div className="flex flex-col gap-4">
                 <Tabs value={view} onValueChange={(v) => setView(v as ViewType)}>
                     <TabsList className="grid w-full grid-cols-3 h-11 bg-slate-100/50">
-                        <TabsTrigger value="month">Month</TabsTrigger>
-                        <TabsTrigger value="quarter">Quarter</TabsTrigger>
-                        <TabsTrigger value="year">Year</TabsTrigger>
+                        <TabsTrigger value="month">Month (MoM)</TabsTrigger>
+                        <TabsTrigger value="quarter">Quarter (QoQ)</TabsTrigger>
+                        <TabsTrigger value="year">Year (YoY)</TabsTrigger>
                     </TabsList>
                 </Tabs>
 
@@ -157,38 +156,4 @@ export default function CardNetProfit() {
             </div>
         </div>
     );
-}
-
-function NetProfitLoadingSkeleton() {
-    return (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <Skeleton className="h-[420px] w-full rounded-2xl" />
-            <Skeleton className="h-[420px] w-full rounded-2xl" />
-            <Skeleton className="lg:col-span-2 h-[400px] w-full rounded-2xl" />
-        </div>
-    );
-}
-
-function PeriodPicker({ view, value, onChange }: { view: ViewType, value: Date, onChange: (d: Date) => void }) {
-    const options = useMemo(() => {
-        const pickerMap = {
-            month: () => Array.from({ length: 12 }).map((_, i) => ({ label: format(subMonths(lastOrderDate, i), "MMM yyyy"), val: subMonths(startOfMonth(lastOrderDate), i).toISOString() })),
-            quarter: () => Array.from({ length: 8 }).map((_, i) => { const d = subQuarters(startOfQuarter(lastOrderDate), i); return { label: `Q${Math.floor(d.getMonth() / 3) + 1} ${d.getFullYear()}`, val: d.toISOString() }; }),
-            year: () => Array.from({ length: 4 }).map((_, i) => { const d = subYears(startOfYear(lastOrderDate), i); return { label: d.getFullYear().toString(), val: d.toISOString() }; })
-        };
-        return pickerMap[view]();
-    }, [view]);
-
-    return (
-        <Select value={value.toISOString()} onValueChange={(v) => onChange(new Date(v))}>
-            <SelectTrigger className="h-9 w-[150px] text-xs font-bold bg-white border-slate-200">
-                <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-                {options.map((opt) => (
-                    <SelectItem key={opt.val} value={opt.val} className="text-xs">{opt.label}</SelectItem>
-                ))}
-            </SelectContent>
-        </Select>
-    );
-}
+};

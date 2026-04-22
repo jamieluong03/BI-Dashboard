@@ -6,7 +6,7 @@ import { useBlendedROAS, useCLVStats, useSalesStats, useSalesChannelPerformance,
 import { ChartBarLabelCustom } from "@/components/customBarChart";
 import { InventoryCard } from "@/components/inventoryCard";
 import { ChartRadarDots } from "@/components/radarChart";
-import { DashboardSkeleton } from "@/components/dashboardSkeleton";
+import { DashboardSkeleton } from "@/components/skeletons";
 import { SelectDate } from "@/components/dateSelect";
 import { getRangePresets, lastOrderDate } from "@/lib/utils";
 import { DateRange } from "react-day-picker";
