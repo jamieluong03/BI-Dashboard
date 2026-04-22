@@ -32,10 +32,6 @@ export function TotalOrdersFulfillment({ data }: TotalOrdersFulfillment) {
 
     return (
         <div className="flex flex-col h-full">
-            <h3 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">
-                Fulfillment Health
-            </h3>
-            
             <div className="flex-1 min-h-[150px] w-full">
                 <ChartContainer config={fulfillmentConfig} className="mx-auto aspect-square max-h-[180px]">
                     <PieChart>

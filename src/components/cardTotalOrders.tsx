@@ -7,6 +7,8 @@ import { TotalOrdersChart } from "./totalOrdersPacingChart";
 import { MonthSelect } from "./periodPicker";
 import { TotalOrdersPeaks } from "./totalOrdersPeakBars";
 import { TotalOrdersFulfillment } from "./TotalOrdersFulfillmentChart";
+import { InfoTooltip } from "./infoToolTip";
+
 
 export default function TotalOrdersCard() {
 
@@ -68,9 +70,12 @@ export default function TotalOrdersCard() {
                 <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex flex-col lg:min-h-[250px]">
                     <div className="flex flex-col sm:flex-row justify-between items-start gap-4 mb-8">
                         <div>
-                            <h3 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">
-                                Order Pacing Analysis
-                            </h3>
+                            <div className="flex gap-1 mb-6">
+                                <h3 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">
+                                    Order Pacing Analysis
+                                </h3>
+                                <InfoTooltip display comment="Comparing actual orders performance against targets" />
+                            </div>
                             <div className="flex items-baseline gap-2">
                                 <span className="text-3xl font-bold text-slate-900 tabular-nums">
                                     {loadingCurrent ? "..." : (currentOrders?.totalOrders || 0).toLocaleString()}
@@ -102,13 +107,25 @@ export default function TotalOrdersCard() {
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <div className="bg-white pt-6 px-2 md:p-6 rounded-2xl border border-slate-100 shadow-sm min-h-[300px] lg:h-[320px] flex flex-col">
+                        <div className="flex gap-1 mb-6">
+                            <h3 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">
+                                Orders Peak Activity
+                            </h3>
+                            <InfoTooltip display comment="Displaying peak ordering hours grouped in time" />
+                        </div>
                         <TotalOrdersPeaks data={ordersDistribution || []} />
                     </div>
                     <div className="bg-white pt-6 px-2 md:p-6 rounded-2xl border border-slate-100 shadow-sm min-h-[300px] lg:h-[320px] flex flex-col">
+                        <div className="flex gap-1 mb-6">
+                            <h3 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">
+                                Fulfillment Health
+                            </h3>
+                            <InfoTooltip display comment="Displays the proportion of orders that are successful versus those with issues" />
+                        </div>
                         <TotalOrdersFulfillment data={ordersFulfillment || []} />
                     </div>
                 </div>
             </div>
-        </div>
+        </div >
     );
 }

@@ -21,9 +21,6 @@ type TotalOrdersPeaksProps = {
 export function TotalOrdersPeaks({ data }: TotalOrdersPeaksProps) {
     return (
         <>
-            <h3 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">
-                Orders Peak Activity
-            </h3>
             <ChartContainer config={surgeConfig} className="">
                 <ResponsiveContainer width="100%" height="100%">
                     <BarChart
