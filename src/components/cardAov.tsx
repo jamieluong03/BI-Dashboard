@@ -59,7 +59,7 @@ export default function AovCard() {
 
                     <div className="w-full md:h-full h-[125px]">
                         {/* Aov Pacing Chart */}
-                        <AovPacingChart data={aov_insights?.pacingData || []}/>
+                        <AovPacingChart data={aov_insights?.pacingData || []} selectedDate={selectedDate} />
                     </div>
                 </div>
 

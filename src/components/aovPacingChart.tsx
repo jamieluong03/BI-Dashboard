@@ -1,6 +1,7 @@
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
+import { format } from "date-fns";
 
 const aovConfig = {
     current: { label: "Current AOV", color: "#6366f1" },
@@ -17,9 +18,14 @@ type AovPacingChartProps = {
     }[];
 };
 
-export default function AovPacingChart({ data }: AovPacingChartProps) {
+interface AovDateProp {
+    selectedDate: Date;
+}
+
+export default function AovPacingChart({ data, selectedDate }: AovPacingChartProps & AovDateProp) {
 
     const isDesktop = useMediaQuery("(min-width: 768px)");
+    const monthName = format(selectedDate, "MMMM");
 
     return (
         <>
@@ -65,7 +71,7 @@ export default function AovPacingChart({ data }: AovPacingChartProps) {
                                 labelFormatter={(value, payload) => {
                                     console.log("Tooltip Payload:", payload);
                                     const day = payload?.[0]?.payload?.day || value;
-                                    return `Day ${day}`;
+                                    return `${monthName} ${day}`;
                                 }}
                             />
                         }
