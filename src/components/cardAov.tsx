@@ -5,6 +5,7 @@ import { startOfMonth, endOfMonth, subYears, format } from "date-fns";
 import { MonthSelect } from "./periodPicker";
 import { InfoTooltip } from "./infoToolTip";
 import AovPacingChart from "./aovPacingChart";
+import AovHistogram from "./aovHistogram";
 
 export default function AovCard() {
 
@@ -67,11 +68,12 @@ export default function AovCard() {
                     <div className="bg-white p-6 md:p-6 rounded-2xl border border-slate-100 shadow-sm min-h-[100px] lg:h-[320px] flex flex-col">
                         <div className="flex gap-1 mb-6">
                             <h3 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">
-                                Order Value Bucket
+                                Order Value Distribution
                             </h3>
                             <InfoTooltip display comment="Displaying peak ordering hours grouped in time" />
                         </div>
                         {/* Order Value Bucket */}
+                        <AovHistogram data={aov_insights?.bucketData || []} />
                     </div>
                     <div className="bg-white p-6 md:p-6 rounded-2xl border border-slate-100 shadow-sm min-h-[100px]] lg:h-[320px] flex flex-col">
                         <div className="flex gap-1 mb-6">
