@@ -1,9 +1,10 @@
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import { lastOrderMonth } from "@/lib/utils";
-import { useSalesStats } from "@/hooks/views";
-import { startOfMonth, endOfMonth, subYears, format, getDate, parseISO } from "date-fns";
+import { useAovInsights } from "@/hooks/views";
+import { startOfMonth, endOfMonth, subYears, format } from "date-fns";
 import { MonthSelect } from "./periodPicker";
 import { InfoTooltip } from "./infoToolTip";
+import AovPacingChart from "./aovPacingChart";
 
 export default function AovCard() {
 
@@ -14,17 +15,9 @@ export default function AovCard() {
     const prevStart = subYears(currentStart, 1);
     const prevEnd = endOfMonth(prevStart);
 
-    const { orders: currentOrders, isLoading: loadingCurrent } = useSalesStats(
-        format(currentStart, "yyyy-MM-dd"),
-        format(currentEnd, "yyyy-MM-dd")
-    );
-
-    const { orders: previousOrders, isLoading: loadingPrev } = useSalesStats(
-        format(prevStart, "yyyy-MM-dd"),
-        format(prevEnd, "yyyy-MM-dd")
-    );
-
-    if (loadingCurrent || loadingPrev) {
+    const { aov_insights, isLoading } = useAovInsights(selectedDate);
+    
+    if (isLoading) {
         return <div className="p-6 space-y-4">
             {/* skeleton */}
         </div>;
@@ -48,20 +41,12 @@ export default function AovCard() {
                                 </h3>
                                 <InfoTooltip display comment="Comparing actual orders performance against targets" />
                             </div>
-                            {/* <div className="flex items-baseline gap-2">
-                                                <span className="text-3xl font-bold text-slate-900 tabular-nums">
-                                                    {loadingCurrent ? "..." : (currentOrders?.totalOrders || 0).toLocaleString()}
-                                                </span>
-                                                <span className="text-xs font-semibold text-slate-400">
-                                                    Total Orders
-                                                </span>
-                                            </div> */}
                         </div>
 
                         <div className="flex flex-col items-end gap-3 w-full sm:w-auto">
                             <div className="flex items-center gap-4">
                                 <div className="flex items-center gap-1.5">
-                                    <div className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                                    <div className="h-1.5 w-1.5 rounded-full bg-violet-500" />
                                     <span className="text-[9px] font-bold text-slate-400 uppercase">{format(currentStart, 'yyyy')}</span>
                                 </div>
                                 <div className="flex items-center gap-1.5">
@@ -74,6 +59,7 @@ export default function AovCard() {
 
                     <div className="w-full md:h-full h-[125px]">
                         {/* Aov Pacing Chart */}
+                        <AovPacingChart data={aov_insights?.pacingData || []}/>
                     </div>
                 </div>
 
