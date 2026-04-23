@@ -17,6 +17,7 @@ export default function AovCard() {
     const prevEnd = endOfMonth(prevStart);
 
     const { aov_insights, isLoading } = useAovInsights(selectedDate);
+    console.log("AOV Insights:", aov_insights);
     
     if (isLoading) {
         return <div className="p-6 space-y-4">

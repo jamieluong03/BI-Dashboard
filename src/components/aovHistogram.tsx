@@ -18,12 +18,15 @@ type AovHistogramProps = {
 
 export default function AovHistogram({ data }: AovHistogramProps) {
 
+    const mostCommonBucket = [...data].sort((a, b) => b.value - a.value)[0]?.range;
+
     return (
         <>
-        <ChartContainer config={bucketConfig} className="h-full w-full">
+            <ChartContainer config={bucketConfig} className="h-full w-full">
+
                 <BarChart
                     data={data}
-                    margin={{ top: 20, right: 0, left: 0, bottom: 0 }}
+                    margin={{ top: 20, right: 0, left: 0, bottom: 20 }}
                     barGap={0}
                 >
                     <CartesianGrid vertical={false} strokeDasharray="3 3" className="stroke-muted/50" />
@@ -57,6 +60,9 @@ export default function AovHistogram({ data }: AovHistogramProps) {
                     </Bar>
                 </BarChart>
             </ChartContainer>
+            <p className="text-[10px] text-slate-400 m-2 italic">
+                * Most customers spend in the {mostCommonBucket} range.
+            </p>
         </>
     )
 }

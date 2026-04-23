@@ -342,17 +342,17 @@ export function useAovInsights(selectedDate: Date) {
             // Order Value Buckets (Histogram)
             const bucketData = [
                 { range: "<$50", value: 0, key: 'under_50' },
-                { range: "$50-100", value: 0, key: 'fifty_to_100' },
-                { range: "$100-200", value: 0, key: 'hundred_to_200' },
-                { range: "$200-500", value: 0, key: 'two_hundred_to_500' },
+                { range: "$50-100", value: 0, key: '50_to_100' },
+                { range: "$100-200", value: 0, key: '100_to_200' },
+                { range: "$200-500", value: 0, key: '200_to_500' },
                 { range: ">$500", value: 0, key: 'over_500' },
             ];
 
             currentRes.data.forEach(row => {
                 bucketData[0].value += Number(row.under_50 || 0);
-                bucketData[1].value += Number(row.fifty_to_100 || 0);
-                bucketData[2].value += Number(row.hundred_to_200 || 0);
-                bucketData[3].value += Number(row.two_hundred_to_500 || 0);
+                bucketData[1].value += Number(row["50_to_100"] || 0);
+                bucketData[2].value += Number(row["100_to_200"] || 0);
+                bucketData[3].value += Number(row["200_to_500"] || 0);
                 bucketData[4].value += Number(row.over_500 || 0);
             });
 

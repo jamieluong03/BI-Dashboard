@@ -69,7 +69,6 @@ export default function AovPacingChart({ data, selectedDate }: AovPacingChartPro
                                 labelKey="day"
                                 formatter={(value) => [`$${Number(value).toFixed(2)}`, undefined]}
                                 labelFormatter={(value, payload) => {
-                                    console.log("Tooltip Payload:", payload);
                                     const day = payload?.[0]?.payload?.day || value;
                                     return `${monthName} ${day}`;
                                 }}
