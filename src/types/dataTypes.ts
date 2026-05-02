@@ -32,3 +32,12 @@ export interface InventoryCardProps {
   lowStock: string
   description: string;
 };
+
+export interface ChannelStats {
+    name: string;
+    revenue: number;
+    margin: number;
+    orders: number;
+    newOrders: number;
+    returningOrders: number;
+};
