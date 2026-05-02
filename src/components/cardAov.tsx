@@ -7,6 +7,7 @@ import { InfoTooltip } from "./infoToolTip";
 import AovPacingChart from "./aovPacingChart";
 import AovHistogram from "./aovHistogram";
 import { UptChart } from "./aovUptChart";
+import { AovSkeleton } from "./skeletons";
 
 export default function AovCard() {
 
@@ -22,7 +23,7 @@ export default function AovCard() {
     
     if (isLoading) {
         return <div className="p-6 space-y-4">
-            {/* skeleton */}
+            <AovSkeleton />
         </div>;
     };
 
