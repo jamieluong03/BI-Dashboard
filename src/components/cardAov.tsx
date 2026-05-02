@@ -6,6 +6,7 @@ import { MonthSelect } from "./periodPicker";
 import { InfoTooltip } from "./infoToolTip";
 import AovPacingChart from "./aovPacingChart";
 import AovHistogram from "./aovHistogram";
+import { UptChart } from "./aovUptChart";
 
 export default function AovCard() {
 
@@ -79,11 +80,12 @@ export default function AovCard() {
                     <div className="bg-white p-6 md:p-6 rounded-2xl border border-slate-100 shadow-sm min-h-[100px]] lg:h-[320px] flex flex-col">
                         <div className="flex gap-1 mb-6">
                             <h3 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">
-                                Unit per transaction
+                                Unit per transaction (UPT)
                             </h3>
                             <InfoTooltip display comment="Displays the proportion of orders that are successful versus those with issues" />
                         </div>
                         {/* UPT chart */}
+                        <UptChart value={aov_insights?.upt || 0} />
                     </div>
                 </div>
             </div>
