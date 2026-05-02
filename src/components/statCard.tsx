@@ -29,6 +29,7 @@ import {
 import TotalRevenueCard from "@/components/cardTotalRevenue";
 import NetProfitCard from "./cardNetProfit";
 import TotalOrdersCard from "./cardTotalOrders";
+import AovCard from "./cardAov";
 
 export function StatCard({ title, value, description, metric }: StatCardProps) {
   const [cardOpen, setCardOpen] = useState(false);
@@ -49,6 +50,8 @@ export function StatCard({ title, value, description, metric }: StatCardProps) {
         return <NetProfitCard />;
       case "total_orders":
         return <TotalOrdersCard />;
+      case "aov":
+        return <AovCard />;
       default:
         return <p className="p-4 text-center text-slate-500">Insight Coming Soon</p>;
     }

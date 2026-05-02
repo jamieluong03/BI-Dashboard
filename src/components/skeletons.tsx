@@ -133,4 +133,64 @@ export function TotalOrdersSkeleton() {
             </div>
         </div>
     );
-}
+};
+
+export function AovSkeleton() {
+    return (
+        <div className="w-full animate-pulse">
+            <div className="flex flex-col gap-4">
+                
+                <div className="flex items-center justify-between bg-slate-50 p-3 rounded-lg border border-slate-100 gap-3">
+                    <Skeleton className="h-3 w-32 bg-slate-200" />
+                    <Skeleton className="h-8 w-32 rounded-md bg-slate-200" />
+                </div>
+
+                <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex flex-col lg:min-h-[250px]">
+                    <div className="flex flex-col sm:flex-row justify-between items-start gap-4 mb-8">
+                        <div className="space-y-4">
+                            <Skeleton className="h-3 w-40 bg-slate-100" />
+                            <div className="space-y-2">
+                                <Skeleton className="h-10 w-32 bg-slate-100" />
+                                <Skeleton className="h-3 w-20 bg-slate-100" />
+                            </div>
+                        </div>
+                        <div className="flex gap-4">
+                            <Skeleton className="h-3 w-16 rounded-full bg-slate-100" />
+                            <Skeleton className="h-3 w-16 rounded-full bg-slate-100" />
+                        </div>
+                    </div>
+                    <Skeleton className="w-full h-[125px] md:h-[160px] rounded-lg bg-slate-50/50" />
+                </div>
+
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    
+                    <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm min-h-[300px] lg:h-[320px] flex flex-col">
+                        <Skeleton className="h-3 w-40 mb-10 bg-slate-100" />
+                        <div className="flex-1 flex items-end justify-around gap-2 px-4">
+                            <Skeleton className="h-[40%] w-10 rounded-t-md bg-slate-50" />
+                            <Skeleton className="h-[70%] w-10 rounded-t-md bg-slate-50" />
+                            <Skeleton className="h-[90%] w-10 rounded-t-md bg-slate-50" />
+                            <Skeleton className="h-[50%] w-10 rounded-t-md bg-slate-50" />
+                            <Skeleton className="h-[30%] w-10 rounded-t-md bg-slate-50" />
+                        </div>
+                    </div>
+
+                    <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm min-h-[300px] lg:h-[320px] flex flex-col items-center">
+                        <div className="w-full">
+                            <Skeleton className="h-3 w-40 bg-slate-100" />
+                        </div>
+                        <div className="relative mt-12 flex items-center justify-center">
+                            <Skeleton className="h-40 w-40 rounded-full border-[16px] border-slate-50 bg-transparent" />
+                            <div className="absolute flex flex-col items-center gap-2">
+                                <Skeleton className="h-8 w-12 bg-slate-50" />
+                                <Skeleton className="h-3 w-16 bg-slate-50" />
+                            </div>
+                        </div>
+                        <Skeleton className="mt-auto h-3 w-[80%] bg-slate-50" />
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    );
+};

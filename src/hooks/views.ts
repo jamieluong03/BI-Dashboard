@@ -1,6 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
 import { getMockRefunds } from '@/lib/utils';
+import { startOfMonth, endOfMonth, subYears, format, getDate, parseISO } from "date-fns";
+
 
 export function useBlendedROAS(startDate: string, endDate: string) {
     const { data: data, isLoading, isError, error } = useQuery({
@@ -277,7 +279,7 @@ export function useOrderFulfillment(startDate: string, endDate: string) {
                 if (status === 'cancelled') acc.cancelled += row.count;
                 else if (status === 'refunded') acc.refunded += row.count;
                 else acc.successful += row.count;
-                
+
                 acc.total += row.count;
                 return acc;
             }, { successful: 0, cancelled: 0, refunded: 0, total: 0 });
@@ -290,4 +292,84 @@ export function useOrderFulfillment(startDate: string, endDate: string) {
         }
     })
     return { fulfillment, isLoading, isError, error };
+};
+
+export function useAovInsights(selectedDate: Date) {
+    const currentStart = startOfMonth(selectedDate);
+    const currentEnd = endOfMonth(selectedDate);
+    const prevStart = subYears(currentStart, 1);
+    const prevEnd = endOfMonth(prevStart);
+
+    const { data: aov_insights, isLoading, isError, error } = useQuery({
+        queryKey: ['aov_insights', format(selectedDate, "yyyy-MM")],
+        queryFn: async () => {
+            const [currentRes, prevRes] = await Promise.all([
+                supabase.from('aov_insights_stats').select('*')
+                    .gte('date', format(currentStart, "yyyy-MM-dd"))
+                    .lte('date', format(currentEnd, "yyyy-MM-dd")),
+                supabase.from('aov_insights_stats').select('*')
+                    .gte('date', format(prevStart, "yyyy-MM-dd"))
+                    .lte('date', format(prevEnd, "yyyy-MM-dd"))
+            ]);
+            if (currentRes.error) throw currentRes.error;
+            if (prevRes.error) throw prevRes.error;
+
+            const aggregateDaily = (rows: any[]) => {
+                const map: Record<number, { revenue: number; orders: number }> = {};
+                rows.forEach(row => {
+                    const day = getDate(parseISO(row.date));
+                    if (!map[day]) map[day] = { revenue: 0, orders: 0 };
+                    map[day].revenue += Number(row.totalRevenue);
+                    map[day].orders += Number(row.orderCount);
+                });
+                return map;
+            };
+            const currentMap = aggregateDaily(currentRes.data);
+            const prevMap = aggregateDaily(prevRes.data);
+
+            // Pacing Data (The Line Chart)
+            const pacingData = Array.from({ length: 31 }, (_, i) => {
+                const day = i + 1;
+                const cur = currentMap[day] || { revenue: 0, orders: 0 };
+                const pre = prevMap[day] || { revenue: 0, orders: 0 };
+
+                return {
+                    day,
+                    current: cur.orders > 0 ? Number((cur.revenue / cur.orders).toFixed(2)) : 0,
+                    previous: pre.orders > 0 ? Number((pre.revenue / pre.orders).toFixed(2)) : 0,
+                };
+            });
+            // Order Value Buckets (Histogram)
+            const bucketData = [
+                { range: "<$50", value: 0, key: 'under_50' },
+                { range: "$50-100", value: 0, key: '50_to_100' },
+                { range: "$100-200", value: 0, key: '100_to_200' },
+                { range: "$200-500", value: 0, key: '200_to_500' },
+                { range: ">$500", value: 0, key: 'over_500' },
+            ];
+
+            currentRes.data.forEach(row => {
+                bucketData[0].value += Number(row.under_50 || 0);
+                bucketData[1].value += Number(row["50_to_100"] || 0);
+                bucketData[2].value += Number(row["100_to_200"] || 0);
+                bucketData[3].value += Number(row["200_to_500"] || 0);
+                bucketData[4].value += Number(row.over_500 || 0);
+            });
+
+            // UPT
+            const totalItems = currentRes.data.reduce((acc, row) => acc + (Number(row.avgUPT) * Number(row.orderCount)), 0);
+            const totalOrders = currentRes.data.reduce((acc, row) => acc + Number(row.orderCount), 0);
+            const monthlyUPT = totalOrders > 0 ? (totalItems / totalOrders).toFixed(2) : "0.00";
+            
+            return {
+                pacingData,
+                bucketData,
+                totalOrders,
+                currentAov: pacingData.reduce((acc, d) => acc + d.current, 0) / (pacingData.filter(d => d.current > 0).length || 1),
+                upt: Number(monthlyUPT)
+            };
+        },
+        enabled: !!selectedDate
+    });
+    return { aov_insights, isLoading, isError, error };
 };
