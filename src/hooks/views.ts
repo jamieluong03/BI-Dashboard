@@ -357,13 +357,16 @@ export function useAovInsights(selectedDate: Date) {
             });
 
             // UPT
-            const totalOrders = currentRes.data.reduce((acc, r) => acc + Number(r.orderCount), 0);
+            const totalItems = currentRes.data.reduce((acc, row) => acc + (Number(row.avgUPT) * Number(row.orderCount)), 0);
+            const totalOrders = currentRes.data.reduce((acc, row) => acc + Number(row.orderCount), 0);
+            const monthlyUPT = totalOrders > 0 ? (totalItems / totalOrders).toFixed(2) : "0.00";
             
             return {
                 pacingData,
                 bucketData,
                 totalOrders,
-                currentAov: pacingData.reduce((acc, d) => acc + d.current, 0) / (pacingData.filter(d => d.current > 0).length || 1)
+                currentAov: pacingData.reduce((acc, d) => acc + d.current, 0) / (pacingData.filter(d => d.current > 0).length || 1),
+                upt: Number(monthlyUPT)
             };
         },
         enabled: !!selectedDate
