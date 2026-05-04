@@ -31,6 +31,7 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
+import SalesChannelCard from "./cardSalesChannels";
 
 const chartConfig = {
   value: {
@@ -49,7 +50,7 @@ export function ChartBarLabelCustom({ dataKey, title, description, comment, char
   const ModalContent = isDesktop ? DialogContent : DrawerContent;
   const ModalHeader = isDesktop ? DialogHeader : DrawerHeader;
   const ModalTitle = isDesktop ? DialogTitle : DrawerTitle;
-  const ModalDescription = isDesktop ? DialogDescription : DrawerDescription;
+  // const ModalDescription = isDesktop ? DialogDescription : DrawerDescription;
 
   const handleBarClick = (data: any) => {
     if (!data) return;
@@ -150,7 +151,7 @@ export function ChartBarLabelCustom({ dataKey, title, description, comment, char
         </ModalHeader>
 
         <div className={isDesktop ? "" : "flex-1 overflow-y-auto px-6"}>
-          {/* Advanced Insight Card */}
+          <SalesChannelCard />
         </div>
       </ModalContent>
     </ModalRoot>
