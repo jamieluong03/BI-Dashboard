@@ -32,6 +32,7 @@ export function ProfitabilityChart({ data }: ProfitabilityChartProps) {
                     data={data}
                     margin={{ top: 10, right: 0, left: 0, bottom: 0 }}
                     barGap={8}
+                    
                 >
                     <CartesianGrid vertical={false} strokeDasharray="3 3" className="stroke-muted/50" />
                     <XAxis

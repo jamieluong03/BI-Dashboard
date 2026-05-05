@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
 import { getMockRefunds } from '@/lib/utils';
-import { startOfMonth, endOfMonth, subYears, format, getDate, parseISO } from "date-fns";
+import { startOfMonth, endOfMonth, subYears, format, getDate, parseISO, subMonths, endOfDay } from "date-fns";
 import { ChannelStats } from '@/types/dataTypes';
 
 export function useBlendedROAS(startDate: string, endDate: string) {
@@ -378,59 +378,67 @@ export function useChannelInsights(selectedDate: Date) {
     const start = format(startOfMonth(selectedDate), "yyyy-MM-dd");
     const end = format(endOfMonth(selectedDate), "yyyy-MM-dd");
 
+    // 1. Calculate the comparison dates (Previous Month)
+    const prevDate = subMonths(selectedDate, 1);
+    const prevStart = format(startOfMonth(prevDate), "yyyy-MM-dd");
+    const prevEnd = format(endOfMonth(prevDate), "yyyy-MM-dd");
+
     const { data: channel_insights, isLoading, isError, error } = useQuery({
         queryKey: ['channel_insights', start, end],
         queryFn: async () => {
-            const { data, error } = await supabase
-                .from('channel_advanced_stats')
-                .select('*')
-                .gte('date', start)
-                .lte('date', end);
+            const [currentRes, prevRes] = await Promise.all([
+                supabase.from('channel_advanced_stats').select('*').gte('date', start).lte('date', end),
+                supabase.from('channel_advanced_stats').select('*').gte('date', prevStart).lte('date', prevEnd)
+            ]);
 
-            if (error) throw error;
+            if (currentRes.error) throw currentRes.error;
+            if (prevRes.error) throw prevRes.error;
 
-            const channelMap = (data || []).reduce((acc, row) => {
-                const source = row.adSource || 'Organic';
-                
-                if (!acc[source]) {
-                    acc[source] = { 
-                        name: source, 
-                        revenue: 0, 
-                        margin: 0, 
-                        orders: 0, 
-                        newOrders: 0, 
-                        returningOrders: 0 
-                    };
-                }
+            const mapStats = (rows: any[]) => {
+                return rows.reduce((acc, row) => {
+                    const source = row.adSource || 'Organic';
+                    if (!acc[source]) acc[source] = { revenue: 0, margin: 0, orders: 0 };
+                    acc[source].revenue += Number(row.grossRevenue || 0);
+                    acc[source].margin += Number(row.netMargin || 0);
+                    acc[source].orders += Number(row.totalOrders || 0);
+                    return acc;
+                }, {} as Record<string, { revenue: number; margin: number; orders: number }>);
+            };
 
-                acc[source].revenue += Number(row.grossRevenue || 0);
-                acc[source].margin += Number(row.netMargin || 0);
-                acc[source].orders += Number(row.totalOrders || 0);
-                acc[source].newOrders += Number(row.newCustomerOrders || 0);
-                acc[source].returningOrders += Number(row.returningCustomerOrders || 0);
-                
-                return acc;
-            }, {} as Record<string, ChannelStats>);
+            const currentMap = mapStats(currentRes.data);
+            const prevMap = mapStats(prevRes.data);
+            const allChannels = Array.from(new Set([...Object.keys(currentMap), ...Object.keys(prevMap)]));
 
-            const channels: ChannelStats[] = Object.values(channelMap);
+            const profitabilityData = allChannels.map(name => {
+                const cur = currentMap[name] || { revenue: 0, margin: 0 };
+                const prev = prevMap[name] || { revenue: 0, margin: 0 };
+
+                const growth = prev.revenue > 0 
+                    ? ((cur.revenue - prev.revenue) / prev.revenue) * 100 
+                    : 0;
+
+                return {
+                    channel: name,
+                    revenue: cur.revenue,
+                    margin: cur.margin,
+                    growth: Number(growth.toFixed(1))
+                };
+            }).sort((a, b) => b.revenue - a.revenue);
 
             return {
-                // Profitability (Revenue vs Margin)
-                profitabilityData: channels.map((c: ChannelStats) => ({
-                    channel: c.name,
-                    revenue: c.revenue,
-                    margin: c.margin
-                })).sort((a, b) => b.revenue - a.revenue),
+                profitabilityData, // Profitability (Revenue vs Margin)
+
                 // AOV by Channel
-                aovData: channels.map((c: ChannelStats) => ({
-                    channel: c.name,
-                    aov: c.orders > 0 ? Number((c.revenue / c.orders).toFixed(2)) : 0
+                aovData: allChannels.map(name => ({
+                    channel: name,
+                    aov: currentMap[name]?.orders > 0 ? Number((currentMap[name].revenue / currentMap[name].orders).toFixed(2)) : 0
                 })).sort((a, b) => b.aov - a.aov),
+
                 // Acquisition Attribution
-                attributionData: channels.map((c: ChannelStats) => ({
-                    channel: c.name,
-                    new: c.newOrders,
-                    returning: c.returningOrders
+                attributionData: allChannels.map(name => ({
+                    channel: name,
+                    new: currentMap[name]?.newOrders || 0,
+                    returning: currentMap[name]?.returningOrders || 0
                 }))
             };
         },
