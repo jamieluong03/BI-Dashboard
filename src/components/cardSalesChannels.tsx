@@ -38,19 +38,6 @@ export default function SalesChannelCard() {
                                 <InfoTooltip display comment="Comparing actual orders performance against targets" />
                             </div>
                         </div>
-
-                        <div className="flex flex-col items-end gap-3 w-full sm:w-auto">
-                            <div className="flex items-center gap-4">
-                                <div className="flex items-center gap-1.5">
-                                    <div className="h-1.5 w-1.5 rounded-full bg-violet-500" />
-                                    <span className="text-[9px] font-bold text-slate-400 uppercase">{format(currentStart, 'yyyy')}</span>
-                                </div>
-                                <div className="flex items-center gap-1.5">
-                                    <div className="h-1.5 w-1.5 rounded-full border border-dashed border-slate-400" />
-                                    <span className="text-[9px] font-bold text-slate-400 uppercase">{format(prevStart, 'yyyy')}</span>
-                                </div>
-                            </div>
-                        </div>
                     </div>
 
                     <div className="w-full md:h-full h-[125px]">
