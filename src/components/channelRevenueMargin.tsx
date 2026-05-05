@@ -19,7 +19,7 @@ interface ProfitabilityChartProps {
 export function ProfitabilityChart({ data }: ProfitabilityChartProps) {
     return (
         <div className="h-full w-full">
-            <ChartContainer config={profitabilityConfig} className="min-h-[250px] w-full">
+            <ChartContainer config={profitabilityConfig} className="min-h-[280px] h-[350px] w-full">
                 <BarChart data={data} margin={{ top: 30, right: 0, left: 0, bottom: 0 }} barGap={8}>
                     <CartesianGrid vertical={false} strokeDasharray="3 3" className="stroke-muted/50" />
                     
