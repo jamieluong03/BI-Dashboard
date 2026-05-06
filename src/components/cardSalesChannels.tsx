@@ -6,6 +6,7 @@ import { InfoTooltip } from "./infoToolTip";
 import { useChannelInsights } from "@/hooks/views";
 import { ProfitabilityChart } from "./channelRevenueMargin";
 import { AovByChannelChart } from "./channelAov";
+import { PurchaseAttributionChart } from "./channelPurchaseAttribution";
 
 export default function SalesChannelCard() {
 
@@ -70,6 +71,7 @@ export default function SalesChannelCard() {
                             <InfoTooltip display comment="Displays the proportion of orders that are successful versus those with issues" />
                         </div>
                         {/* First-Purchase Attribution */}
+                        <PurchaseAttributionChart data={channel_insights?.attributionData || []} />
                     </div>
                 </div>
             </div>
