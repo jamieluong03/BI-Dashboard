@@ -36,9 +36,9 @@ export default function AovCard() {
                     <MonthSelect value={selectedDate} onChange={setSelectedDate} />
                 </div>
                 <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex flex-col lg:min-h-[250px]">
-                    <div className="flex flex-col sm:flex-row justify-between items-start gap-4 mb-8">
+                    <div className="flex flex-col sm:flex-row justify-between items-start gap-4 md:mb-8">
                         <div>
-                            <div className="flex gap-1 mb-6">
+                            <div className="flex gap-1 md:mb-6">
                                 <h3 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">
                                     AOV Pacing Analysis
                                 </h3>
@@ -60,7 +60,7 @@ export default function AovCard() {
                         </div>
                     </div>
 
-                    <div className="w-full md:h-full h-[125px]">
+                    <div className="w-full md:h-full h-[200px]">
                         {/* Aov Pacing Chart */}
                         <AovPacingChart data={aov_insights?.pacingData || []} selectedDate={selectedDate} />
                     </div>
