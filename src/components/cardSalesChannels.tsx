@@ -5,7 +5,7 @@ import { MonthSelect } from "./periodPicker";
 import { InfoTooltip } from "./infoToolTip";
 import { useChannelInsights } from "@/hooks/views";
 import { ProfitabilityChart } from "./channelRevenueMargin";
-
+import { AovByChannelChart } from "./channelAov";
 
 export default function SalesChannelCard() {
 
@@ -60,6 +60,7 @@ export default function SalesChannelCard() {
                             <InfoTooltip display comment="Displaying peak ordering hours grouped in time" />
                         </div>
                         {/* AOV By Channel */}
+                        <AovByChannelChart data={channel_insights?.aovData || []} />
                     </div>
                     <div className="bg-white p-6 md:p-6 rounded-2xl border border-slate-100 shadow-sm min-h-[100px]] lg:h-[320px] flex flex-col">
                         <div className="flex gap-1 mb-6">
