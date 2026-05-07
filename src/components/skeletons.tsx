@@ -68,6 +68,43 @@ export function DashboardSkeleton() {
     );
 };
 
+export function TotalRevenueSkeleton() {
+  return (
+    <div className="space-y-6 pt-2 w-full">
+      <div className="bg-white rounded-xl border border-slate-200 p-8 min-h-[350px] flex flex-col justify-between">
+        <div className="flex-1 w-full relative flex items-end gap-4 overflow-hidden">
+          {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((i) => (
+            <div key={i} className="flex-1 flex flex-col gap-2 items-center">
+              <div 
+                className="w-full bg-slate-50 rounded-t-sm animate-pulse" 
+                style={{ height: `${Math.floor(Math.random() * 60) + 20}%` }} 
+              />
+            </div>
+          ))}
+          
+          <div className="absolute inset-0 flex flex-col justify-between pointer-events-none">
+            <div className="border-b border-slate-50 w-full" />
+            <div className="border-b border-slate-50 w-full" />
+            <div className="border-b border-slate-50 w-full" />
+            <div className="border-b border-slate-100 w-full" />
+          </div>
+        </div>
+        
+        <div className="mt-8 flex justify-center gap-6">
+          <div className="flex items-center gap-2">
+            <div className="h-3 w-3 rounded-full bg-slate-200 animate-pulse" />
+            <div className="h-3 w-20 bg-slate-100 rounded animate-pulse" />
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="h-3 w-3 rounded-full bg-slate-200 animate-pulse" />
+            <div className="h-3 w-20 bg-slate-100 rounded animate-pulse" />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export function NetProfitLoadingSkeleton() {
     return (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

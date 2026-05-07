@@ -6,6 +6,7 @@ import { startOfMonth, endOfMonth, startOfQuarter, endOfQuarter, subQuarters, su
 import { lastOrderDate } from "@/lib/utils";
 import { MonthSelect, QuarterSelect, YearSelect, MonthIndexSelect } from "./periodPicker";
 import { ViewType } from "@/types/dataTypes";
+import { TotalRevenueSkeleton } from "./skeletons";
 
 export default function TotalRevenueCard() {
     const [activeTab, setActiveTab] = useState<ViewType>("month");
@@ -45,7 +46,7 @@ export default function TotalRevenueCard() {
         };
     }, [activeTab, momA, momB, qoqA, qoqB, yoyMonth, yoyYearA, yoyYearB]);
 
-    const { data, isLoading, isError, error } = useRevenueComparisonQuery(ranges.rangeA, ranges.rangeB);
+    const { data, isLoading, isError } = useRevenueComparisonQuery(ranges.rangeA, ranges.rangeB);
 
     return (
         <div className="space-y-6 pt-2">
@@ -91,26 +92,22 @@ export default function TotalRevenueCard() {
             </div>
 
             <div className="bg-white rounded-xl border border-slate-200 p-4 min-h-[300px] flex flex-col justify-center">
-                {isLoading ? (
-                    <div className="flex flex-col items-center gap-2">
-                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-                        <p className="text-xs text-slate-400 font-medium">Loading...</p>
-                    </div>
-                ) : isError ? (
-                    <div className="text-center space-y-2">
-                        <p className="text-red-500 text-sm font-bold">Failed to load data</p>
-                        <p className="text-[10px] text-slate-400 max-w-[200px] mx-auto">
-                            {(error as any)?.message || "Unknown Database Error"}
-                        </p>
-                    </div>
-                ) : (
-                    <div className="bg-white border-slate-200 p-4 mt-4">
-                        <RevenueComparisonChart
-                            current={data?.current || []}
-                            previous={data?.previous || []}
-                        />
-                    </div>
-                )}
+                <div className="w-full">
+                    {isLoading ? (
+                        <TotalRevenueSkeleton />
+                    ) : isError ? (
+                        <div className="flex h-64 items-center justify-center text-red-500 text-sm bg-red-50 rounded-2xl border border-red-100">
+                            Error fetching data for this range.
+                        </div>
+                    ) : (
+                        <div className="bg-white border-slate-200 p-4 mt-4">
+                            <RevenueComparisonChart
+                                current={data?.current || []}
+                                previous={data?.previous || []}
+                            />
+                        </div>
+                    )}
+                </div>
             </div>
         </div>
     );
