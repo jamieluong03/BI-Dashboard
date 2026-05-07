@@ -36,7 +36,7 @@ export default function SalesChannelCard() {
                                 <h3 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">
                                     Revenue vs. Margin By Channel
                                 </h3>
-                                <InfoTooltip display comment="Comparing actual orders performance against targets" />
+                                <InfoTooltip display comment="Visualizes the relationship between Gross Revenue and Net Margin, tracking the spread to ensure that scaling sales volume is translating into actual profitability." />
                             </div>
                         </div>
                     </div>
@@ -58,7 +58,7 @@ export default function SalesChannelCard() {
                             <h3 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">
                                 AOV By Channel
                             </h3>
-                            <InfoTooltip display comment="Displaying peak ordering hours grouped in time" />
+                            <InfoTooltip display comment="Measures the average revenue generated per transaction across each sales channel, highlighting which platforms attract the highest-spending customers." />
                         </div>
                         {/* AOV By Channel */}
                         <AovByChannelChart data={channel_insights?.aovData || []} />
@@ -68,7 +68,7 @@ export default function SalesChannelCard() {
                             <h3 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">
                                 First-Purchase Attribution
                             </h3>
-                            <InfoTooltip display comment="Displays the proportion of orders that are successful versus those with issues" />
+                            <InfoTooltip display comment="Analyzes marketing efficiency by channel, distinguishing between first-time customer acquisition and repeat purchase retention to optimize your media spend." />
                         </div>
                         {/* First-Purchase Attribution */}
                         <PurchaseAttributionChart data={channel_insights?.attributionData || []} />

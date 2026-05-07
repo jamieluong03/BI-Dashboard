@@ -17,7 +17,7 @@ interface PurchaseAttributionProps {
 }
 
 export function PurchaseAttributionChart({ data }: PurchaseAttributionProps) {
-    console.log("Purchase Attribution Chart Data:", data);
+
     const sortedData = [...data].sort((a, b) => b.new - a.new);
 
     return (
@@ -34,7 +34,7 @@ export function PurchaseAttributionChart({ data }: PurchaseAttributionProps) {
                     dataKey="channel"
                     type="category"
                     tickLine={false}
-                    axisLine={false}
+                    axisLine={true}
                     fontSize={11}
                     fontWeight={600}
                     className="fill-slate-500 uppercase"
@@ -76,8 +76,7 @@ export function PurchaseAttributionChart({ data }: PurchaseAttributionProps) {
                     radius={[0, 4, 4, 0]} 
                     barSize={24} 
                 />
-                
-                <ChartLegend content={<ChartLegendContent />} className="mt-6" />
+                <ChartLegend content={<ChartLegendContent />} />
             </BarChart>
         </ChartContainer>
     );
