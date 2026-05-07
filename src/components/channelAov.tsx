@@ -19,7 +19,6 @@ export function AovByChannelChart({ data }: AovByChannelProps) {
         ...item,
         fill: `var(--color-${item.channel.toLowerCase()})`,
     })).sort((a, b) => b.aov - a.aov);
-    console.log("AOV Chart Data:", chartData);
 
     return (
         <ChartContainer config={aovChannelConfig} className="h-full w-full">

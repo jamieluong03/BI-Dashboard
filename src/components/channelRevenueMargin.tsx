@@ -20,7 +20,7 @@ export function ProfitabilityChart({ data }: ProfitabilityChartProps) {
     return (
         <div className="h-full w-full">
             <ChartContainer config={profitabilityConfig} className="min-h-[280px] h-[350px] w-full">
-                <BarChart data={data} margin={{ top: 30, right: 0, left: 0, bottom: 0 }} barGap={8}>
+                <BarChart data={data} margin={{ top: 20, right: 0, left: 0, bottom: 0 }} barGap={8}>
                     <CartesianGrid vertical={false} strokeDasharray="3 3" className="stroke-muted/50" />
                     
                     <XAxis dataKey="channel" tickLine={false} axisLine={false} fontSize={11} fontWeight={600} tickMargin={12} className="fill-slate-500 uppercase" />

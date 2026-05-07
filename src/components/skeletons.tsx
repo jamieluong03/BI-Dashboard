@@ -2,70 +2,70 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 
 export function DashboardSkeleton() {
-  return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 animate-pulse">
-      <header className="mb-8">
-        <Skeleton className="h-9 w-64 mb-2" />
-        <Skeleton className="h-4 w-40" />
-      </header>
+    return (
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 animate-pulse">
+            <header className="mb-8">
+                <Skeleton className="h-9 w-64 mb-2" />
+                <Skeleton className="h-4 w-40" />
+            </header>
 
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 p-2">
-        {/* Top 4 Stat Cards */}
-        {[...Array(4)].map((_, i) => (
-          <Card key={`stat-top-${i}`} className="h-[140px]">
-            <CardHeader><Skeleton className="h-4 w-1/2" /></CardHeader>
-            <CardContent className="space-y-2">
-              <Skeleton className="h-8 w-3/4" />
-              <Skeleton className="h-3 w-full" />
-            </CardContent>
-          </Card>
-        ))}
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 p-2">
+                {/* Top 4 Stat Cards */}
+                {[...Array(4)].map((_, i) => (
+                    <Card key={`stat-top-${i}`} className="h-[140px]">
+                        <CardHeader><Skeleton className="h-4 w-1/2" /></CardHeader>
+                        <CardContent className="space-y-2">
+                            <Skeleton className="h-8 w-3/4" />
+                            <Skeleton className="h-3 w-full" />
+                        </CardContent>
+                    </Card>
+                ))}
 
-        {/* 2 Big Charts */}
-        <Card className="col-span-2 h-[350px]">
-          <CardHeader><Skeleton className="h-5 w-1/3" /></CardHeader>
-          <CardContent><Skeleton className="h-full w-full rounded-xl" /></CardContent>
-        </Card>
-        <Card className="col-span-2 h-[350px]">
-          <CardHeader><Skeleton className="h-5 w-1/3" /></CardHeader>
-          <CardContent><Skeleton className="h-full w-full rounded-xl" /></CardContent>
-        </Card>
+                {/* 2 Big Charts */}
+                <Card className="col-span-2 h-[350px]">
+                    <CardHeader><Skeleton className="h-5 w-1/3" /></CardHeader>
+                    <CardContent><Skeleton className="h-full w-full rounded-xl" /></CardContent>
+                </Card>
+                <Card className="col-span-2 h-[350px]">
+                    <CardHeader><Skeleton className="h-5 w-1/3" /></CardHeader>
+                    <CardContent><Skeleton className="h-full w-full rounded-xl" /></CardContent>
+                </Card>
 
-        {/* Middle 4 Stat Cards */}
-        {[...Array(4)].map((_, i) => (
-          <Card key={`stat-mid-${i}`} className="h-[140px]">
-            <CardHeader><Skeleton className="h-4 w-1/2" /></CardHeader>
-            <CardContent className="space-y-2">
-              <Skeleton className="h-8 w-3/4" />
-              <Skeleton className="h-3 w-full" />
-            </CardContent>
-          </Card>
-        ))}
+                {/* Middle 4 Stat Cards */}
+                {[...Array(4)].map((_, i) => (
+                    <Card key={`stat-mid-${i}`} className="h-[140px]">
+                        <CardHeader><Skeleton className="h-4 w-1/2" /></CardHeader>
+                        <CardContent className="space-y-2">
+                            <Skeleton className="h-8 w-3/4" />
+                            <Skeleton className="h-3 w-full" />
+                        </CardContent>
+                    </Card>
+                ))}
 
-        {/* Bottom Row: 2 Stats + Inventory */}
-        <Card className="h-[160px]">
-           <CardHeader><Skeleton className="h-4 w-1/2" /></CardHeader>
-           <CardContent className="space-y-2"><Skeleton className="h-8 w-3/4" /><Skeleton className="h-3 w-full" /></CardContent>
-        </Card>
-        <Card className="h-[160px]">
-           <CardHeader><Skeleton className="h-4 w-1/2" /></CardHeader>
-           <CardContent className="space-y-2"><Skeleton className="h-8 w-3/4" /><Skeleton className="h-3 w-full" /></CardContent>
-        </Card>
-        
-        {/* Inventory Card Span */}
-        <Card className="col-span-2 h-[160px]">
-          <CardHeader><Skeleton className="h-5 w-1/4" /></CardHeader>
-          <CardContent className="space-y-4">
-            <div className="flex gap-4">
-              <Skeleton className="h-10 w-1/2" />
-              <Skeleton className="h-10 w-1/2" />
+                {/* Bottom Row: 2 Stats + Inventory */}
+                <Card className="h-[160px]">
+                    <CardHeader><Skeleton className="h-4 w-1/2" /></CardHeader>
+                    <CardContent className="space-y-2"><Skeleton className="h-8 w-3/4" /><Skeleton className="h-3 w-full" /></CardContent>
+                </Card>
+                <Card className="h-[160px]">
+                    <CardHeader><Skeleton className="h-4 w-1/2" /></CardHeader>
+                    <CardContent className="space-y-2"><Skeleton className="h-8 w-3/4" /><Skeleton className="h-3 w-full" /></CardContent>
+                </Card>
+
+                {/* Inventory Card Span */}
+                <Card className="col-span-2 h-[160px]">
+                    <CardHeader><Skeleton className="h-5 w-1/4" /></CardHeader>
+                    <CardContent className="space-y-4">
+                        <div className="flex gap-4">
+                            <Skeleton className="h-10 w-1/2" />
+                            <Skeleton className="h-10 w-1/2" />
+                        </div>
+                        <Skeleton className="h-4 w-full" />
+                    </CardContent>
+                </Card>
             </div>
-            <Skeleton className="h-4 w-full" />
-          </CardContent>
-        </Card>
-      </div>
-    </div>
-  );
+        </div>
+    );
 };
 
 export function NetProfitLoadingSkeleton() {
@@ -139,7 +139,7 @@ export function AovSkeleton() {
     return (
         <div className="w-full animate-pulse">
             <div className="flex flex-col gap-4">
-                
+
                 <div className="flex items-center justify-between bg-slate-50 p-3 rounded-lg border border-slate-100 gap-3">
                     <Skeleton className="h-3 w-32 bg-slate-200" />
                     <Skeleton className="h-8 w-32 rounded-md bg-slate-200" />
@@ -163,7 +163,7 @@ export function AovSkeleton() {
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    
+
                     <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm min-h-[300px] lg:h-[320px] flex flex-col">
                         <Skeleton className="h-3 w-40 mb-10 bg-slate-100" />
                         <div className="flex-1 flex items-end justify-around gap-2 px-4">
@@ -194,3 +194,46 @@ export function AovSkeleton() {
         </div>
     );
 };
+
+export function SalesChannelSkeleton() {
+    return (
+        <div className="w-full flex flex-col gap-4">
+            <div className="flex items-center justify-between bg-slate-50 p-3 rounded-lg border border-slate-100">
+                <div className="h-3 w-24 bg-slate-200 rounded animate-pulse" />
+                <div className="h-9 w-32 bg-slate-200 rounded-md animate-pulse" />
+            </div>
+
+            <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex flex-col">
+                <div className="flex gap-2 mb-8">
+                    <div className="h-3 w-48 bg-slate-200 rounded animate-pulse" />
+                    <div className="h-4 w-4 bg-slate-100 rounded-full animate-pulse" />
+                </div>
+                <div className="w-full h-[250px] bg-slate-50/50 rounded-xl animate-pulse flex items-end gap-2 p-4">
+                    <div className="w-full h-3/4 bg-slate-100 rounded-t" />
+                    <div className="w-full h-1/2 bg-slate-100 rounded-t" />
+                    <div className="w-full h-2/3 bg-slate-100 rounded-t" />
+                    <div className="w-full h-3/4 bg-slate-100 rounded-t" />
+                </div>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {[1, 2].map((i) => (
+                    <div key={i} className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm h-[320px] flex flex-col">
+                        <div className="flex gap-2 mb-6">
+                            <div className="h-3 w-32 bg-slate-200 rounded animate-pulse" />
+                            <div className="h-4 w-4 bg-slate-100 rounded-full animate-pulse" />
+                        </div>
+                        <div className="flex-1 flex flex-col gap-4 mt-2">
+                            {[1, 2, 3, 4, 5].map((bar) => (
+                                <div key={bar} className="flex gap-3 items-center">
+                                    <div className="h-2 w-12 bg-slate-100 rounded animate-pulse" />
+                                    <div className="h-6 flex-1 bg-slate-50 rounded animate-pulse" />
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
+}
