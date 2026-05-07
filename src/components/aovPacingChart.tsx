@@ -4,8 +4,8 @@ import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
 import { format } from "date-fns";
 
 const aovConfig = {
-    current: { label: "Current AOV", color: "#6366f1" },
-    previous: { label: "Prev Year AOV", color: "#94a3b8" },
+    current: { label: "Current", color: "#6366f1" },
+    previous: { label: "Previous", color: "#94a3b8" },
     upt: { label: "Items per Order", color: "#8b5cf6" },
     buckets: { label: "Orders", color: "#6366f1" }
 } satisfies ChartConfig;
@@ -67,7 +67,7 @@ export default function AovPacingChart({ data, selectedDate }: AovPacingChartPro
                             <ChartTooltipContent
                                 indicator="dot"
                                 labelKey="day"
-                                formatter={(value) => [`$${Number(value).toFixed(2)}`, undefined]}
+                                className="w-[150px]"
                                 labelFormatter={(value, payload) => {
                                     const day = payload?.[0]?.payload?.day || value;
                                     return `${monthName} ${day}`;
