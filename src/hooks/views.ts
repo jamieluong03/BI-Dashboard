@@ -360,7 +360,7 @@ export function useAovInsights(selectedDate: Date) {
             const totalItems = currentRes.data.reduce((acc, row) => acc + (Number(row.avgUPT) * Number(row.orderCount)), 0);
             const totalOrders = currentRes.data.reduce((acc, row) => acc + Number(row.orderCount), 0);
             const monthlyUPT = totalOrders > 0 ? (totalItems / totalOrders).toFixed(2) : "0.00";
-            
+
             return {
                 pacingData,
                 bucketData,
@@ -378,7 +378,7 @@ export function useChannelInsights(selectedDate: Date) {
     const start = format(startOfMonth(selectedDate), "yyyy-MM-dd");
     const end = format(endOfMonth(selectedDate), "yyyy-MM-dd");
 
-    // 1. Calculate the comparison dates (Previous Month)
+    // Calculate the comparison dates (Previous Month)
     const prevDate = subMonths(selectedDate, 1);
     const prevStart = format(startOfMonth(prevDate), "yyyy-MM-dd");
     const prevEnd = format(endOfMonth(prevDate), "yyyy-MM-dd");
@@ -397,12 +397,23 @@ export function useChannelInsights(selectedDate: Date) {
             const mapStats = (rows: any[]) => {
                 return rows.reduce((acc, row) => {
                     const source = row.adSource || 'Organic';
-                    if (!acc[source]) acc[source] = { revenue: 0, margin: 0, orders: 0 };
+
+                    if (!acc[source]) acc[source] = {
+                        revenue: 0,
+                        margin: 0,
+                        orders: 0,
+                        newCustomerOrders: 0,
+                        returningCustomerOrders: 0
+                    };
+
                     acc[source].revenue += Number(row.grossRevenue || 0);
                     acc[source].margin += Number(row.netMargin || 0);
                     acc[source].orders += Number(row.totalOrders || 0);
+                    acc[source].newCustomerOrders += Number(row.newCustomerOrders || row.new_orders || 0);
+                    acc[source].returningCustomerOrders += Number(row.returningCustomerOrders || row.returning_orders || 0);
+
                     return acc;
-                }, {} as Record<string, { revenue: number; margin: number; orders: number }>);
+                }, {} as Record<string, { revenue: number; margin: number; orders: number; newCustomerOrders: number; returningCustomerOrders: number }>);
             };
 
             const currentMap = mapStats(currentRes.data);
@@ -413,8 +424,8 @@ export function useChannelInsights(selectedDate: Date) {
                 const cur = currentMap[name] || { revenue: 0, margin: 0 };
                 const prev = prevMap[name] || { revenue: 0, margin: 0 };
 
-                const growth = prev.revenue > 0 
-                    ? ((cur.revenue - prev.revenue) / prev.revenue) * 100 
+                const growth = prev.revenue > 0
+                    ? ((cur.revenue - prev.revenue) / prev.revenue) * 100
                     : 0;
 
                 return {
@@ -424,6 +435,16 @@ export function useChannelInsights(selectedDate: Date) {
                     growth: Number(growth.toFixed(1))
                 };
             }).sort((a, b) => b.revenue - a.revenue);
+
+            const attributionData = allChannels.map(name => {
+                const stats = currentMap[name];
+                return {
+                    channel: name,
+                    // Ensure these match the keys we set in mapStats above
+                    new: stats?.newCustomerOrders || 0,
+                    returning: stats?.returningCustomerOrders || 0
+                };
+            });
 
             return {
                 profitabilityData, // Profitability (Revenue vs Margin)
@@ -437,8 +458,8 @@ export function useChannelInsights(selectedDate: Date) {
                 // Acquisition Attribution
                 attributionData: allChannels.map(name => ({
                     channel: name,
-                    new: currentMap[name]?.newOrders || 0,
-                    returning: currentMap[name]?.returningOrders || 0
+                    new: currentMap[name]?.newCustomerOrders || 0,
+                    returning: currentMap[name]?.returningCustomerOrders || 0
                 }))
             };
         },

@@ -50,7 +50,7 @@ export function ChartBarLabelCustom({ dataKey, title, description, comment, char
   const ModalContent = isDesktop ? DialogContent : DrawerContent;
   const ModalHeader = isDesktop ? DialogHeader : DrawerHeader;
   const ModalTitle = isDesktop ? DialogTitle : DrawerTitle;
-  // const ModalDescription = isDesktop ? DialogDescription : DrawerDescription;
+  const ModalDescription = isDesktop ? DialogDescription : DrawerDescription;
 
   const handleBarClick = (data: any) => {
     if (!data) return;
@@ -87,6 +87,9 @@ export function ChartBarLabelCustom({ dataKey, title, description, comment, char
               <ExpandButton display={true} comment="View detailed analysis" />
             </ModalTrigger>
           </CardAction>
+          <ModalDescription className="sr-only">
+            Detailed revenue comparison and historical analysis for {title}.
+          </ModalDescription>
         </CardHeader>
         <CardContent>
           <ChartContainer config={chartConfig}>

@@ -18,7 +18,7 @@ export default function SalesChannelCard() {
     const prevEnd = endOfMonth(prevStart);
 
     const { channel_insights, isLoading } = useChannelInsights(selectedDate);
-    console.log("Channel Insights:", channel_insights);
+    // console.log("Channel Insights:", channel_insights);
 
     return (
         <div className="w-full">
