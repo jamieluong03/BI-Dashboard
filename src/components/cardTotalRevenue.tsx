@@ -59,9 +59,7 @@ export default function TotalRevenueCard() {
                     </TabsList>
                 </Tabs>
 
-                <div className="flex flex-wrap items-center justify-between bg-slate-50 p-3 rounded-lg border border-slate-100 gap-3">
-                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Comparison Periods</span>
-
+                <div className="flex flex-wrap items-center justify-between bg-slate-50 p-3 rounded-lg border border-slate-100 gap-3 min-h-[54px]">                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Comparison Periods</span>
                     <div className="flex items-center gap-3">
                         {activeTab === "month" && (
                             <>
@@ -91,23 +89,21 @@ export default function TotalRevenueCard() {
                 </div>
             </div>
 
-            <div className="bg-white rounded-xl border border-slate-200 p-4 min-h-[300px] flex flex-col justify-center">
-                <div className="w-full">
-                    {isLoading ? (
-                        <TotalRevenueSkeleton />
-                    ) : isError ? (
-                        <div className="flex h-64 items-center justify-center text-red-500 text-sm bg-red-50 rounded-2xl border border-red-100">
-                            Error fetching data for this range.
-                        </div>
-                    ) : (
-                        <div className="bg-white border-slate-200 p-4 mt-4">
-                            <RevenueComparisonChart
-                                current={data?.current || []}
-                                previous={data?.previous || []}
-                            />
-                        </div>
-                    )}
-                </div>
+            <div className="bg-white rounded-xl border border-slate-200 p-6 h-[400px] flex flex-col">
+                {isLoading ? (
+                    <TotalRevenueSkeleton />
+                ) : isError ? (
+                    <div className="flex h-64 items-center justify-center text-red-500 text-sm bg-red-50 rounded-2xl border border-red-100">
+                        Error fetching data for this range.
+                    </div>
+                ) : (
+                    <div className="bg-white p-4">
+                        <RevenueComparisonChart
+                            current={data?.current || []}
+                            previous={data?.previous || []}
+                        />
+                    </div>
+                )}
             </div>
         </div>
     );

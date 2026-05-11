@@ -225,6 +225,69 @@ export function useRegionalData(startDate: string, endDate: string) {
     return { regions, isLoading, isError, error };
 };
 
+export function useRegionalInsight(selectedDate: Date) {
+    const start = format(startOfMonth(selectedDate), "yyyy-MM-dd");
+    const end = format(endOfMonth(selectedDate), "yyyy-MM-dd");
+
+    const prevDate = subMonths(selectedDate, 1);
+    const prevStart = format(startOfMonth(prevDate), "yyyy-MM-dd");
+    const prevEnd = format(endOfMonth(prevDate), "yyyy-MM-dd");
+
+    const { data: regions_insight, isLoading, isError, error } = useQuery({
+        queryKey: ['regional_insights', start, end],
+        queryFn: async () => {
+            const [currentRes, prevRes] = await Promise.all([
+                supabase.from('regional_sales_performance').select('*').gte('date', start).lte('date', end),
+                supabase.from('regional_sales_performance').select('*').gte('date', prevStart).lte('date', prevEnd)
+            ]);
+
+            if (currentRes.error) throw currentRes.error;
+            if (prevRes.error) throw prevRes.error;
+
+            const mapStats = (rows: any[]) => {
+                return rows.reduce((acc, row) => {
+                    const key = row.region || "International";
+                    if (!acc[key]) {
+                        acc[key] = { revenue: 0, orders: 0, shipping: 0 };
+                    }
+                    acc[key].revenue += Number(row.totalRevenue || 0);
+                    acc[key].orders += Number(row.ordersLength || 0);
+                    acc[key].shipping += Number(row.totalShipping || 0);
+                    return acc;
+                }, {} as Record<string, { revenue: number; orders: number; shipping: number }>);
+            };
+
+            const currentMap = mapStats(currentRes.data || []);
+            const prevMap = mapStats(prevRes.data || []);
+
+            const allRegions = Array.from(new Set([...Object.keys(currentMap), ...Object.keys(prevMap)]));
+
+            const regionalData = allRegions.reduce((acc, name) => {
+                const cur = currentMap[name] || { revenue: 0, orders: 0, shipping: 0 };
+                const prev = prevMap[name] || { revenue: 0 };
+
+                const growth = prev.revenue > 0
+                    ? ((cur.revenue - prev.revenue) / prev.revenue) * 100
+                    : 0;
+
+                acc[name] = {
+                    region: name,
+                    revenue: cur.revenue,
+                    orders: cur.orders,
+                    shippingCost: cur.shipping,
+                    growthIndex: Number(growth.toFixed(1))
+                };
+
+                return acc;
+            }, {} as Record<string, any>);
+
+            return regionalData;
+        }
+    });
+
+    return { regions_insight, isLoading, isError, error };
+}
+
 export function useOrderDistribution(startDate: string, endDate: string) {
     const { data: distribution, isLoading, isError, error } = useQuery({
         queryKey: ['order_distribution', startDate, endDate],
