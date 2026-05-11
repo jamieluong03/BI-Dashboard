@@ -52,15 +52,6 @@ export default function Dashboard() {
     }
   });
 
-  // const regionSales = useMemo(() => {
-  //   if (!regions) return [];
-
-  //   return Object.values(regions).map((item) => ({
-  //     name: item.region,
-  //     orders: item.orders,
-  //   }));
-  // }, [regions]);
-
   const regionSales = Object.keys(regions || {}).map(name => {
     return {
       name: regions[name].name,
@@ -128,7 +119,7 @@ export default function Dashboard() {
               <ChartRadarDots
                 title="Sales By Region"
                 description=""
-                dataKey="orders"
+                dataKey="value"
                 chartData={regionSales}
                 comment="Coastal dominance: CA and NY driving nearly 50% of total volume."
               />
