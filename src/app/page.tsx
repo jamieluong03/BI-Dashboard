@@ -121,7 +121,7 @@ export default function Dashboard() {
               <ChartRadarDots
                 title="Sales By Region"
                 description=""
-                dataKey="value"
+                dataKey="orders"
                 chartData={regionSales}
                 comment="Coastal dominance: CA and NY driving nearly 50% of total volume."
               />
