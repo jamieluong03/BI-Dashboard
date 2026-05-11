@@ -52,14 +52,21 @@ export default function Dashboard() {
     }
   });
 
-  const regionSales = useMemo(() => {
-    if (!regions) return [];
+  // const regionSales = useMemo(() => {
+  //   if (!regions) return [];
 
-    return Object.values(regions).map((item) => ({
-      name: item.region,
-      orders: item.orders,
-    }));
-  }, [regions]);
+  //   return Object.values(regions).map((item) => ({
+  //     name: item.region,
+  //     orders: item.orders,
+  //   }));
+  // }, [regions]);
+
+  const regionSales = Object.keys(regions || {}).map(name => {
+    return {
+      name: regions[name].name,
+      value: regions[name].value
+    }
+  });
 
   const formatter = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
 

@@ -200,14 +200,44 @@ export function useInventoryPerformance() {
 };
 
 export function useRegionalData(startDate: string, endDate: string) {
-    const prevStart = format(subMonths(parseISO(startDate), 1), "yyyy-MM-dd");
-    const prevEnd = format(subMonths(parseISO(endDate), 1), "yyyy-MM-dd");
-
     const { data: regions, isLoading, isError, error } = useQuery({
         queryKey: ['regional_sales', startDate, endDate],
         queryFn: async () => {
+            const { data, error } = await supabase
+                .from('regional_sales_performance')
+                .select('*')
+                .gte('date', startDate)
+                .lte('date', endDate);
+            if (error) throw error;
+
+            const regionalSales = data.reduce((acc, row) => {
+                const region = row.region || "Unknown";
+                if (!acc[region]) {
+                    acc[region] = { name: region, value: 0 };
+                }
+
+                acc[region].value += Number(row.ordersLength || 0);
+                return acc;
+            }, {} as Record<string, { name: string, value: number }>);
+            return regionalSales;
+        }
+    });
+    return { regions, isLoading, isError, error };
+};
+
+export function useRegionalInsight(selectedDate: Date) {
+    const start = format(startOfMonth(selectedDate), "yyyy-MM-dd");
+    const end = format(endOfMonth(selectedDate), "yyyy-MM-dd");
+
+    const prevDate = subMonths(selectedDate, 1);
+    const prevStart = format(startOfMonth(prevDate), "yyyy-MM-dd");
+    const prevEnd = format(endOfMonth(prevDate), "yyyy-MM-dd");
+
+    const { data: regions_insight, isLoading, isError, error } = useQuery({
+        queryKey: ['regional_insights', start, end],
+        queryFn: async () => {
             const [currentRes, prevRes] = await Promise.all([
-                supabase.from('regional_sales_performance').select('*').gte('date', startDate).lte('date', endDate),
+                supabase.from('regional_sales_performance').select('*').gte('date', start).lte('date', end),
                 supabase.from('regional_sales_performance').select('*').gte('date', prevStart).lte('date', prevEnd)
             ]);
 
@@ -255,7 +285,7 @@ export function useRegionalData(startDate: string, endDate: string) {
         }
     });
 
-    return { regions, isLoading, isError, error };
+    return { regions_insight, isLoading, isError, error };
 }
 
 export function useOrderDistribution(startDate: string, endDate: string) {
