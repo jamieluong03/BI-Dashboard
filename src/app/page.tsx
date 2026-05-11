@@ -97,7 +97,7 @@ export default function Dashboard() {
             <StatCard
               title="Total Orders"
               value={orders?.totalOrders || 0}
-              description=""
+              description="Focus on CRO for high-intent traffic rather than just increasing raw ad spend."
               metric="total_orders"
             />
             <StatCard

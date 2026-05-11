@@ -88,7 +88,7 @@ export function StatCard({ title, value, description, metric }: StatCardProps) {
           </ModalDescription>
         </CardHeader>
 
-        <CardContent className="flex flex-col justify-center h-full gap-2">
+        <CardContent className="flex flex-col justify-between h-full gap-2">
           <div className="text-lg md:text-2xl font-bold text-slate-900 tracking-tight text-center">
             {value}
           </div>
