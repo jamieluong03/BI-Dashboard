@@ -200,30 +200,59 @@ export function useInventoryPerformance() {
 };
 
 export function useRegionalData(startDate: string, endDate: string) {
+    const prevStart = format(subMonths(parseISO(startDate), 1), "yyyy-MM-dd");
+    const prevEnd = format(subMonths(parseISO(endDate), 1), "yyyy-MM-dd");
+
     const { data: regions, isLoading, isError, error } = useQuery({
         queryKey: ['regional_sales', startDate, endDate],
         queryFn: async () => {
-            const { data, error } = await supabase
-                .from('regional_sales_performance')
-                .select('*')
-                .gte('date', startDate)
-                .lte('date', endDate);
-            if (error) throw error;
+            const [currentRes, prevRes] = await Promise.all([
+                supabase.from('regional_sales_performance').select('*').gte('date', startDate).lte('date', endDate),
+                supabase.from('regional_sales_performance').select('*').gte('date', prevStart).lte('date', prevEnd)
+            ]);
 
-            const regionalSales = data.reduce((acc, row) => {
-                const region = row.region || "Unknown";
-                if (!acc[region]) {
-                    acc[region] = { name: region, value: 0 };
-                }
+            if (currentRes.error) throw currentRes.error;
+            if (prevRes.error) throw prevRes.error;
 
-                acc[region].value += Number(row.ordersLength || 0);
-                return acc;
-            }, {} as Record<string, { name: string, value: number }>);
-            return regionalSales;
+            const mapStats = (rows: any[]) => {
+                return rows.reduce((acc, row) => {
+                    const key = row.region || "International";
+                    if (!acc[key]) {
+                        acc[key] = { revenue: 0, orders: 0, shipping: 0 };
+                    }
+                    acc[key].revenue += Number(row.totalRevenue || 0);
+                    acc[key].orders += Number(row.ordersLength || 0);
+                    acc[key].shipping += Number(row.totalShipping || 0);
+                    return acc;
+                }, {} as Record<string, { revenue: number; orders: number; shipping: number }>);
+            };
+
+            const currentMap = mapStats(currentRes.data || []);
+            const prevMap = mapStats(prevRes.data || []);
+            
+            const allRegions = Array.from(new Set([...Object.keys(currentMap), ...Object.keys(prevMap)]));
+
+            return allRegions.map(name => {
+                const cur = currentMap[name] || { revenue: 0, orders: 0, shipping: 0 };
+                const prev = prevMap[name] || { revenue: 0 };
+
+                const growth = prev.revenue > 0 
+                    ? ((cur.revenue - prev.revenue) / prev.revenue) * 100 
+                    : 0;
+
+                return {
+                    region: name,
+                    revenue: cur.revenue,
+                    orders: cur.orders,
+                    shippingCost: cur.shipping,
+                    growthIndex: Number(growth.toFixed(1))
+                };
+            }).sort((a, b) => b.revenue - a.revenue);
         }
     });
+
     return { regions, isLoading, isError, error };
-};
+}
 
 export function useOrderDistribution(startDate: string, endDate: string) {
     const { data: distribution, isLoading, isError, error } = useQuery({
