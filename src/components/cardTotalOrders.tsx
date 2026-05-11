@@ -6,7 +6,7 @@ import { TotalOrdersSkeleton } from "@/components/skeletons";
 import { TotalOrdersChart } from "./totalOrdersPacingChart";
 import { MonthSelect } from "./periodPicker";
 import { TotalOrdersPeaks } from "./totalOrdersPeakBars";
-import { TotalOrdersFulfillment } from "./totalOrdersFulfillmentChart";
+import { TotalOrdersFulfillment } from "./TotalOrdersFulfillmentChart";
 import { InfoTooltip } from "./infoToolTip";
 
 
