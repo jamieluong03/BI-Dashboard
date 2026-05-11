@@ -52,6 +52,18 @@ export function StatCard({ title, value, description, metric }: StatCardProps) {
         return <TotalOrdersCard />;
       case "aov":
         return <AovCard />;
+      case "roas":
+        return 0;
+      case "roi":
+        return 0;
+      case "conversion_rate":
+        return 0;
+      case "ctr":
+        return 0;
+      case "clv":
+        return 0;
+      case "mer":
+        return 0;
       default:
         return <p className="p-4 text-center text-slate-500">Insight Coming Soon</p>;
     }
@@ -62,9 +74,11 @@ export function StatCard({ title, value, description, metric }: StatCardProps) {
       <Card className="h-[230px] rounded-2xl border-slate-100 flex flex-col">
         <CardHeader>
           <CardAction>
-            <ModalTrigger asChild>
-              <ExpandButton display={true} comment="View detailed analysis" />
-            </ModalTrigger>
+            {renderModalContent(metric) === 0 ? "" : (
+              <ModalTrigger asChild>
+                <ExpandButton display={true} comment="View detailed analysis" />
+              </ModalTrigger>
+            )}
           </CardAction>
           <CardTitle className="text-md md:text-base text-slate-700 font-normal">
             {title}
@@ -84,20 +98,22 @@ export function StatCard({ title, value, description, metric }: StatCardProps) {
         </CardContent>
       </Card>
 
-      <ModalContent
-        className={isDesktop
-          ? "sm:max-w-[95vw] lg:max-w-[1200px] h-[90vh] overflow-y-auto p-8"
-          : "h-[100dvh] w-screen p-0 flex flex-col"
-        }
-      >
-        <ModalHeader className={isDesktop ? "" : "px-4 pt-6"}>
-          <ModalTitle className="text-2xl font-bold">{title}</ModalTitle>
-        </ModalHeader>
+      {renderModalContent(metric) === 0 ? "" : (
+        <ModalContent
+          className={isDesktop
+            ? "sm:max-w-[95vw] lg:max-w-[1200px] h-[90vh] overflow-y-auto p-8"
+            : "h-[100dvh] w-screen p-0 flex flex-col"
+          }
+        >
+          <ModalHeader className={isDesktop ? "" : "px-4 pt-6"}>
+            <ModalTitle className="text-2xl font-bold">{title}</ModalTitle>
+          </ModalHeader>
 
-        <div className={isDesktop ? "" : "flex-1 overflow-y-auto px-6"}>
-          {renderModalContent(metric)}
-        </div>
-      </ModalContent>
+          <div className={isDesktop ? "" : "flex-1 overflow-y-auto px-6"}>
+            {renderModalContent(metric)}
+          </div>
+        </ModalContent>
+      )}
     </ModalRoot>
   );
 }
