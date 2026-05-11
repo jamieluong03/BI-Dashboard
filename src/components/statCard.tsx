@@ -59,7 +59,7 @@ export function StatCard({ title, value, description, metric }: StatCardProps) {
 
   return (
     <ModalRoot open={cardOpen} onOpenChange={setCardOpen}>
-      <Card className="h-full">
+      <Card className="h-[160px] rounded-2xl border-slate-100 flex flex-col">
         <CardHeader>
           <CardAction>
             <ModalTrigger asChild>

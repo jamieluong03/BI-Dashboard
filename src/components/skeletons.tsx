@@ -1,67 +1,64 @@
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 
+const StatCardSkeleton = () => (
+  <Card className="h-[160px] flex flex-col rounded-2xl border-slate-100">
+    <CardHeader className="relative pb-0">
+      <div className="absolute right-4 top-4 h-8 w-8 rounded-lg bg-slate-100 animate-pulse" />
+      <div className="h-4 w-24 bg-slate-200 rounded animate-pulse mt-1" />
+    </CardHeader>
+
+    <CardContent className="flex flex-col justify-center items-center flex-1 gap-2">
+      <div className="h-8 w-32 bg-slate-200 rounded animate-pulse" />
+      <div className="h-3 w-4/5 bg-slate-100 rounded animate-pulse" />
+      <div className="h-3 w-2/3 bg-slate-100 rounded animate-pulse" />
+    </CardContent>
+  </Card>
+);
+
 export function DashboardSkeleton() {
-    return (
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 animate-pulse bg-slate-50 rounded-xl">
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 p-2">
-                {/* Top 4 Stat Cards */}
-                {[...Array(4)].map((_, i) => (
-                    <Card key={`stat-top-${i}`} className="h-[140px]">
-                        <CardHeader><Skeleton className="h-4 w-1/2" /></CardHeader>
-                        <CardContent className="space-y-2">
-                            <Skeleton className="h-8 w-3/4" />
-                            <Skeleton className="h-3 w-full" />
-                        </CardContent>
-                    </Card>
-                ))}
+  return (
+    <div className="animate-pulse">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 p-4 md:p-6 bg-slate-50 rounded-xl">
+        
+        {/* Top 4 Stats */}
+        <StatCardSkeleton />
+        <StatCardSkeleton />
+        <StatCardSkeleton />
+        <StatCardSkeleton />
 
-                {/* 2 Big Charts */}
-                <Card className="col-span-2 h-[350px]">
-                    <CardHeader><Skeleton className="h-5 w-1/3" /></CardHeader>
-                    <CardContent><Skeleton className="h-full w-full rounded-xl" /></CardContent>
-                </Card>
-                <Card className="col-span-2 h-[350px]">
-                    <CardHeader><Skeleton className="h-5 w-1/3" /></CardHeader>
-                    <CardContent><Skeleton className="h-full w-full rounded-xl" /></CardContent>
-                </Card>
+        {/* 2 Big Charts */}
+        {[...Array(2)].map((_, i) => (
+          <Card key={`chart-${i}`} className="col-span-2 h-[350px] rounded-2xl border-slate-100 flex flex-col">
+            <CardHeader><div className="h-5 w-1/3 bg-slate-200 rounded animate-pulse" /></CardHeader>
+            <CardContent className="flex-1 pb-6">
+              <div className="h-full w-full bg-slate-100/50 rounded-xl" />
+            </CardContent>
+          </Card>
+        ))}
 
-                {/* Middle 4 Stat Cards */}
-                {[...Array(4)].map((_, i) => (
-                    <Card key={`stat-mid-${i}`} className="h-[140px]">
-                        <CardHeader><Skeleton className="h-4 w-1/2" /></CardHeader>
-                        <CardContent className="space-y-2">
-                            <Skeleton className="h-8 w-3/4" />
-                            <Skeleton className="h-3 w-full" />
-                        </CardContent>
-                    </Card>
-                ))}
+        {/* Next 6 Stats */}
+        {[...Array(6)].map((_, i) => (
+          <StatCardSkeleton key={`mid-${i}`} />
+        ))}
 
-                {/* Bottom Row: 2 Stats + Inventory */}
-                <Card className="h-[160px]">
-                    <CardHeader><Skeleton className="h-4 w-1/2" /></CardHeader>
-                    <CardContent className="space-y-2"><Skeleton className="h-8 w-3/4" /><Skeleton className="h-3 w-full" /></CardContent>
-                </Card>
-                <Card className="h-[160px]">
-                    <CardHeader><Skeleton className="h-4 w-1/2" /></CardHeader>
-                    <CardContent className="space-y-2"><Skeleton className="h-8 w-3/4" /><Skeleton className="h-3 w-full" /></CardContent>
-                </Card>
-
-                {/* Inventory Card Span */}
-                <Card className="col-span-2 h-[160px]">
-                    <CardHeader><Skeleton className="h-5 w-1/4" /></CardHeader>
-                    <CardContent className="space-y-4">
-                        <div className="flex gap-4">
-                            <Skeleton className="h-10 w-1/2" />
-                            <Skeleton className="h-10 w-1/2" />
-                        </div>
-                        <Skeleton className="h-4 w-full" />
-                    </CardContent>
-                </Card>
+        {/* Inventory Card */}
+        <Card className="col-span-2 h-[160px] rounded-2xl border-slate-100 flex flex-col">
+          <CardHeader className="pb-2">
+            <div className="h-4 w-1/4 bg-slate-200 rounded animate-pulse" />
+          </CardHeader>
+          <CardContent className="flex flex-col justify-center gap-3 flex-1">
+            <div className="flex gap-4">
+              <div className="h-10 w-1/2 bg-slate-100 rounded-lg" />
+              <div className="h-10 w-1/2 bg-slate-100 rounded-lg" />
             </div>
-        </div>
-    );
-};
+            <div className="h-3 w-full bg-slate-50 rounded" />
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  );
+}
 
 export function TotalRevenueSkeleton() {
   return (
