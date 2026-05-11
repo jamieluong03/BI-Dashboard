@@ -12,7 +12,7 @@ import { ExpandButton } from "./expandIcon";
 export function InventoryCard({ title, inventoryValue, sellThroughRate, lowStock, description }: InventoryCardProps) {
   const currencyFormatter = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
   return (
-    <Card>
+    <Card className="h-[230px] rounded-2xl border-slate-100 flex flex-col">
       <CardHeader>
         <CardTitle className="text-slate-700 font-normal">
           {title}

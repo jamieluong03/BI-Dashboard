@@ -2,7 +2,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 
 const StatCardSkeleton = () => (
-  <Card className="h-[160px] flex flex-col rounded-2xl border-slate-100">
+  <Card className="h-[230px] flex flex-col rounded-2xl border-slate-100">
     <CardHeader className="relative pb-0">
       <div className="absolute right-4 top-4 h-8 w-8 rounded-lg bg-slate-100 animate-pulse" />
       <div className="h-4 w-24 bg-slate-200 rounded animate-pulse mt-1" />
@@ -43,7 +43,7 @@ export function DashboardSkeleton() {
         ))}
 
         {/* Inventory Card */}
-        <Card className="col-span-2 h-[160px] rounded-2xl border-slate-100 flex flex-col">
+        <Card className="col-span-2 h-[230px] rounded-2xl border-slate-100 flex flex-col">
           <CardHeader className="pb-2">
             <div className="h-4 w-1/4 bg-slate-200 rounded animate-pulse" />
           </CardHeader>
