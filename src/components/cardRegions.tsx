@@ -6,6 +6,7 @@ import { InfoTooltip } from "./infoToolTip";
 import { useRegionalInsight } from "@/hooks/views";
 import { RegionalContributionChart } from "./regionRevenueChart";
 import {  } from "./skeletons";
+import { RegionalEfficiencyChart } from "./regionLogistics";
 
 export default function SalesChannelCard() {
 
@@ -19,6 +20,16 @@ export default function SalesChannelCard() {
             region: regions_insight[region].region,
             revenue: regions_insight[region].revenue,
             orders: regions_insight[region].orders
+        }));
+    }, [regions_insight]);
+
+    const logisticsChartData = useMemo(() => {
+        if (!regions_insight) return [];
+
+        return Object.keys(regions_insight).map((region) => ({
+            region: regions_insight[region].region,
+            revenue: regions_insight[region].revenue,
+            shippingCost: regions_insight[region].shippingCost
         }));
     }, [regions_insight]);
 
@@ -63,10 +74,11 @@ export default function SalesChannelCard() {
                                 <h3 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">
                                     Logistics Efficiency
                                 </h3>
-                                <InfoTooltip display comment="Measures the average revenue generated per transaction across each sales channel, highlighting which platforms attract the highest-spending customers." />
+                                <InfoTooltip display comment="Highlights Margin Erosion. Since shipping costs are zone-dependent, this chart instantly shows which regions are expensive to serve." />
                             </div>
                             {/* Logistics Efficiency */}
                             <div className="flex-1 min-h-0 w-full">
+                                <RegionalEfficiencyChart data={logisticsChartData} />
                             </div>
                         </div>
                         <div className="bg-white p-6 md:p-6 rounded-2xl border border-slate-100 shadow-sm min-h-[100px]] lg:h-[320px] flex flex-col">
