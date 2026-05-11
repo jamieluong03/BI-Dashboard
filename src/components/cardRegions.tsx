@@ -5,8 +5,9 @@ import { MonthSelect } from "./periodPicker";
 import { InfoTooltip } from "./infoToolTip";
 import { useRegionalInsight } from "@/hooks/views";
 import { RegionalContributionChart } from "./regionRevenueChart";
-import {  } from "./skeletons";
+import { } from "./skeletons";
 import { RegionalEfficiencyChart } from "./regionLogistics";
+import { RegionalMomentumChart } from "./regionMarketMomentum";
 
 export default function SalesChannelCard() {
 
@@ -30,6 +31,15 @@ export default function SalesChannelCard() {
             region: regions_insight[region].region,
             revenue: regions_insight[region].revenue,
             shippingCost: regions_insight[region].shippingCost
+        }));
+    }, [regions_insight]);
+
+    const marketMomentumData = useMemo(() => {
+        if (!regions_insight) return [];
+
+        return Object.keys(regions_insight).map((region) => ({
+            region: regions_insight[region].region,
+            growthIndex: regions_insight[region].growthIndex
         }));
     }, [regions_insight]);
 
@@ -84,12 +94,13 @@ export default function SalesChannelCard() {
                         <div className="bg-white p-6 md:p-6 rounded-2xl border border-slate-100 shadow-sm min-h-[100px]] lg:h-[320px] flex flex-col">
                             <div className="flex gap-1 mb-6">
                                 <h3 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">
-                                    Growth Index
+                                    Market Momentum (Growth Index)
                                 </h3>
-                                <InfoTooltip display comment="Analyzes marketing efficiency by channel, distinguishing between first-time customer acquisition and repeat purchase retention to optimize your media spend." />
+                                <InfoTooltip display comment="Detects Emerging Markets. A region might be small in total volume (like Florida), but if it shows 45% growth while your top market is flat, that’s where you should put your next $10k in ad spend." />
                             </div>
-                            {/* Growth Index */}
+                            {/* Market Momentum (Growth Index) */}
                             <div className="flex-1 min-h-0 w-full">
+                                <RegionalMomentumChart data={marketMomentumData} />
                             </div>
                         </div>
                     </div>
