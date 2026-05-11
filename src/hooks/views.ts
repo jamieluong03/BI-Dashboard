@@ -229,25 +229,29 @@ export function useRegionalData(startDate: string, endDate: string) {
 
             const currentMap = mapStats(currentRes.data || []);
             const prevMap = mapStats(prevRes.data || []);
-            
+
             const allRegions = Array.from(new Set([...Object.keys(currentMap), ...Object.keys(prevMap)]));
 
-            return allRegions.map(name => {
+            const regionalData = allRegions.reduce((acc, name) => {
                 const cur = currentMap[name] || { revenue: 0, orders: 0, shipping: 0 };
                 const prev = prevMap[name] || { revenue: 0 };
 
-                const growth = prev.revenue > 0 
-                    ? ((cur.revenue - prev.revenue) / prev.revenue) * 100 
+                const growth = prev.revenue > 0
+                    ? ((cur.revenue - prev.revenue) / prev.revenue) * 100
                     : 0;
 
-                return {
+                acc[name] = {
                     region: name,
                     revenue: cur.revenue,
                     orders: cur.orders,
                     shippingCost: cur.shipping,
                     growthIndex: Number(growth.toFixed(1))
                 };
-            }).sort((a, b) => b.revenue - a.revenue);
+
+                return acc;
+            }, {} as Record<string, any>);
+
+            return regionalData;
         }
     });
 
