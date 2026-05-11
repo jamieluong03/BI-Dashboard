@@ -5,7 +5,7 @@ import { MonthSelect } from "./periodPicker";
 import { InfoTooltip } from "./infoToolTip";
 import { useRegionalInsight } from "@/hooks/views";
 import { RegionalContributionChart } from "./regionRevenueChart";
-import { } from "./skeletons";
+import { RegionalSalesSkeleton } from "./skeletons";
 import { RegionalEfficiencyChart } from "./regionLogistics";
 import { RegionalMomentumChart } from "./regionMarketMomentum";
 
@@ -46,8 +46,7 @@ export default function SalesChannelCard() {
     return (
         <div className="w-full">
             {isLoading ? (
-                // skeleton
-                <></>
+                <RegionalSalesSkeleton />
             ) : isError ? (
                 <div className="flex h-64 items-center justify-center text-red-500 text-sm bg-red-50 rounded-2xl border border-red-100">
                     Error fetching data for this range.

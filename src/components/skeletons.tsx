@@ -3,12 +3,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 
 export function DashboardSkeleton() {
     return (
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 animate-pulse">
-            <header className="mb-8">
-                <Skeleton className="h-9 w-64 mb-2" />
-                <Skeleton className="h-4 w-40" />
-            </header>
-
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 animate-pulse bg-slate-50 rounded-xl">
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 p-2">
                 {/* Top 4 Stat Cards */}
                 {[...Array(4)].map((_, i) => (
@@ -273,4 +268,78 @@ export function SalesChannelSkeleton() {
             </div>
         </div>
     );
+}
+
+export function RegionalSalesSkeleton() {
+  return (
+    <div className="flex flex-col gap-4 w-full">
+      <div className="flex items-center justify-between bg-slate-50 p-3 rounded-lg border border-slate-100 gap-3">
+        <div className="h-3 w-28 bg-slate-200 rounded animate-pulse" />
+        <div className="h-9 w-32 bg-slate-200 rounded-md animate-pulse" />
+      </div>
+
+      <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex flex-col lg:min-h-[300px]">
+        <div className="flex gap-2 mb-8">
+          <div className="h-3 w-48 bg-slate-200 rounded animate-pulse" />
+          <div className="h-4 w-4 bg-slate-100 rounded-full animate-pulse" />
+        </div>
+        
+        <div className="flex-1 flex flex-col gap-5">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="space-y-2">
+              <div className="flex items-center gap-3">
+                <div className="h-2 w-16 bg-slate-100 rounded animate-pulse" />
+                <div className="h-4 flex-1 bg-indigo-50 rounded animate-pulse max-w-[80%]" />
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="w-16" />
+                <div className="h-3 w-1/2 bg-slate-50 rounded animate-pulse" />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        
+        <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm h-[320px] flex flex-col">
+          <div className="flex gap-2 mb-8">
+            <div className="h-3 w-32 bg-slate-200 rounded animate-pulse" />
+            <div className="h-4 w-4 bg-slate-100 rounded-full animate-pulse" />
+          </div>
+          <div className="flex-1 flex flex-col gap-6">
+             {[1, 2, 3, 4].map((i) => (
+                <div key={i} className="flex flex-col gap-1.5">
+                   <div className="h-3 w-full bg-indigo-50/50 rounded animate-pulse" />
+                   <div className="h-3 w-1/4 bg-amber-50 rounded animate-pulse" />
+                </div>
+             ))}
+          </div>
+        </div>
+
+        <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm h-[320px] flex flex-col relative">
+          <div className="flex gap-2 mb-8">
+            <div className="h-3 w-40 bg-slate-200 rounded animate-pulse" />
+            <div className="h-4 w-4 bg-slate-100 rounded-full animate-pulse" />
+          </div>
+          
+          <div className="absolute left-1/2 top-20 bottom-10 w-px bg-slate-100" />
+          
+          <div className="flex-1 flex flex-col gap-4 justify-center">
+            {[1, 2, 3, 4, 5].map((i) => (
+               <div key={i} className="w-full flex">
+                  <div className="flex-1 flex justify-end px-1">
+                     {i % 3 === 0 && <div className="h-4 w-1/3 bg-rose-50 rounded-l animate-pulse" />}
+                  </div>
+                  <div className="flex-1 flex justify-start px-1">
+                     {i % 3 !== 0 && <div className="h-4 bg-cyan-50 rounded-r animate-pulse" style={{ width: `${20 * i}%` }} />}
+                  </div>
+               </div>
+            ))}
+          </div>
+        </div>
+
+      </div>
+    </div>
+  );
 }
