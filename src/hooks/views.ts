@@ -1,8 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
 import { getMockRefunds } from '@/lib/utils';
-import { startOfMonth, endOfMonth, subYears, format, getDate, parseISO, subMonths, endOfDay } from "date-fns";
-import { ChannelStats } from '@/types/dataTypes';
+import { startOfMonth, endOfMonth, subYears, format, getDate, parseISO, subMonths } from "date-fns";
 
 export function useBlendedROAS(startDate: string, endDate: string) {
     const { data: data, isLoading, isError, error } = useQuery({
@@ -86,11 +85,6 @@ export function useSalesStats(startDate: string, endDate: string) {
                 };
             }, { revenue: 0, cost: 0, adSpend: 0, shipping: 0, refunds: 0 });
 
-            // const totalRevenue = data.reduce((sum, o) => sum + Number(o.totalRevenue || 0), 0);
-            // const totalCost = data.reduce((sum, o) => sum + Number(o.totalCost || 0), 0);
-            // const totalAdSpend = data.reduce((sum, m) => sum + Number(m.totalAdSpend || 0), 0);
-            // const totalShipping = data.reduce((sum, o) => sum + Number(o.totalShipping || 0), 0);
-            // const totalRefunds = getMockRefunds(totalRevenue, new Date(endDate));
             const netProfit = totals.revenue - (totals.cost + totals.adSpend + totals.shipping + totals.refunds);
             const profitMargin = totals.revenue > 0 ? (netProfit / totals.revenue) * 100 : 0;
             const averageOrderValue = data.length > 0 ? totals.revenue / data.length : 0;
@@ -180,13 +174,15 @@ export function useSalesChannelPerformance(startDate: string, endDate: string) {
     return { channels, isLoading, isError, error };
 };
 
-export function useInventoryPerformance() {
+export function useInventoryPerformance(startDate: string, endDate: string) {
     const { data: inventory, isLoading, isError, error } = useQuery({
-        queryKey: ['inventory_performance'],
+        queryKey: ['inventory_performance', startDate, endDate],
         queryFn: async () => {
             const { data, error } = await supabase
                 .from('product_performance_analytics')
                 .select('*')
+                .gte('sale_date', startDate)
+                .lte('sale_date', endDate);
             if (error) throw error;
 
             const inventoryValue = data.reduce((sum, value) => sum + Number(value.current_inventory_value), 0);

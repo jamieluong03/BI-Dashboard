@@ -38,7 +38,7 @@ export default function Dashboard() {
   const { clv, isLoading: isCLVLoading, isError: isCLVError, error: clvError } = useCLVStats();
   const { orders, isLoading: isOrdersLoading, isError: isOrdersError, error: ordersError } = useSalesStats(activeFrom, activeTo);
   const { channels, isLoading: isChannelsLoading, isError: isChannelsError, error: channelsError } = useSalesChannelPerformance(activeFrom, activeTo);
-  const { inventory, isLoading: isInventoryLoading, isError: isInventoryError, error: inventoryError } = useInventoryPerformance();
+  const { inventory, isLoading: isInventoryLoading, isError: isInventoryError, error: inventoryError } = useInventoryPerformance(activeFrom, activeTo);
   const { regions, isLoading: isRegionLoading, isError: isRegionError, error: regionError } = useRegionalData(activeFrom, activeTo);
 
   const isAnyDataLoading = isOrdersLoading || isRoasLoading || isCLVLoading || isChannelsLoading || isInventoryLoading || isRegionLoading;
