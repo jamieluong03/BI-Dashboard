@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import {
   Card,
   CardHeader,
@@ -26,8 +26,9 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
+import InventoryCardContent from "./cardInventory";
 
-export function InventoryCard({ title, inventoryValue, sellThroughRate, lowStock, description }: InventoryCardProps) {
+export function InventoryCard({ title, inventoryValue, sellThroughRate, lowStock, description, dateContext }: InventoryCardProps) {
 
   const currencyFormatter = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
   const [cardOpen, setCardOpen] = useState(false);
@@ -96,7 +97,7 @@ export function InventoryCard({ title, inventoryValue, sellThroughRate, lowStock
         </ModalHeader>
 
         <div className={isDesktop ? "" : "flex-1 overflow-y-auto px-6"}>
-          
+          <InventoryCardContent dateContext={dateContext} />
         </div>
       </ModalContent>
     </ModalRoot>

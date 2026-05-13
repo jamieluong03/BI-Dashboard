@@ -1,16 +1,15 @@
 "use client";
 
-import * as React from "react";
 import { useState, useEffect } from "react";
 import { DateRange } from "react-day-picker";
-import { 
-  Select, 
-  SelectContent, 
-  SelectGroup, 
-  SelectItem, 
-  SelectLabel, 
-  SelectTrigger, 
-  SelectValue 
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue
 } from "@/components/ui/select";
 import { DateRangePicker } from "@/components/ui/date-range-picker";
 import { getRangePresets, lastOrderDate } from "@/lib/utils";
@@ -18,10 +17,12 @@ import { getRangePresets, lastOrderDate } from "@/lib/utils";
 interface SelectDateProps {
   range: DateRange | undefined;
   onRangeChange: (range: DateRange | undefined) => void;
+  preset: string;
+  onPresetChange: (preset: string) => void;
 };
 
-export function SelectDate({ range, onRangeChange }: SelectDateProps) {
-  const [dateValue, setDateValue] = useState<string>("last_30");
+export function SelectDate({ range, onRangeChange, preset, onPresetChange }: SelectDateProps) {
+
   const [localRange, setLocalRange] = useState<DateRange | undefined>(range);
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const currentMonth = new Date().getMonth();
@@ -31,14 +32,15 @@ export function SelectDate({ range, onRangeChange }: SelectDateProps) {
   }, [range]);
 
   const handleSelectChange = (value: string) => {
-    setDateValue(value);
+    onPresetChange(value);
+
     if (value === "custom") {
-        setTimeout(() => {
+      setTimeout(() => {
         setIsCalendarOpen(true);
-        }, 100);
+      }, 100);
     } else {
-      const preset = getRangePresets(value, lastOrderDate);
-      const newRange = { from: new Date(preset.from), to: new Date(preset.to) };
+      const presetData = getRangePresets(value, lastOrderDate);
+      const newRange = { from: new Date(presetData.from), to: new Date(presetData.to) };
       setLocalRange(newRange);
       onRangeChange(newRange);
       setIsCalendarOpen(false);
@@ -47,20 +49,22 @@ export function SelectDate({ range, onRangeChange }: SelectDateProps) {
 
   const handleRangeChange = (newRange: DateRange | undefined, selectedDay: Date) => {
     if (range?.from && range?.to) {
-        onRangeChange({ from: selectedDay, to: undefined });
-        return;
+      onRangeChange({ from: selectedDay, to: undefined });
+      return;
     }
 
     onRangeChange(newRange);
-    if (dateValue !== "custom") setDateValue("custom");
+
+    if (preset !== "custom") onPresetChange("custom");
 
     if (newRange?.from && newRange?.to) {
-        setTimeout(() => setIsCalendarOpen(false), 200);    }
-};
+      setTimeout(() => setIsCalendarOpen(false), 200);
+    }
+  };
 
   return (
     <div className="flex flex-col md:flex-row gap-3">
-      <Select value={dateValue} onValueChange={handleSelectChange}>
+      <Select value={preset} onValueChange={handleSelectChange}>
         <SelectTrigger className="w-full md:w-[180px] bg-white">
           <SelectValue placeholder="Select a date" />
         </SelectTrigger>
@@ -88,7 +92,7 @@ export function SelectDate({ range, onRangeChange }: SelectDateProps) {
         </SelectContent>
       </Select>
 
-      <DateRangePicker 
+      <DateRangePicker
         value={localRange}
         onValueChange={handleRangeChange}
         open={isCalendarOpen}
