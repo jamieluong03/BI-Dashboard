@@ -10,10 +10,14 @@ export default function CriticalReorderList({ items }: { items: any[] }) {
     }
 
     return (
-        <div className="flex flex-col gap-3">
-            {items.map((item) => (
-                <div key={item.id} className="flex items-center justify-between p-4 rounded-xl border border-slate-100 bg-white hover:shadow-md transition-shadow">
-                    <div className="flex flex-col">
+        <div className="flex flex-col gap-2">
+            {items.map((item, key) => (
+                <div key={item.id} className="flex items-center justify-between px-4 py-2 rounded-xl border border-slate-200 bg-white hover:shadow-md transition-shadow">
+                    <div className="flex flex-row gap-4">
+                        <span className="font-bold text-lg text-slate-900 content-center border-r-1 border-slate-100 pr-4">
+                            {key + 1}
+                        </span>
+                        <div>
                         <span className="font-bold text-slate-900 text-sm">{item.name}</span>
                         <div className="flex items-center gap-2 mt-1">
                             <span className="text-[10px] bg-slate-100 px-2 py-0.5 rounded text-slate-500 font-medium">
@@ -24,6 +28,7 @@ export default function CriticalReorderList({ items }: { items: any[] }) {
                             }`}>
                                 {item.daysLeft} days left
                             </span>
+                        </div>
                         </div>
                     </div>
                     

@@ -62,45 +62,30 @@ export default function InventoryCardContent({ dateContext, isInventoryLoading }
                         />
                     </div>
                     <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex flex-col lg:min-h-[100px]">
-                        {/* <div className="flex flex-col sm:flex-row justify-between items-start gap-4 mb-8">
+                        {/* Stockout Revenue Risk */}
+                        <div className="flex flex-col sm:flex-row justify-between items-start gap-4 mb-2">
                             <div>
-                                <div className="flex gap-1 mb-6">
+                                <div className="flex gap-1">
                                     <h3 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">
-                                        Stockout Revenue Risk
+                                        Critical Reorder List
                                     </h3>
-                                    <InfoTooltip display comment="Projects potential weekly revenue loss if current low-stock items are not replenished based on recent sales velocity." />
+                                    <InfoTooltip display comment="Prioritizes restocking based on projected weekly revenue loss. These items drive your cash flow—don't let them hit zero." />
                                 </div>
+                                <p className="text-sm text-slate-500">Items with the highest financial impact on stockout.</p>
                             </div>
-                        </div> */}
 
-                        {/* <div className="w-full md:h-full h-[125px] flex-1 min-h-0"> */}
-                            {/* Stockout Revenue Risk */}
-                            {/* <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex flex-col lg:min-h-[100px]"> */}
-                                <div className="flex flex-col sm:flex-row justify-between items-start gap-4 mb-6">
-                                    <div>
-                                        <div className="flex gap-1">
-                                            <h3 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">
-                                                Critical Reorder List
-                                            </h3>
-                                            <InfoTooltip display comment="Prioritizes restocking based on projected weekly revenue loss. These items drive your cash flow—don't let them hit zero." />
-                                        </div>
-                                        <p className="text-sm text-slate-500">Items with the highest financial impact on stockout.</p>
-                                    </div>
+                            {/* Total Risk Summary Badge */}
+                            <div className="bg-rose-50 border border-rose-100 px-4 py-2 rounded-xl">
+                                <span className="block text-[9px] font-bold text-rose-400 uppercase tracking-tight">Total Weekly Revenue at Risk</span>
+                                <span className="text-xl font-black text-rose-600">
+                                    ${criticalItems.reduce((sum: number, i: any) => sum + i.weeklyRisk, 0).toLocaleString()}
+                                </span>
+                            </div>
+                        </div>
 
-                                    {/* Total Risk Summary Badge */}
-                                    <div className="bg-rose-50 border border-rose-100 px-4 py-2 rounded-xl">
-                                        <span className="block text-[9px] font-bold text-rose-400 uppercase tracking-tight">Total Weekly Revenue at Risk</span>
-                                        <span className="text-xl font-black text-rose-600">
-                                            ${criticalItems.reduce((sum: number, i: any) => sum + i.weeklyRisk, 0).toLocaleString()}
-                                        </span>
-                                    </div>
-                                </div>
-
-                                <div className="w-full">
-                                    <CriticalReorderList items={criticalItems} />
-                                </div>
-                            {/* </div> */}
-                        {/* </div> */}
+                        <div className="w-full">
+                            <CriticalReorderList items={criticalItems} />
+                        </div>
                     </div>
 
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
