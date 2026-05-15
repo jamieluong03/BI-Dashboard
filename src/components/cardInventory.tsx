@@ -1,15 +1,43 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { InfoTooltip } from "./infoToolTip";
-import { DashboardDateContext } from "@/types/dataTypes";
+import { DashboardDateContext, InventoryModalProps } from "@/types/dataTypes";
 import { useInventoryPerformance } from "@/hooks/views";
 import { SelectDate } from "./dateSelect";
+import CriticalReorderList from "./inventoryCriticalReorder";
+import { differenceInDays } from "node_modules/date-fns/fp/differenceInDays.cjs";
 
-export default function InventoryCardContent({ dateContext }: { dateContext: DashboardDateContext }) {
+export default function InventoryCardContent({ dateContext, isInventoryLoading }: InventoryModalProps) {
 
     const { inventory, isLoading, isError } = useInventoryPerformance(
         dateContext.activeFrom,
         dateContext.activeTo
     );
+    console.log("Inventory:", inventory);
+
+    const diffInDays = Math.max(1, differenceInDays(new Date(dateContext.activeTo), new Date(dateContext.activeFrom)));
+
+    const criticalItems = useMemo(() => {
+        if (!inventory?.products) return [];
+
+        return inventory.products
+            .filter((p: any) => p.stockLevel <= p.reorderPoint && p.stockLevel > 0)
+            .map((p: any) => {
+                const dailyVelocity = p.units_sold / diffInDays;
+                const dailyRevenue = p.revenue / diffInDays;
+
+                return {
+                    id: p.id,
+                    name: p.name,
+                    stock: p.stockLevel,
+                    daysLeft: dailyVelocity > 0 ? Math.round(p.stockLevel / dailyVelocity) : 99,
+                    weeklyRisk: dailyRevenue * 7,
+                    velocity: dailyVelocity
+                };
+            })
+            .sort((a: any, b: any) => b.weeklyRisk - a.weeklyRisk)
+            .slice(0, 5);
+    }, [inventory, diffInDays]);
+    console.log("Critical Items:", criticalItems);
 
     return (
         <div className="w-full">
@@ -34,7 +62,7 @@ export default function InventoryCardContent({ dateContext }: { dateContext: Das
                         />
                     </div>
                     <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex flex-col lg:min-h-[100px]">
-                        <div className="flex flex-col sm:flex-row justify-between items-start gap-4 mb-8">
+                        {/* <div className="flex flex-col sm:flex-row justify-between items-start gap-4 mb-8">
                             <div>
                                 <div className="flex gap-1 mb-6">
                                     <h3 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">
@@ -43,17 +71,36 @@ export default function InventoryCardContent({ dateContext }: { dateContext: Das
                                     <InfoTooltip display comment="Projects potential weekly revenue loss if current low-stock items are not replenished based on recent sales velocity." />
                                 </div>
                             </div>
-                        </div>
+                        </div> */}
 
-                        <div className="w-full md:h-full h-[125px] flex-1 min-h-0">
+                        {/* <div className="w-full md:h-full h-[125px] flex-1 min-h-0"> */}
                             {/* Stockout Revenue Risk */}
+                            {/* <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex flex-col lg:min-h-[100px]"> */}
+                                <div className="flex flex-col sm:flex-row justify-between items-start gap-4 mb-6">
+                                    <div>
+                                        <div className="flex gap-1">
+                                            <h3 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">
+                                                Critical Reorder List
+                                            </h3>
+                                            <InfoTooltip display comment="Prioritizes restocking based on projected weekly revenue loss. These items drive your cash flow—don't let them hit zero." />
+                                        </div>
+                                        <p className="text-sm text-slate-500">Items with the highest financial impact on stockout.</p>
+                                    </div>
 
-                            {/* <div className="mt-4 pt-4 border-t border-slate-50">
-                                <p className="text-[10px] text-slate-400 italic">
-                                    * Net Margin represents total revenue minus product costs and shipping expenses.
-                                </p>
-                            </div> */}
-                        </div>
+                                    {/* Total Risk Summary Badge */}
+                                    <div className="bg-rose-50 border border-rose-100 px-4 py-2 rounded-xl">
+                                        <span className="block text-[9px] font-bold text-rose-400 uppercase tracking-tight">Total Weekly Revenue at Risk</span>
+                                        <span className="text-xl font-black text-rose-600">
+                                            ${criticalItems.reduce((sum: number, i: any) => sum + i.weeklyRisk, 0).toLocaleString()}
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div className="w-full">
+                                    <CriticalReorderList items={criticalItems} />
+                                </div>
+                            {/* </div> */}
+                        {/* </div> */}
                     </div>
 
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

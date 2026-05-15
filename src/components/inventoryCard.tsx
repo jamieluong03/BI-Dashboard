@@ -28,7 +28,7 @@ import {
 } from "@/components/ui/drawer";
 import InventoryCardContent from "./cardInventory";
 
-export function InventoryCard({ title, inventoryValue, sellThroughRate, lowStock, description, dateContext }: InventoryCardProps) {
+export function InventoryCard({ title, inventoryValue, sellThroughRate, lowStock, description, dateContext, isLoading}: InventoryCardProps) {
 
   const currencyFormatter = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
   const [cardOpen, setCardOpen] = useState(false);
@@ -97,7 +97,7 @@ export function InventoryCard({ title, inventoryValue, sellThroughRate, lowStock
         </ModalHeader>
 
         <div className={isDesktop ? "" : "flex-1 overflow-y-auto px-6"}>
-          <InventoryCardContent dateContext={dateContext} />
+          <InventoryCardContent dateContext={dateContext} isInventoryLoading={isLoading}/>
         </div>
       </ModalContent>
     </ModalRoot>

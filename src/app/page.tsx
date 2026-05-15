@@ -41,7 +41,14 @@ export default function Dashboard() {
   const { inventory, isLoading: isInventoryLoading, isError: isInventoryError, error: inventoryError } = useInventoryPerformance(activeFrom, activeTo);
   const { regions, isLoading: isRegionLoading, isError: isRegionError, error: regionError } = useRegionalData(activeFrom, activeTo);
 
-  const isAnyDataLoading = isOrdersLoading || isRoasLoading || isCLVLoading || isChannelsLoading || isInventoryLoading || isRegionLoading;
+  // const isAnyDataLoading = isOrdersLoading || isRoasLoading || isCLVLoading || isChannelsLoading || isInventoryLoading || isRegionLoading;
+  const isInitialLoading = 
+    (isOrdersLoading && !orders) || 
+    (isInventoryLoading && !inventory) || 
+    (isRoasLoading && !data) ||
+    (isCLVLoading && !clv) ||
+    (isChannelsLoading && !channels) ||
+    (isRegionLoading && !regions);
   const hasAnyErrors = isOrdersError || isRoasError || isCLVError || isChannelsError || isInventoryError || isRegionError;
   const anyErrorMessage = ordersError?.message || roasError?.message || clvError?.message || channelsError?.message || inventoryError?.message || regionError?.message;
 
@@ -85,7 +92,7 @@ export default function Dashboard() {
             />
           </div>
         </header>
-        {isAnyDataLoading ? (
+        {isInitialLoading ? (
           <DashboardSkeleton />
         ) : hasAnyErrors ? (
           <div className="border-red-500 bg-red-50 p-4 rounded-lg">
@@ -184,6 +191,7 @@ export default function Dashboard() {
                   (inventory?.lowStockCount ?? 0) > 0 ? `${inventory?.lowStockCount} items are low on stock` : "Stock levels are healthy"
                 }
                 dateContext={dateContext}
+                isLoading={isInventoryLoading}
                 description="Capital tied in stock; ensure high-value pieces are prioritized for ads. Extremely high turnover velocity; monitor stock-outs on core collections."
               />
             </div>

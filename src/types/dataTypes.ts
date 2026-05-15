@@ -34,6 +34,7 @@ export interface InventoryCardProps {
   lowStock: string
   description: string;
   dateContext: DashboardDateContext;
+  isLoading: boolean;
 };
 
 export interface ChannelStats {
@@ -53,3 +54,8 @@ export interface DashboardDateContext {
   onRangeChange: (range: DateRange | undefined) => void;
   onPresetChange: (preset: string) => void;
 };
+
+export interface InventoryModalProps {
+  dateContext: DashboardDateContext;
+  isInventoryLoading: boolean;
+}
