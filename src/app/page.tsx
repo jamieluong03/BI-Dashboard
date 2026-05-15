@@ -41,7 +41,6 @@ export default function Dashboard() {
   const { inventory, isLoading: isInventoryLoading, isError: isInventoryError, error: inventoryError } = useInventoryPerformance(activeFrom, activeTo);
   const { regions, isLoading: isRegionLoading, isError: isRegionError, error: regionError } = useRegionalData(activeFrom, activeTo);
 
-  // const isAnyDataLoading = isOrdersLoading || isRoasLoading || isCLVLoading || isChannelsLoading || isInventoryLoading || isRegionLoading;
   const isInitialLoading = 
     (isOrdersLoading && !orders) || 
     (isInventoryLoading && !inventory) || 
@@ -185,8 +184,8 @@ export default function Dashboard() {
             <div className="col-span-2">
               <InventoryCard
                 title="Inventory"
-                inventoryValue={inventory?.inventoryValue.toFixed(2) || 0}
-                sellThroughRate={inventory?.sellThroughRate.toFixed(2) || 0}
+                inventoryValue={Number(inventory?.inventoryValue.toFixed(2) || 0)}
+                sellThroughRate={Number(inventory?.sellThroughRate.toFixed(2) || 0)}
                 lowStock={
                   (inventory?.lowStockCount ?? 0) > 0 ? `${inventory?.lowStockCount} items are low on stock` : "Stock levels are healthy"
                 }
