@@ -17,9 +17,9 @@ export default function InventoryCardContent({ dateContext, isInventoryLoading }
     const diffInDays = Math.max(1, differenceInDays(new Date(dateContext.activeTo), new Date(dateContext.activeFrom)));
 
     const criticalItems = useMemo(() => {
-        if (!inventory?.products) return [];
+        if (!inventory?.allProducts) return [];
 
-        return inventory.products
+        return inventory.allProducts
             .filter((p: any) => p.stockLevel <= p.reorderPoint && p.stockLevel > 0)
             .map((p: any) => {
                 const dailyVelocity = p.units_sold / diffInDays;
