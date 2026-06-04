@@ -92,11 +92,28 @@ export function useSalesStats(startDate: string, endDate: string) {
                 totalOrders: data.length,
                 returnOnInvestment: totals.adSpend > 0 ? (netProfit / totals.adSpend) * 100 : 0,
                 marketingEfficiencyRatio: totals.adSpend > 0 ? totals.revenue / totals.adSpend : 0,
-                daily: data.map(day => ({
-                    date: day.date,
-                    revenue: Number(day.totalRevenue),
-                    totalOrders: Number(day.ordersLength)
-                }))
+                daily: data.map(day => {
+                    const revenue = Number(day.totalRevenue || 0);
+                    const cost = Number(day.cost || day.totalCost || 0);
+                    const adSpend = Number(day.adSpend || day.totalAdSpend || 0);
+                    const shipping = Number(day.shipping || day.totalShipping || 0);
+
+                    const refunds = getMockRefunds(
+                        revenue,
+                        new Date(day.date),
+                        day.adSource
+                    );
+
+                    const dailyNetProfit = revenue - (cost + adSpend + shipping + refunds);
+                    const dailyMargin = revenue > 0 ? (dailyNetProfit / revenue) * 100 : 0;
+
+                    return {
+                        date: day.date,
+                        revenue,
+                        totalOrders: Number(day.ordersLength || 0),
+                        margin: parseFloat(dailyMargin.toFixed(2))
+                    };
+                })
             };
         },
         placeholderData: (prev) => prev,
@@ -159,18 +176,18 @@ export function useInventoryPerformance(startDate: string, endDate: string) {
             const totalInventoryValue = uniqueProducts.reduce((sum: number, p: any) => sum + Number(p.current_inventory_value), 0);
             const totalUnitsSold = uniqueProducts.reduce((sum: number, p: any) => sum + p.total_units_sold, 0);
             const totalStockOnHand = uniqueProducts.reduce((sum: number, p: any) => sum + p.stockLevel, 0);
-            
-            const sellThroughRate = (totalUnitsSold + totalStockOnHand) > 0 
-                ? (totalUnitsSold / (totalUnitsSold + totalStockOnHand)) * 100 
+
+            const sellThroughRate = (totalUnitsSold + totalStockOnHand) > 0
+                ? (totalUnitsSold / (totalUnitsSold + totalStockOnHand)) * 100
                 : 0;
 
             const riskData: StockoutRiskItem[] = [];
             const processedProducts = uniqueProducts.map((p: any) => {
                 const dailyVelocity = p.total_units_sold / daysInPeriod;
-                
+
                 let simulatedAge = 15; // default to fast-moving
                 if (dailyVelocity === 0) {
-                    simulatedAge = p.stockLevel > 10 ? 95 : 45; 
+                    simulatedAge = p.stockLevel > 10 ? 95 : 45;
                 } else {
                     const daysOfSupply = p.stockLevel / dailyVelocity;
                     if (daysOfSupply > 90) simulatedAge = 100;
@@ -198,9 +215,9 @@ export function useInventoryPerformance(startDate: string, endDate: string) {
 
             riskData.sort((a, b) => b.weeklyRisk - a.weeklyRisk);
 
-            return { 
-                inventoryValue: totalInventoryValue, 
-                sellThroughRate, 
+            return {
+                inventoryValue: totalInventoryValue,
+                sellThroughRate,
                 lowStockCount: processedProducts.filter((p: any) => p.stock_status === "Low Stock").length,
                 riskData,
                 allProducts: processedProducts
