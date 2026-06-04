@@ -125,8 +125,8 @@ export default function InventoryCardContent({ dateContext, isInventoryLoading }
                         </div>
                         <div className="bg-white p-6 md:p-6 rounded-2xl border border-slate-100 shadow-sm min-h-[100px]] lg:h-[340px] flex flex-col">
                             <div className="flex gap-1 mb-6">
-                                <h3 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">
-                                    SKU Velocity vs Profitability
+                                <h3 className="text-[10px] font-bold text-slate-400  tracking-widest mb-1">
+                                    SKU VELOCITY vs PROFITABILITY
                                 </h3>
                                 <InfoTooltip display comment="Analyzes performance dynamics to uncover dead weight or hidden margin drivers." />
                             </div>
