@@ -128,7 +128,7 @@ export default function InventoryCardContent({ dateContext, isInventoryLoading }
                                 <h3 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">
                                     SKU Velocity vs Profitability
                                 </h3>
-                                <InfoTooltip display comment="Analyzes marketing efficiency by channel, distinguishing between first-time customer acquisition and repeat purchase retention to optimize your media spend." />
+                                <InfoTooltip display comment="Analyzes performance dynamics to uncover dead weight or hidden margin drivers." />
                             </div>
                             {/* SKU Velocity vs Profitability */}
                             <div className="flex-1 min-h-0 w-full">
