@@ -11,7 +11,6 @@ const surgeConfig = {
 type OrdersDistribution = {
     name: string;
     avgOrders: number;
-    totalOrders: number;
 };
 
 type TotalOrdersPeaksProps = {
@@ -19,6 +18,7 @@ type TotalOrdersPeaksProps = {
 };
 
 export function TotalOrdersPeaks({ data }: TotalOrdersPeaksProps) {
+    console.log("Rendering TotalOrdersPeaks with data:", data);
     return (
         <>
             <ChartContainer config={surgeConfig} className="">
