@@ -7,6 +7,7 @@ import CriticalReorderList from "./inventoryCriticalReorder";
 import { differenceInDays } from "node_modules/date-fns/fp/differenceInDays.cjs";
 import AgingCapitalChart from "./inventoryAgingCapital";
 import SkuVelocityProfitabilityChart from "./inventorySkuProfitability";
+import { InventoryModalSkeleton } from "./skeletons";
 
 export default function InventoryCardContent({ dateContext, isInventoryLoading }: InventoryModalProps) {
 
@@ -66,8 +67,7 @@ export default function InventoryCardContent({ dateContext, isInventoryLoading }
     return (
         <div className="w-full">
             {isLoading ? (
-                //skeleton
-                <></>
+                <InventoryModalSkeleton />
             ) : isError ? (
                 <div className="flex h-64 items-center justify-center text-red-500 text-sm bg-red-50 rounded-2xl border border-red-100">
                     Error fetching data for this range.

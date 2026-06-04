@@ -338,3 +338,75 @@ export function RegionalSalesSkeleton() {
     </div>
   );
 }
+
+export function InventoryModalSkeleton() {
+  return (
+    <div className="flex flex-col gap-4 animate-pulse">
+      
+      <div className="flex flex-wrap items-center justify-between bg-slate-50 p-3 rounded-lg border border-slate-100 gap-3">
+        <div className="h-3 w-24 bg-slate-200 rounded" /> {/* Text Placeholder */}
+        <div className="h-9 w-full md:w-[180px] bg-slate-200 rounded-md" /> {/* Dropdown Placeholder */}
+      </div>
+
+      <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex flex-col min-h-[220px]">
+        <div className="flex flex-col sm:flex-row justify-between items-start gap-4 mb-4">
+          <div className="flex flex-col gap-2 mt-1">
+            <div className="h-3 w-32 bg-slate-200 rounded" />
+            <div className="h-2 w-48 bg-slate-200 rounded" />
+          </div>
+          
+          <div className="h-[52px] w-44 bg-rose-100/50 border border-rose-100 rounded-xl" />
+        </div>
+
+        <div className="flex flex-col gap-3 w-full">
+          {[1, 2].map((i) => (
+            <div key={i} className="flex items-center justify-between p-4 rounded-xl border border-slate-100 bg-slate-50/50">
+              <div className="space-y-2">
+                <div className="h-4 w-48 bg-slate-200 rounded" />
+                <div className="flex gap-2">
+                  <div className="h-4 w-16 bg-slate-200 rounded" />
+                  <div className="h-4 w-16 bg-slate-200 rounded" />
+                </div>
+              </div>
+              <div className="space-y-2 flex flex-col items-end">
+                <div className="h-2 w-12 bg-slate-200 rounded" />
+                <div className="h-5 w-20 bg-slate-200 rounded" />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        
+        <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm lg:h-[340px] flex flex-col justify-between">
+          <div>
+            <div className="h-3 w-44 bg-slate-200 rounded mb-2" />
+            <div className="h-2 w-56 bg-slate-200 rounded mb-4" />
+          </div>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-8 my-auto h-full">
+            <div className="h-36 w-36 rounded-full border-8 border-slate-100 bg-transparent flex items-center justify-center" />
+            <div className="flex flex-col gap-3 w-full sm:w-1/2">
+              <div className="h-6 w-full bg-slate-100 rounded" />
+              <div className="h-6 w-full bg-slate-100 rounded" />
+              <div className="h-6 w-full bg-slate-100 rounded" />
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm lg:h-[340px] flex flex-col justify-between">
+          <div>
+            <div className="h-3 w-40 bg-slate-200 rounded mb-2" />
+            <div className="h-2 w-64 bg-slate-200 rounded mb-4" />
+          </div>
+          <div className="w-full h-[200px] border-l-2 border-b-2 border-slate-100 relative mt-auto flex items-center justify-center">
+            <div className="absolute top-12 left-1/4 h-4 w-4 bg-slate-200 rounded-full" />
+            <div className="absolute top-24 left-1/2 h-6 w-6 bg-slate-200 rounded-full" />
+            <div className="absolute top-8 left-3/4 h-3 w-3 bg-slate-200 rounded-full" />
+          </div>
+        </div>
+
+      </div>
+    </div>
+  );
+}
