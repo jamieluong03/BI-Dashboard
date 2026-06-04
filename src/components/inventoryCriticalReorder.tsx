@@ -12,7 +12,7 @@ export default function CriticalReorderList({ items }: { items: any[] }) {
     return (
         <div className="flex flex-col gap-2">
             {items.map((item, key) => (
-                <div key={item.id} className="flex items-center justify-between px-4 py-2 rounded-xl border border-slate-200 bg-white hover:shadow-md transition-shadow">
+                <div key={item.id} className="flex items-center justify-between px-4 py-2 border-b-1 last:border-b-0 border-slate-200 bg-white hover:shadow-md transition-shadow">
                     <div className="flex flex-row gap-4">
                         <span className="font-bold text-lg text-slate-900 content-center border-r-1 border-slate-100 pr-4">
                             {key + 1}
@@ -33,7 +33,7 @@ export default function CriticalReorderList({ items }: { items: any[] }) {
                     </div>
                     
                     <div className="text-right">
-                        <p className="text-[10px] text-slate-400 uppercase font-bold tracking-tighter">Weekly Risk</p>
+                        <p className="text-[10px] text-slate-400 uppercase font-bold">Weekly Risk</p>
                         <p className="text-lg font-black text-rose-600">
                             ${item.weeklyRisk.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                         </p>
