@@ -59,3 +59,11 @@ export interface InventoryModalProps {
   dateContext: DashboardDateContext;
   isInventoryLoading: boolean;
 }
+
+export interface StockoutRiskItem {
+    id: string;
+    name: string;
+    stock: number;
+    daysLeft: number;
+    weeklyRisk: number;
+}

@@ -3,6 +3,7 @@ import { supabase } from '@/lib/supabase';
 import { getMockRefunds } from '@/lib/utils';
 import { startOfMonth, endOfMonth, subYears, format, getDate, parseISO, subMonths } from "date-fns";
 import { differenceInDays } from 'date-fns';
+import { StockoutRiskItem } from '@/types/dataTypes';
 
 export function useBlendedROAS(startDate: string, endDate: string) {
     const { data, isLoading, isFetching, isError, error } = useQuery({
@@ -143,10 +144,14 @@ export function useInventoryPerformance(startDate: string, endDate: string) {
             const daysInPeriod = Math.max(1, differenceInDays(new Date(endDate), new Date(startDate)));
             const productMap = data.reduce((acc: any, row: any) => {
                 if (!acc[row.id]) {
-                    acc[row.id] = { ...row, total_units_sold: 0, total_revenue: 0 };
+                    acc[row.id] = { ...row, total_units_sold: 0, total_revenue: 0, earliest_sale: row.sale_date, latest_sale: row.sale_date };
                 }
                 acc[row.id].total_units_sold += Number(row.units_sold);
                 acc[row.id].total_revenue += Number(row.revenue);
+
+                if (new Date(row.sale_date) < new Date(acc[row.id].earliest_sale)) acc[row.id].earliest_sale = row.sale_date;
+                if (new Date(row.sale_date) > new Date(acc[row.id].latest_sale)) acc[row.id].latest_sale = row.sale_date;
+
                 return acc;
             }, {});
 
@@ -159,23 +164,46 @@ export function useInventoryPerformance(startDate: string, endDate: string) {
                 ? (totalUnitsSold / (totalUnitsSold + totalStockOnHand)) * 100 
                 : 0;
 
-            const riskData = uniqueProducts
-                .filter((p: any) => p.stockLevel <= p.reorderPoint && p.stockLevel > 0)
-                .map((p: any) => ({
-                    id: p.id,
-                    name: p.name,
-                    stock: p.stockLevel,
-                    daysLeft: (p.total_units_sold / daysInPeriod) > 0 ? Math.floor(p.stockLevel / (p.total_units_sold / daysInPeriod)) : 99,
-                    weeklyRisk: (p.total_revenue / daysInPeriod) * 7
-                }))
-                .sort((a, b) => b.weeklyRisk - a.weeklyRisk);
+            const riskData: StockoutRiskItem[] = [];
+            const processedProducts = uniqueProducts.map((p: any) => {
+                const dailyVelocity = p.total_units_sold / daysInPeriod;
+                
+                let simulatedAge = 15; // default to fast-moving
+                if (dailyVelocity === 0) {
+                    simulatedAge = p.stockLevel > 10 ? 95 : 45; 
+                } else {
+                    const daysOfSupply = p.stockLevel / dailyVelocity;
+                    if (daysOfSupply > 90) simulatedAge = 100;
+                    else if (daysOfSupply > 60) simulatedAge = 75;
+                    else if (daysOfSupply > 30) simulatedAge = 45;
+                }
+
+                const finalProduct = {
+                    ...p,
+                    days_in_stock: simulatedAge
+                };
+
+                if (p.stockLevel <= p.reorderPoint && p.stockLevel > 0) {
+                    riskData.push({
+                        id: p.id,
+                        name: p.name,
+                        stock: p.stockLevel,
+                        daysLeft: dailyVelocity > 0 ? Math.floor(p.stockLevel / dailyVelocity) : 99,
+                        weeklyRisk: (p.total_revenue / daysInPeriod) * 7
+                    });
+                }
+
+                return finalProduct;
+            });
+
+            riskData.sort((a, b) => b.weeklyRisk - a.weeklyRisk);
 
             return { 
                 inventoryValue: totalInventoryValue, 
                 sellThroughRate, 
-                lowStockCount: uniqueProducts.filter((p: any) => p.stock_status === "Low Stock").length,
+                lowStockCount: processedProducts.filter((p: any) => p.stock_status === "Low Stock").length,
                 riskData,
-                allProducts: uniqueProducts
+                allProducts: processedProducts
             };
         },
         placeholderData: (prev) => prev,
