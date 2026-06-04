@@ -1,3 +1,5 @@
+import { DateRange } from "react-day-picker";
+
 export type ViewType = "month" | "quarter" | "year";
 
 export interface ToolTipProps {
@@ -31,6 +33,8 @@ export interface InventoryCardProps {
   sellThroughRate: number;
   lowStock: string
   description: string;
+  dateContext: DashboardDateContext;
+  isLoading: boolean;
 };
 
 export interface ChannelStats {
@@ -41,3 +45,25 @@ export interface ChannelStats {
     newOrders: number;
     returningOrders: number;
 };
+
+export interface DashboardDateContext {
+  activeFrom: string;
+  activeTo: string;
+  range: DateRange | undefined;
+  preset: string;
+  onRangeChange: (range: DateRange | undefined) => void;
+  onPresetChange: (preset: string) => void;
+};
+
+export interface InventoryModalProps {
+  dateContext: DashboardDateContext;
+  isInventoryLoading: boolean;
+}
+
+export interface StockoutRiskItem {
+    id: string;
+    name: string;
+    stock: number;
+    daysLeft: number;
+    weeklyRisk: number;
+}

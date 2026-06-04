@@ -1,11 +1,12 @@
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
 import { getMockRefunds } from '@/lib/utils';
-import { startOfMonth, endOfMonth, subYears, format, getDate, parseISO, subMonths, endOfDay } from "date-fns";
-import { ChannelStats } from '@/types/dataTypes';
+import { startOfMonth, endOfMonth, subYears, format, getDate, parseISO, subMonths } from "date-fns";
+import { differenceInDays } from 'date-fns';
+import { StockoutRiskItem } from '@/types/dataTypes';
 
 export function useBlendedROAS(startDate: string, endDate: string) {
-    const { data: data, isLoading, isError, error } = useQuery({
+    const { data, isLoading, isFetching, isError, error } = useQuery({
         queryKey: ['blended-roas', startDate, endDate],
         queryFn: async () => {
             const { data, error } = await supabase
@@ -30,11 +31,11 @@ export function useBlendedROAS(startDate: string, endDate: string) {
                 clickThroughRate: (totalClicks / totalImpressions) * 100,
                 totalImpressions
             };
-        }
+        },
+        placeholderData: (prev) => prev,
     });
-
-    return { data, isLoading, isError, error };
-};
+    return { data, isLoading, isRefreshing: isFetching, isError, error };
+}
 
 export function useCLVStats() {
     const { data: clv, isLoading, isError, error } = useQuery({
@@ -42,21 +43,19 @@ export function useCLVStats() {
         queryFn: async () => {
             const { data, error } = await supabase
                 .from('customer_lifetime_value')
-                .select('lifetime_profit')
+                .select('lifetime_profit');
             if (error) throw error;
-
             const totalProfit = data.reduce((sum, row) => sum + row.lifetime_profit, 0);
             const avgCLV = data.length > 0 ? totalProfit / data.length : 0;
-
             return { totalProfit, avgCLV };
-        }
+        },
+        placeholderData: (prev) => prev,
     });
-
     return { clv, isLoading, isError, error };
-};
+}
 
 export function useSalesStats(startDate: string, endDate: string) {
-    const { data: orders, isLoading, isError, error } = useQuery({
+    const { data: orders, isLoading, isFetching, isError, error } = useQuery({
         queryKey: ['daily_sales_performance', startDate, endDate],
         queryFn: async () => {
             const { data, error } = await supabase
@@ -69,14 +68,7 @@ export function useSalesStats(startDate: string, endDate: string) {
 
             const totals = data.reduce((acc, day) => {
                 const dailyRevenue = Number(day.totalRevenue || 0);
-
-                // Calculate specific refund for THIS specific day
-                const dailyRefund = getMockRefunds(
-                    dailyRevenue,
-                    new Date(day.date),
-                    day.adSource
-                );
-
+                const dailyRefund = getMockRefunds(dailyRevenue, new Date(day.date), day.adSource);
                 return {
                     revenue: acc.revenue + dailyRevenue,
                     cost: acc.cost + Number(day.totalCost || 0),
@@ -86,42 +78,7 @@ export function useSalesStats(startDate: string, endDate: string) {
                 };
             }, { revenue: 0, cost: 0, adSpend: 0, shipping: 0, refunds: 0 });
 
-            // const totalRevenue = data.reduce((sum, o) => sum + Number(o.totalRevenue || 0), 0);
-            // const totalCost = data.reduce((sum, o) => sum + Number(o.totalCost || 0), 0);
-            // const totalAdSpend = data.reduce((sum, m) => sum + Number(m.totalAdSpend || 0), 0);
-            // const totalShipping = data.reduce((sum, o) => sum + Number(o.totalShipping || 0), 0);
-            // const totalRefunds = getMockRefunds(totalRevenue, new Date(endDate));
             const netProfit = totals.revenue - (totals.cost + totals.adSpend + totals.shipping + totals.refunds);
-            const profitMargin = totals.revenue > 0 ? (netProfit / totals.revenue) * 100 : 0;
-            const averageOrderValue = data.length > 0 ? totals.revenue / data.length : 0;
-            const returnOnInvestment = totals.adSpend > 0 ? (netProfit / totals.adSpend) * 100 : 0;
-            const marketingEfficiencyRatio = totals.adSpend > 0 ? totals.revenue / totals.adSpend : 0;
-
-            const dailyData = data.map(day => {
-                const revenue = Number(day.totalRevenue || 0);
-                const cost = Number(day.totalCost || 0);
-                const adSpend = Number(day.totalAdSpend || 0);
-                const shipping = Number(day.totalShipping || 0);
-                const totalOrders = Number(day.ordersLength || 0);
-
-                const refunds = getMockRefunds(
-                    revenue,
-                    new Date(day.date),
-                    day.adSource
-                );
-
-                const netProfit = revenue - (cost + adSpend + shipping + refunds);
-                const margin = revenue > 0 ? (netProfit / revenue) * 100 : 0;
-
-                return {
-                    date: day.date,
-                    revenue,
-                    netProfit,
-                    margin: parseFloat(margin.toFixed(2)),
-                    totalOrders
-                };
-            });
-
 
             return {
                 totalRevenue: totals.revenue,
@@ -129,21 +86,43 @@ export function useSalesStats(startDate: string, endDate: string) {
                 totalRefunds: totals.refunds,
                 totalCost: totals.cost,
                 totalAdSpend: totals.adSpend,
-                profitMargin,
+                profitMargin: totals.revenue > 0 ? (netProfit / totals.revenue) * 100 : 0,
                 totalShipping: totals.shipping,
-                averageOrderValue,
+                averageOrderValue: data.length > 0 ? totals.revenue / data.length : 0,
                 totalOrders: data.length,
-                returnOnInvestment,
-                marketingEfficiencyRatio,
-                daily: dailyData
-            }
-        }
+                returnOnInvestment: totals.adSpend > 0 ? (netProfit / totals.adSpend) * 100 : 0,
+                marketingEfficiencyRatio: totals.adSpend > 0 ? totals.revenue / totals.adSpend : 0,
+                daily: data.map(day => {
+                    const revenue = Number(day.totalRevenue || 0);
+                    const cost = Number(day.cost || day.totalCost || 0);
+                    const adSpend = Number(day.adSpend || day.totalAdSpend || 0);
+                    const shipping = Number(day.shipping || day.totalShipping || 0);
+
+                    const refunds = getMockRefunds(
+                        revenue,
+                        new Date(day.date),
+                        day.adSource
+                    );
+
+                    const dailyNetProfit = revenue - (cost + adSpend + shipping + refunds);
+                    const dailyMargin = revenue > 0 ? (dailyNetProfit / revenue) * 100 : 0;
+
+                    return {
+                        date: day.date,
+                        revenue,
+                        totalOrders: Number(day.ordersLength || 0),
+                        margin: parseFloat(dailyMargin.toFixed(2))
+                    };
+                })
+            };
+        },
+        placeholderData: (prev) => prev,
     });
-    return { orders, isLoading, isError, error };
-};
+    return { orders, isLoading, isRefreshing: isFetching, isError, error };
+}
 
 export function useSalesChannelPerformance(startDate: string, endDate: string) {
-    const { data: channels, isLoading, isError, error } = useQuery({
+    const { data: channels, isLoading, isFetching, isError, error } = useQuery({
         queryKey: ['daily_sales_channel_performance', startDate, endDate],
         queryFn: async () => {
             const { data, error } = await supabase
@@ -153,54 +132,104 @@ export function useSalesChannelPerformance(startDate: string, endDate: string) {
                 .lte('date', endDate);
             if (error) throw error;
 
-            const channelStats = data.reduce((acc, row) => {
+            return data.reduce((acc, row) => {
                 const source = row.channel;
-
                 if (!acc[source]) {
-                    acc[source] = {
-                        name: source,
-                        revenue: 0,
-                        orders: 0,
-                        cost: 0,
-                        shipping: 0
-                    };
+                    acc[source] = { name: source, revenue: 0, orders: 0, cost: 0, shipping: 0 };
                 }
-
                 acc[source].revenue += row.totalRevenue;
                 acc[source].orders += row.ordersLength;
-                acc[source].cost += row.totalCost;
-                acc[source].shipping += row.totalShipping;
-
                 return acc;
             }, {} as Record<string, any>);
-
-            return channelStats;
-        }
+        },
+        placeholderData: (prev) => prev,
     });
-    return { channels, isLoading, isError, error };
-};
+    return { channels, isLoading, isRefreshing: isFetching, isError, error };
+}
 
-export function useInventoryPerformance() {
-    const { data: inventory, isLoading, isError, error } = useQuery({
-        queryKey: ['inventory_performance'],
+export function useInventoryPerformance(startDate: string, endDate: string) {
+    const { data: inventory, isLoading, isFetching, isError, error } = useQuery({
+        queryKey: ['inventory_performance', startDate, endDate],
         queryFn: async () => {
             const { data, error } = await supabase
                 .from('product_performance_analytics')
                 .select('*')
+                .gte('sale_date', startDate)
+                .lte('sale_date', endDate);
             if (error) throw error;
 
-            const inventoryValue = data.reduce((sum, value) => sum + Number(value.current_inventory_value), 0);
-            const sellThroughRate = data.reduce((sum, value) => sum + Number(value.sell_through_rate), 0);
-            const lowStockCount = data.filter(product => product.stock_status === "Low Stock").length;
+            const daysInPeriod = Math.max(1, differenceInDays(new Date(endDate), new Date(startDate)));
+            const productMap = data.reduce((acc: any, row: any) => {
+                if (!acc[row.id]) {
+                    acc[row.id] = { ...row, total_units_sold: 0, total_revenue: 0, earliest_sale: row.sale_date, latest_sale: row.sale_date };
+                }
+                acc[row.id].total_units_sold += Number(row.units_sold);
+                acc[row.id].total_revenue += Number(row.revenue);
 
-            return { inventoryValue, sellThroughRate, lowStockCount };
-        }
+                if (new Date(row.sale_date) < new Date(acc[row.id].earliest_sale)) acc[row.id].earliest_sale = row.sale_date;
+                if (new Date(row.sale_date) > new Date(acc[row.id].latest_sale)) acc[row.id].latest_sale = row.sale_date;
+
+                return acc;
+            }, {});
+
+            const uniqueProducts = Object.values(productMap);
+            const totalInventoryValue = uniqueProducts.reduce((sum: number, p: any) => sum + Number(p.current_inventory_value), 0);
+            const totalUnitsSold = uniqueProducts.reduce((sum: number, p: any) => sum + p.total_units_sold, 0);
+            const totalStockOnHand = uniqueProducts.reduce((sum: number, p: any) => sum + p.stockLevel, 0);
+
+            const sellThroughRate = (totalUnitsSold + totalStockOnHand) > 0
+                ? (totalUnitsSold / (totalUnitsSold + totalStockOnHand)) * 100
+                : 0;
+
+            const riskData: StockoutRiskItem[] = [];
+            const processedProducts = uniqueProducts.map((p: any) => {
+                const dailyVelocity = p.total_units_sold / daysInPeriod;
+
+                let simulatedAge = 15; // default to fast-moving
+                if (dailyVelocity === 0) {
+                    simulatedAge = p.stockLevel > 10 ? 95 : 45;
+                } else {
+                    const daysOfSupply = p.stockLevel / dailyVelocity;
+                    if (daysOfSupply > 90) simulatedAge = 100;
+                    else if (daysOfSupply > 60) simulatedAge = 75;
+                    else if (daysOfSupply > 30) simulatedAge = 45;
+                }
+
+                const finalProduct = {
+                    ...p,
+                    days_in_stock: simulatedAge
+                };
+
+                if (p.stockLevel <= p.reorderPoint && p.stockLevel > 0) {
+                    riskData.push({
+                        id: p.id,
+                        name: p.name,
+                        stock: p.stockLevel,
+                        daysLeft: dailyVelocity > 0 ? Math.floor(p.stockLevel / dailyVelocity) : 99,
+                        weeklyRisk: (p.total_revenue / daysInPeriod) * 7
+                    });
+                }
+
+                return finalProduct;
+            });
+
+            riskData.sort((a, b) => b.weeklyRisk - a.weeklyRisk);
+
+            return {
+                inventoryValue: totalInventoryValue,
+                sellThroughRate,
+                lowStockCount: processedProducts.filter((p: any) => p.stock_status === "Low Stock").length,
+                riskData,
+                allProducts: processedProducts
+            };
+        },
+        placeholderData: (prev) => prev,
     });
-    return { inventory, isLoading, isError, error };
-};
+    return { inventory, isLoading, isRefreshing: isFetching, isError, error };
+}
 
 export function useRegionalData(startDate: string, endDate: string) {
-    const { data: regions, isLoading, isError, error } = useQuery({
+    const { data: regions, isLoading, isFetching, isError, error } = useQuery({
         queryKey: ['regional_sales', startDate, endDate],
         queryFn: async () => {
             const { data, error } = await supabase
@@ -209,87 +238,61 @@ export function useRegionalData(startDate: string, endDate: string) {
                 .gte('date', startDate)
                 .lte('date', endDate);
             if (error) throw error;
-
-            const regionalSales = data.reduce((acc, row) => {
+            return data.reduce((acc, row) => {
                 const region = row.region || "Unknown";
-                if (!acc[region]) {
-                    acc[region] = { name: region, value: 0 };
-                }
-
+                if (!acc[region]) acc[region] = { name: region, value: 0 };
                 acc[region].value += Number(row.ordersLength || 0);
                 return acc;
             }, {} as Record<string, { name: string, value: number }>);
-            return regionalSales;
-        }
+        },
+        placeholderData: (prev) => prev,
     });
-    return { regions, isLoading, isError, error };
-};
+    return { regions, isLoading, isRefreshing: isFetching, isError, error };
+}
 
 export function useRegionalInsight(selectedDate: Date) {
     const start = format(startOfMonth(selectedDate), "yyyy-MM-dd");
     const end = format(endOfMonth(selectedDate), "yyyy-MM-dd");
-
     const prevDate = subMonths(selectedDate, 1);
     const prevStart = format(startOfMonth(prevDate), "yyyy-MM-dd");
     const prevEnd = format(endOfMonth(prevDate), "yyyy-MM-dd");
 
-    const { data: regions_insight, isLoading, isError, error } = useQuery({
+    const { data: regions_insight, isLoading, isFetching, isError, error } = useQuery({
         queryKey: ['regional_insights', start, end],
         queryFn: async () => {
             const [currentRes, prevRes] = await Promise.all([
                 supabase.from('regional_sales_performance').select('*').gte('date', start).lte('date', end),
                 supabase.from('regional_sales_performance').select('*').gte('date', prevStart).lte('date', prevEnd)
             ]);
-
             if (currentRes.error) throw currentRes.error;
             if (prevRes.error) throw prevRes.error;
 
-            const mapStats = (rows: any[]) => {
-                return rows.reduce((acc, row) => {
-                    const key = row.region || "International";
-                    if (!acc[key]) {
-                        acc[key] = { revenue: 0, orders: 0, shipping: 0 };
-                    }
-                    acc[key].revenue += Number(row.totalRevenue || 0);
-                    acc[key].orders += Number(row.ordersLength || 0);
-                    acc[key].shipping += Number(row.totalShipping || 0);
-                    return acc;
-                }, {} as Record<string, { revenue: number; orders: number; shipping: number }>);
-            };
-
-            const currentMap = mapStats(currentRes.data || []);
-            const prevMap = mapStats(prevRes.data || []);
-
-            const allRegions = Array.from(new Set([...Object.keys(currentMap), ...Object.keys(prevMap)]));
-
-            const regionalData = allRegions.reduce((acc, name) => {
-                const cur = currentMap[name] || { revenue: 0, orders: 0, shipping: 0 };
-                const prev = prevMap[name] || { revenue: 0 };
-
-                const growth = prev.revenue > 0
-                    ? ((cur.revenue - prev.revenue) / prev.revenue) * 100
-                    : 0;
-
-                acc[name] = {
-                    region: name,
-                    revenue: cur.revenue,
-                    orders: cur.orders,
-                    shippingCost: cur.shipping,
-                    growthIndex: Number(growth.toFixed(1))
-                };
-
+            const mapStats = (rows: any[]) => rows.reduce((acc, row) => {
+                const key = row.region || "International";
+                if (!acc[key]) acc[key] = { revenue: 0, orders: 0, shipping: 0 };
+                acc[key].revenue += Number(row.totalRevenue || 0);
                 return acc;
             }, {} as Record<string, any>);
 
-            return regionalData;
-        }
-    });
+            const currentMap = mapStats(currentRes.data || []);
+            const prevMap = mapStats(prevRes.data || []);
+            const allRegions = Array.from(new Set([...Object.keys(currentMap), ...Object.keys(prevMap)]));
 
-    return { regions_insight, isLoading, isError, error };
+            return allRegions.reduce((acc, name) => {
+                const cur = currentMap[name] || { revenue: 0, orders: 0, shipping: 0 };
+                const prev = prevMap[name] || { revenue: 0 };
+                const growth = prev.revenue > 0 ? ((cur.revenue - prev.revenue) / prev.revenue) * 100 : 0;
+                acc[name] = { region: name, revenue: cur.revenue, growthIndex: Number(growth.toFixed(1)) };
+                return acc;
+            }, {} as Record<string, any>);
+        },
+        placeholderData: (prev) => prev,
+    });
+    return { regions_insight, isLoading, isRefreshing: isFetching, isError, error };
 }
 
 export function useOrderDistribution(startDate: string, endDate: string) {
-    const { data: distribution, isLoading, isError, error } = useQuery({
+    const { data: distribution, isLoading, isFetching, isError, error } = useQuery({
         queryKey: ['order_distribution', startDate, endDate],
         queryFn: async () => {
             const { data, error } = await supabase
@@ -298,36 +301,26 @@ export function useOrderDistribution(startDate: string, endDate: string) {
                 .gte('date', startDate)
                 .lte('date', endDate);
             if (error) throw error;
-
             const uniqueDays = new Set(data.map(row => row.date)).size || 1;
-
             const summary = data.reduce((acc, row) => {
                 const dp = row.daypart;
-                if (!acc[dp]) {
-                    acc[dp] = { name: dp, totalOrders: 0, avgOrders: 0 };
-                }
+                if (!acc[dp]) acc[dp] = { name: dp, totalOrders: 0 };
                 acc[dp].totalOrders += Number(row.totalOrders || 0);
                 return acc;
-            }, {} as Record<string, { name: string, totalOrders: number, avgOrders: number }>);
-
-            const order = ["Morning", "Afternoon", "Evening", "Night"];
-
-            return order.map(name => {
-                const item = summary[name] || { name, totalOrders: 0 };
-                return {
-                    ...item,
-                    avgOrders: Number((item.totalOrders / uniqueDays).toFixed(1))
-                };
-            });
+            }, {} as Record<string, any>);
+            return ["Morning", "Afternoon", "Evening", "Night"].map(name => ({
+                name,
+                avgOrders: Number(((summary[name]?.totalOrders || 0) / uniqueDays).toFixed(1))
+            }));
         },
+        placeholderData: (prev) => prev,
         enabled: !!startDate && !!endDate
     });
-
-    return { distribution, isLoading, isError, error };
-};
+    return { distribution, isLoading, isRefreshing: isFetching, isError, error };
+}
 
 export function useOrderFulfillment(startDate: string, endDate: string) {
-    const { data: fulfillment, isLoading, isError, error } = useQuery({
+    const { data: fulfillment, isLoading, isFetching, isError, error } = useQuery({
         queryKey: ['order_fulfillment', startDate, endDate],
         queryFn: async () => {
             const { data, error } = await supabase
@@ -336,26 +329,23 @@ export function useOrderFulfillment(startDate: string, endDate: string) {
                 .gte('date', startDate)
                 .lte('date', endDate);
             if (error) throw error;
-
             const summary = data.reduce((acc, row) => {
                 const status = row.status.toLowerCase();
                 if (status === 'cancelled') acc.cancelled += row.count;
                 else if (status === 'refunded') acc.refunded += row.count;
                 else acc.successful += row.count;
-
-                acc.total += row.count;
                 return acc;
-            }, { successful: 0, cancelled: 0, refunded: 0, total: 0 });
-
+            }, { successful: 0, cancelled: 0, refunded: 0 });
             return [
                 { name: "successful", value: summary.successful },
                 { name: "cancelled", value: summary.cancelled },
                 { name: "refunded", value: summary.refunded },
             ];
-        }
-    })
-    return { fulfillment, isLoading, isError, error };
-};
+        },
+        placeholderData: (prev) => prev,
+    });
+    return { fulfillment, isLoading, isRefreshing: isFetching, isError, error };
+}
 
 export function useAovInsights(selectedDate: Date) {
     const currentStart = startOfMonth(selectedDate);
@@ -432,6 +422,7 @@ export function useAovInsights(selectedDate: Date) {
                 upt: Number(monthlyUPT)
             };
         },
+        placeholderData: (prev) => prev,
         enabled: !!selectedDate
     });
     return { aov_insights, isLoading, isError, error };
@@ -503,7 +494,6 @@ export function useChannelInsights(selectedDate: Date) {
                 const stats = currentMap[name];
                 return {
                     channel: name,
-                    // Ensure these match the keys we set in mapStats above
                     new: stats?.newCustomerOrders || 0,
                     returning: stats?.returningCustomerOrders || 0
                 };
@@ -526,6 +516,7 @@ export function useChannelInsights(selectedDate: Date) {
                 }))
             };
         },
+        placeholderData: (prev) => prev,
         enabled: !!selectedDate
     });
 

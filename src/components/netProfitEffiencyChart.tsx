@@ -42,7 +42,7 @@ export function NetProfitEfficiencyChart({ data, floor, ceiling }: EfficiencyCha
 
                         <CartesianGrid vertical={false} strokeDasharray="3 3" stroke="#f1f5f9" />
 
-                        <XAxis 
+                        <XAxis
                             dataKey="date"
                             tick={{ fill: '#94a3b8', fontSize: 9 }}
                             axisLine={false}
@@ -51,7 +51,7 @@ export function NetProfitEfficiencyChart({ data, floor, ceiling }: EfficiencyCha
                             tickFormatter={(value) => {
                                 const parts = value.split('-');
                                 if (parts.length < 3) return value;
-                                
+
                                 const month = parseInt(parts[1], 10);
                                 const day = parseInt(parts[2], 10);
                                 return `${month}/${day}`;
@@ -66,13 +66,27 @@ export function NetProfitEfficiencyChart({ data, floor, ceiling }: EfficiencyCha
                         />
 
                         {/* ceiling */}
-                        <ReferenceLine y={40} stroke="#6366f1" strokeDasharray="3 3" strokeOpacity={0.5}>
-                            <Label value={ceiling} position="right" fill="#6366f1" fontSize={9} fontWeight={700} />
+                        <ReferenceLine y={ceiling} stroke="#6366f1" strokeDasharray="3 3" strokeOpacity={0.5}>
+                            <Label
+                                value={`Target: ${ceiling}%`}
+                                position="insideBottomRight"
+                                offset={10}
+                                fill="#6366f1"
+                                fontSize={9}
+                                fontWeight={700}
+                            />
                         </ReferenceLine>
 
                         {/* target */}
-                        <ReferenceLine y={15} stroke="#f59e0b" strokeDasharray="3 3" strokeOpacity={0.5}>
-                            <Label value={floor} position="right" fill="#f59e0b" fontSize={9} fontWeight={700} />
+                        <ReferenceLine y={floor} stroke="#f59e0b" strokeDasharray="3 3" strokeOpacity={0.5}>
+                            <Label
+                                value={`Floor: ${floor}%`}
+                                position="insideBottomRight"
+                                offset={10}
+                                fill="#f59e0b"
+                                fontSize={9}
+                                fontWeight={700}
+                            />
                         </ReferenceLine>
 
                         {/* breakeven line */}
