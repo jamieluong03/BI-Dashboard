@@ -6,6 +6,7 @@ import { SelectDate } from "./dateSelect";
 import CriticalReorderList from "./inventoryCriticalReorder";
 import { differenceInDays } from "node_modules/date-fns/fp/differenceInDays.cjs";
 import AgingCapitalChart from "./inventoryAgingCapital";
+import SkuVelocityProfitabilityChart from "./inventorySkuProfitability";
 
 export default function InventoryCardContent({ dateContext, isInventoryLoading }: InventoryModalProps) {
 
@@ -94,7 +95,6 @@ export default function InventoryCardContent({ dateContext, isInventoryLoading }
                                     </h3>
                                     <InfoTooltip display comment="Prioritizes restocking based on projected weekly revenue loss. These items drive your cash flow—don't let them hit zero." />
                                 </div>
-                                <p className="text-sm text-slate-500">Items with the highest financial impact on stockout.</p>
                             </div>
 
                             {/* Total Risk Summary Badge */}
@@ -112,18 +112,6 @@ export default function InventoryCardContent({ dateContext, isInventoryLoading }
                     </div>
 
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                        {/* <div className="bg-white p-6 md:p-6 rounded-2xl border border-slate-100 shadow-sm min-h-[100px] lg:h-[320px] flex flex-col">
-                            <div className="flex gap-1 mb-6">
-                                <h3 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">
-                                    Inventory Aging & Capital Liquidity
-                                </h3>
-                                <InfoTooltip display comment="Measures the average revenue generated per transaction across each sales channel, highlighting which platforms attract the highest-spending customers." />
-                            </div>
-                            {/* Inventory Aging & Capital Liquidity */}
-                        {/* <div className="flex-1 min-h-0 w-full"> */}
-                        {/* <AgingCapitalChart data={agingData} /> */}
-                        {/* </div>
-                        </div> */}
                         <div className="bg-white p-6 md:p-6 rounded-2xl border border-slate-100 shadow-sm min-h-[100px] lg:h-[340px] flex flex-col">
                             <div className="flex gap-1 mb-4">
                                 <h3 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">
@@ -131,16 +119,11 @@ export default function InventoryCardContent({ dateContext, isInventoryLoading }
                                 </h3>
                                 <InfoTooltip display comment="Monitors asset health by showing how long cash has been stuck in physical stock. Keep stale stock under 15% to maintain a healthy cash flow." />
                             </div>
-
-                            <p className="text-xs text-slate-500 mb-4">
-                                Visualizes your dynamic capital distribution across asset tiers.
-                            </p>
-
                             <div className="flex-1 min-h-0 w-full">
                                 <AgingCapitalChart data={agingData} />
                             </div>
                         </div>
-                        <div className="bg-white p-6 md:p-6 rounded-2xl border border-slate-100 shadow-sm min-h-[100px]] lg:h-[320px] flex flex-col">
+                        <div className="bg-white p-6 md:p-6 rounded-2xl border border-slate-100 shadow-sm min-h-[100px]] lg:h-[340px] flex flex-col">
                             <div className="flex gap-1 mb-6">
                                 <h3 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">
                                     SKU Velocity vs Profitability
@@ -149,7 +132,7 @@ export default function InventoryCardContent({ dateContext, isInventoryLoading }
                             </div>
                             {/* SKU Velocity vs Profitability */}
                             <div className="flex-1 min-h-0 w-full">
-
+                            <SkuVelocityProfitabilityChart products={inventory?.allProducts || []} />
                             </div>
                         </div>
                     </div>
