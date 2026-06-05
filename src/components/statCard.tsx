@@ -109,7 +109,7 @@ export function StatCard({ title, value, description, metric }: StatCardProps) {
             <ModalTitle className="text-2xl font-bold">{title}</ModalTitle>
           </ModalHeader>
 
-          <div className={isDesktop ? "" : "flex-1 overflow-y-auto px-6"}>
+          <div className={isDesktop ? "" : "flex flex-1 overflow-y-auto px-6"}>
             {renderModalContent(metric)}
           </div>
         </ModalContent>

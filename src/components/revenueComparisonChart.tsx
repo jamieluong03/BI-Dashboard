@@ -197,7 +197,7 @@ export const RevenueComparisonChart = ({ current, previous }: RevenueProps) => {
     }, [current, previous]);
 
     return (
-        <div ref={containerRef} className="relative w-full h-[350px] overflow-hidden bg-white">
+        <div ref={containerRef} className="relative w-full h-[300px] overflow-hidden bg-white">
             <div className="overflow-x-auto h-full scrollbar-hide">
                 <svg
                     ref={svgRef}

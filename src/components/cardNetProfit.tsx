@@ -60,7 +60,6 @@ export default function CardNetProfit() {
 
     const { orders, isLoading, isError } = useSalesStats(dateRange.startStr, dateRange.endStr);
     const { orders: previousOrders } = useSalesStats(prevDateRange.startStr, prevDateRange.endStr);
-    console.log('orders', orders);
 
     const waterfallData = useMemo(() => {
         if (!orders) return [];

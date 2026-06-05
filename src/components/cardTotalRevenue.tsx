@@ -49,7 +49,7 @@ export default function TotalRevenueCard() {
     const { data, isLoading, isError } = useRevenueComparisonQuery(ranges.rangeA, ranges.rangeB);
 
     return (
-        <div className="space-y-6 pt-2">
+        <div className="w-full">
             <div className="flex flex-col gap-4">
                 <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as ViewType)}>
                     <TabsList className="grid w-full grid-cols-3 h-11 bg-slate-100/50">
@@ -59,7 +59,8 @@ export default function TotalRevenueCard() {
                     </TabsList>
                 </Tabs>
 
-                <div className="flex flex-wrap items-center justify-between bg-slate-50 p-3 rounded-lg border border-slate-100 gap-3 min-h-[54px]">                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Comparison Periods</span>
+                <div className="flex flex-wrap items-center justify-between bg-slate-50 p-4 mb-4 rounded-lg border border-slate-100 gap-3 min-h-[54px]">                    
+                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Comparison Periods</span>
                     <div className="flex items-center gap-3">
                         {activeTab === "month" && (
                             <>
