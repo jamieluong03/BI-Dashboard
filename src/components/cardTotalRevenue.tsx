@@ -90,7 +90,7 @@ export default function TotalRevenueCard() {
                 </div>
             </div>
 
-            <div className="bg-white rounded-xl border border-slate-200 p-6 h-[400px] flex flex-col">
+            <div className="bg-white rounded-xl border border-slate-200 p-6 h-[400px] flex flex-col border border-slate-100 shadow-sm">
                 {isLoading ? (
                     <TotalRevenueSkeleton />
                 ) : isError ? (

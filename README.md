@@ -17,7 +17,7 @@ A performance dashboard designed to help businesses visualize key performance in
 ### Roadmap
 - [x] Write & Initialize Supabase schema. Generate test data.
 - [x] Create SQL views to make basic KPI cards.
-- [ ] Implement drill-down analytics per KPI card to visualize data trends.
+- [x] Implement drill-down analytics per KPI card to visualize data trends.
 - [ ] Integrate AI-driven trend analysis to provide sales performance summaries.
 - [ ] Exportable report for business owners.
 
